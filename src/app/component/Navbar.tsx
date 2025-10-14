@@ -1,22 +1,87 @@
 'use client';
-
 import { useState, useEffect } from 'react';
-import { ChevronDown, Globe, Settings } from 'lucide-react';
+import { ChevronDown, Menu, X, MapPin, Mail, Phone } from 'lucide-react';
+import { useRouter, usePathname } from 'next/navigation';
 
 export default function UniFiNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const shouldShowWhiteBg = isScrolled || isHovered;
+  const shouldShowWhiteBg = isScrolled || isHovered || isMobileMenuOpen;
+
+  const handleNavigation = (href: string) => {
+    router.push(href);
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleActionClick = (type: string) => {
+    switch (type) {
+      case 'location':
+        window.open('https://maps.google.com', '_blank');
+        break;
+      case 'email':
+        window.location.href = 'mailto:info@unifi.com';
+        break;
+      case 'call':
+        window.location.href = 'tel:+1234567890';
+        break;
+      default:
+        break;
+    }
+    setIsMobileMenuOpen(false);
+  };
+
+  const isActivePath = (href: string) => {
+    if (href === '/') {
+      return pathname === '/';
+    }
+    return pathname.startsWith(href);
+  };
+
+  const navItems = [
+    { label: 'Home', href: '/' },
+    { label: 'About', href: '/about' },
+    { 
+      label: 'Products', 
+      href: '/products', 
+      dropdown: true, 
+      items: [
+        { label: 'Cloud Gateways', href: '/products/cloud-gateways' },
+        { label: 'Switching', href: '/products/switching' },
+        { label: 'WiFi', href: '/products/wifi' },
+        { label: 'Physical Security', href: '/products/physical-security' }
+      ] 
+    },
+    { 
+      label: 'Solutions', 
+      href: '/solutions', 
+      dropdown: true, 
+      items: [
+        { label: 'Enterprise', href: '/solutions/enterprise' },
+        { label: 'Small Business', href: '/solutions/small-business' },
+        { label: 'Education', href: '/solutions/education' },
+        { label: 'Healthcare', href: '/solutions/healthcare' }
+      ] 
+    },
+    { label: 'Contact Us', href: '/contact' },
+  ];
+
+  const actionItems = [
+    { icon: MapPin, label: 'Location', type: 'location' },
+    { icon: Mail, label: 'Email', type: 'email' },
+    { icon: Phone, label: 'Call', type: 'call' },
+  ];
 
   return (
     <>
@@ -30,84 +95,185 @@ export default function UniFiNavbar() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
             {/* Left Section - Logo and Nav Items */}
-            <div className="flex items-center space-x-8">
+            <div className="flex items-center space-x-10">
               {/* Logo */}
               <div className="flex items-center">
-                <span className={`text-2xl font-bold transition-colors ${
-                  shouldShowWhiteBg ? 'text-gray-900' : 'text-white'
-                }`}>
+                <button
+                  onClick={() => handleNavigation('/')}
+                  className={`text-2xl font-bold transition-colors cursor-pointer ${
+                    shouldShowWhiteBg ? 'text-gray-900' : 'text-white'
+                  }`}
+                >
                   UniFi
-                </span>
-              </div>
-
-              {/* Navigation Items */}
-              <div className="hidden md:flex items-center space-x-6">
-                <button className={`flex items-center space-x-1 text-sm font-medium transition-colors ${
-                  shouldShowWhiteBg ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-200'
-                }`}>
-                  <span>Start Here</span>
-                  <ChevronDown className="w-4 h-4" />
                 </button>
-                <a href="#" className={`text-sm font-medium transition-colors ${
-                  shouldShowWhiteBg ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-200'
-                }`}>
-                  Cloud Gateways
-                </a>
-                <a href="#" className={`text-sm font-medium transition-colors ${
-                  shouldShowWhiteBg ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-200'
-                }`}>
-                  Switching
-                </a>
-                <a href="#" className={`text-sm font-medium transition-colors ${
-                  shouldShowWhiteBg ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-200'
-                }`}>
-                  WiFi
-                </a>
-                <a href="#" className={`text-sm font-medium transition-colors ${
-                  shouldShowWhiteBg ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-200'
-                }`}>
-                  Physical Security
-                </a>
-                <a href="#" className={`text-sm font-medium transition-colors ${
-                  shouldShowWhiteBg ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-200'
-                }`}>
-                  Integrations
-                </a>
+              </div>
+              {/* Desktop Navigation Items */}
+              <div className="hidden lg:flex items-center space-x-1">
+                {navItems.map((item) => (
+                  <div key={item.label} className="relative group">
+                    {item.dropdown ? (
+                      <>
+                        <button
+                          className={`flex items-center space-x-1 text-sm font-medium transition-colors cursor-pointer rounded-lg px-4 py-2 mx-1 ${
+                            shouldShowWhiteBg 
+                              ? isActivePath(item.href)
+                                ? 'bg-blue-50 text-blue-600 border border-blue-200'
+                                : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                              : isActivePath(item.href)
+                                ? 'bg-blue-500/20 text-white border border-blue-400/30'
+                                : 'text-white hover:text-gray-200 hover:bg-white/10'
+                          }`}
+                        >
+                          <span>{item.label}</span>
+                          <ChevronDown className="w-4 h-4" />
+                        </button>
+                        {/* Dropdown Menu */}
+                        <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 border border-gray-100 z-50">
+                          <div className="py-2">
+                            {item.items?.map((dropdownItem) => (
+                              <button
+                                key={dropdownItem.label}
+                                onClick={() => handleNavigation(dropdownItem.href)}
+                                className={`block w-full text-left px-4 py-2 text-sm transition-colors cursor-pointer ${
+                                  isActivePath(dropdownItem.href)
+                                    ? 'bg-blue-50 text-blue-600 font-medium'
+                                    : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
+                                }`}
+                              >
+                                {dropdownItem.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <button
+                        onClick={() => handleNavigation(item.href)}
+                        className={`text-sm font-medium transition-colors cursor-pointer rounded-lg px-4 py-2 mx-1 ${
+                          shouldShowWhiteBg 
+                            ? isActivePath(item.href)
+                              ? 'bg-blue-50 text-blue-600 border border-blue-200'
+                              : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                            : isActivePath(item.href)
+                              ? 'bg-blue-500/20 text-white border border-blue-400/30'
+                              : 'text-white hover:text-gray-200 hover:bg-white/10'
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
-
-            {/* Right Section - Actions */}
-            <div className="flex items-center space-x-4">
-              <a href="#" className={`text-sm font-medium transition-colors ${
-                shouldShowWhiteBg ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-200'
-              }`}>
-                What's New
-              </a>
-              <a href="#" className={`text-sm font-medium transition-colors ${
-                shouldShowWhiteBg ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-200'
-              }`}>
-                Support
-              </a>
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md text-sm font-medium transition-colors">
-                Store
+            {/* Right Section - Action Icons */}
+            <div className="flex items-center space-x-6">
+              {/* Action Icons */}
+              <div className="hidden md:flex items-center space-x-5">
+                {actionItems.map((item) => {
+                  const IconComponent = item.icon;
+                  return (
+                    <button
+                      key={item.label}
+                      onClick={() => handleActionClick(item.type)}
+                      className={`p-2 transition-all duration-200 cursor-pointer rounded-lg ${
+                        shouldShowWhiteBg 
+                          ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' 
+                          : 'text-white hover:text-gray-200 hover:bg-white/10'
+                      }`}
+                      title={item.label}
+                    >
+                      <IconComponent className="w-5 h-5" />
+                    </button>
+                  );
+                })}
+              </div>
+              {/* Mobile Menu Button */}
+              <button
+                className={`md:hidden p-2 transition-colors rounded-lg cursor-pointer ${
+                  shouldShowWhiteBg 
+                    ? 'text-gray-700 hover:bg-gray-100' 
+                    : 'text-white hover:bg-white/10'
+                }`}
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              >
+                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
-              <button className={`p-2 transition-colors ${
-                shouldShowWhiteBg ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-200'
-              }`}>
-                <Globe className="w-5 h-5" />
-              </button>
-              <button className={`p-2 transition-colors ${
-                shouldShowWhiteBg ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-200'
-              }`}>
-                <Settings className="w-5 h-5" />
-              </button>
+            </div>
+          </div>
+          {/* Mobile Menu */}
+          <div
+            className={`lg:hidden transition-all duration-300 overflow-hidden ${
+              isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+            }`}
+          >
+            <div className="py-4 border-t border-gray-200">
+              {navItems.map((item) => (
+                <div key={item.label} className="border-b border-gray-100 last:border-b-0">
+                  <div className="flex flex-col">
+                    {item.dropdown ? (
+                      <>
+                        <div className={`flex items-center justify-between w-full py-3 text-left font-medium cursor-pointer rounded-lg mx-2 my-1 px-3 ${
+                          isActivePath(item.href) 
+                            ? 'bg-blue-50 text-blue-600 border border-blue-200' 
+                            : 'text-gray-700 hover:bg-gray-100'
+                        }`}>
+                          <span>{item.label}</span>
+                          <ChevronDown className="w-4 h-4" />
+                        </div>
+                        <div className="pl-4 pb-2">
+                          {item.items?.map((dropdownItem) => (
+                            <button
+                              key={dropdownItem.label}
+                              onClick={() => handleNavigation(dropdownItem.href)}
+                              className={`block w-full text-left py-2 text-sm transition-colors cursor-pointer rounded-lg mx-2 my-1 px-3 ${
+                                isActivePath(dropdownItem.href)
+                                  ? 'bg-blue-50 text-blue-600 font-medium border border-blue-200'
+                                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                              }`}
+                            >
+                              {dropdownItem.label}
+                            </button>
+                          ))}
+                        </div>
+                      </>
+                    ) : (
+                      <button
+                        onClick={() => handleNavigation(item.href)}
+                        className={`block w-full text-left py-3 font-medium transition-colors cursor-pointer rounded-lg mx-2 my-1 px-3 ${
+                          isActivePath(item.href)
+                            ? 'bg-blue-50 text-blue-600 border border-blue-200'
+                            : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+              {/* Mobile Action Items */}
+              <div className="pt-4 border-t border-gray-200">
+                <div className="flex items-center space-x-4 py-3">
+                  {actionItems.map((item) => {
+                    const IconComponent = item.icon;
+                    return (
+                      <button
+                        key={item.label}
+                        onClick={() => handleActionClick(item.type)}
+                        className="flex items-center space-x-2 text-gray-700 hover:text-gray-900 transition-colors p-2 hover:bg-gray-50 rounded-lg cursor-pointer"
+                      >
+                        <IconComponent className="w-5 h-5" />
+                        <span className="text-sm font-medium">{item.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </nav>
-
-      {/* Demo Content */}
-      
     </>
   );
 }
