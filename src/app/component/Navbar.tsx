@@ -33,28 +33,44 @@ export default function UniFiNavbar() {
             <div className="flex items-center space-x-8">
               {/* Logo */}
               <div className="flex items-center">
-                <span className="text-2xl font-bold text-gray-900">UniFi</span>
+                <span className={`text-2xl font-bold transition-colors ${
+                  shouldShowWhiteBg ? 'text-gray-900' : 'text-white'
+                }`}>
+                  UniFi
+                </span>
               </div>
 
               {/* Navigation Items */}
               <div className="hidden md:flex items-center space-x-6">
-                <button className="flex items-center space-x-1 text-gray-700 hover:text-gray-900 text-sm font-medium transition-colors">
+                <button className={`flex items-center space-x-1 text-sm font-medium transition-colors ${
+                  shouldShowWhiteBg ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-200'
+                }`}>
                   <span>Start Here</span>
                   <ChevronDown className="w-4 h-4" />
                 </button>
-                <a href="#" className="text-gray-700 hover:text-gray-900 text-sm font-medium transition-colors">
+                <a href="#" className={`text-sm font-medium transition-colors ${
+                  shouldShowWhiteBg ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-200'
+                }`}>
                   Cloud Gateways
                 </a>
-                <a href="#" className="text-gray-700 hover:text-gray-900 text-sm font-medium transition-colors">
+                <a href="#" className={`text-sm font-medium transition-colors ${
+                  shouldShowWhiteBg ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-200'
+                }`}>
                   Switching
                 </a>
-                <a href="#" className="text-gray-700 hover:text-gray-900 text-sm font-medium transition-colors">
+                <a href="#" className={`text-sm font-medium transition-colors ${
+                  shouldShowWhiteBg ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-200'
+                }`}>
                   WiFi
                 </a>
-                <a href="#" className="text-gray-700 hover:text-gray-900 text-sm font-medium transition-colors">
+                <a href="#" className={`text-sm font-medium transition-colors ${
+                  shouldShowWhiteBg ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-200'
+                }`}>
                   Physical Security
                 </a>
-                <a href="#" className="text-gray-700 hover:text-gray-900 text-sm font-medium transition-colors">
+                <a href="#" className={`text-sm font-medium transition-colors ${
+                  shouldShowWhiteBg ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-200'
+                }`}>
                   Integrations
                 </a>
               </div>
@@ -62,19 +78,27 @@ export default function UniFiNavbar() {
 
             {/* Right Section - Actions */}
             <div className="flex items-center space-x-4">
-              <a href="#" className="text-gray-700 hover:text-gray-900 text-sm font-medium transition-colors">
+              <a href="#" className={`text-sm font-medium transition-colors ${
+                shouldShowWhiteBg ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-200'
+              }`}>
                 What's New
               </a>
-              <a href="#" className="text-gray-700 hover:text-gray-900 text-sm font-medium transition-colors">
+              <a href="#" className={`text-sm font-medium transition-colors ${
+                shouldShowWhiteBg ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-200'
+              }`}>
                 Support
               </a>
               <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md text-sm font-medium transition-colors">
                 Store
               </button>
-              <button className="p-2 text-gray-700 hover:text-gray-900 transition-colors">
+              <button className={`p-2 transition-colors ${
+                shouldShowWhiteBg ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-200'
+              }`}>
                 <Globe className="w-5 h-5" />
               </button>
-              <button className="p-2 text-gray-700 hover:text-gray-900 transition-colors">
+              <button className={`p-2 transition-colors ${
+                shouldShowWhiteBg ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-200'
+              }`}>
                 <Settings className="w-5 h-5" />
               </button>
             </div>

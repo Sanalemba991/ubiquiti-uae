@@ -213,7 +213,7 @@ export default function IndustryLeadersFilter() {
                 <div className="text-3xl">
                   {logo.logo}
                 </div>
-              </motion.div>
+              </motion.div> 
             );
           })}
         </motion.div>

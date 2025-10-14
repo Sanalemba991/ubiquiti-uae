@@ -46,7 +46,7 @@ const Last = () => {
     }, []);
 
     const handleExploreClick = () => {
-        router.push('/products');
+        router.push('/about');
     };
 
     const handleVideoLoad = () => {
