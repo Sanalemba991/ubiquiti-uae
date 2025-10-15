@@ -5,7 +5,7 @@ import { Variants } from 'framer-motion';
 
 import SolutionSec from '../component/SolutionSec';
 
-const Solution = () => {
+const Page = () => {
   const [isMobile, setIsMobile] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -13,10 +13,10 @@ const Solution = () => {
     const checkIsMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     checkIsMobile();
     window.addEventListener('resize', checkIsMobile);
-    
+
     return () => {
       window.removeEventListener('resize', checkIsMobile);
     };
@@ -32,7 +32,7 @@ const Solution = () => {
   }, []);
 
   // Animation variants for staggered entrance
-  const containerVariants : Variants= {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -43,7 +43,7 @@ const Solution = () => {
     }
   };
 
-  const itemVariants : Variants= {
+  const itemVariants: Variants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
@@ -55,7 +55,7 @@ const Solution = () => {
     }
   };
 
-  const buttonVariants : Variants= {
+  const buttonVariants: Variants = {
     hidden: { scale: 0.9, opacity: 0 },
     visible: {
       scale: 1,
@@ -75,57 +75,66 @@ const Solution = () => {
 
   return (
     <>
-    <section className="relative w-full h-screen flex items-center justify-end overflow-hidden">
-      {/* Background Video with fade-in animation */}
-      <motion.div 
-        className="absolute inset-0 w-full h-full"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-      >
-        <video
-          ref={videoRef}
-          src="https://ui.com/microsite/static/cg-1-DEvu98aB.mp4"
-          muted
-          loop
-          playsInline
-          className="w-full h-full object-cover"
-          preload="metadata"
-        />
+      <section className="relative w-full h-screen flex items-center justify-start overflow-hidden">
+        {/* Background Video with fade-in animation */}
+        <motion.div
+          className="absolute inset-0 w-full h-full"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        >
+          <video
+            ref={videoRef}
+            src="https://ui.com/microsite/static/cg-1-DEvu98aB.mp4"
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover"
+            preload="metadata"
+          />
 
-        {/* Dark overlay for better text readability */}
-        <div className="absolute inset-0 bg-black/40"></div>
-      </motion.div>
+          {/* Dark overlay for better text readability */}
+          <div className="absolute inset-0 bg-black/40"></div>
+        </motion.div>
+
+        {/* Content Section - Now on the left with more content */}
+        <motion.div
+          className="relative z-10 text-white px-6 md:px-12 text-left max-w-2xl"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.h1
+            className="text-4xl md:text-6xl font-bold mb-4"
+            variants={itemVariants}
+          >
+            Innovative <span className='text-blue-600'>Solutions</span>
+          </motion.h1>
+
+
+          <motion.p
+            className="text-base md:text-lg mb-6 leading-relaxed opacity-90"
+            variants={itemVariants}
+          >
+            Our comprehensive suite of solutions leverages artificial intelligence, machine learning,
+            and advanced data analytics to drive digital transformation across various sectors.
+            We deliver measurable results through tailored approaches that address your unique challenges.
+          </motion.p>
+
+
+
+
+
+
+        </motion.div>
+      </section>
+
+     
       
-      {/* Content Section */}
-      <motion.div
-        className="relative z-10 text-white px-6 md:px-12 text-right max-w-2xl"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <motion.h1 
-          className="text-4xl md:text-6xl font-bold mb-4"
-          variants={itemVariants}
-        >
-          Innovative <span className='text-blue-600'>Solutions</span>
-        </motion.h1>
-        <motion.p 
-          className="text-lg md:text-xl mb-6"
-          variants={itemVariants}
-        >
-          Transforming Industries with Cutting-Edge Technology
-        </motion.p>
-       
-      </motion.div>
-    </section>
-    
-    {/* Big gap between sections */}
 
-    
-    <SolutionSec/>
+      <SolutionSec />
     </>
   );
 };
 
-export default Solution;
+export default Page;

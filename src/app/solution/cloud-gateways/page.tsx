@@ -4,129 +4,133 @@ import { motion } from 'framer-motion';
 import { Variants } from 'framer-motion';
 import Cloud from './cloud-gateways';
 
+const Page = () => {
+    const [isMobile, setIsMobile] = useState(false);
+    const videoRef = useRef<HTMLVideoElement>(null);
 
+    useEffect(() => {
+        const checkIsMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
 
-const Solution = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
+        checkIsMobile();
+        window.addEventListener('resize', checkIsMobile);
 
-  useEffect(() => {
-    const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+        return () => {
+            window.removeEventListener('resize', checkIsMobile);
+        };
+    }, []);
+
+    // Auto-play video when component mounts
+    useEffect(() => {
+        if (videoRef.current) {
+            videoRef.current.play().catch(error => {
+                console.log('Video autoplay failed:', error);
+            });
+        }
+    }, []);
+
+    // Animation variants for staggered entrance
+    const containerVariants: Variants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                delayChildren: 0.3,
+                staggerChildren: 0.2
+            }
+        }
     };
-    
-    checkIsMobile();
-    window.addEventListener('resize', checkIsMobile);
-    
-    return () => {
-      window.removeEventListener('resize', checkIsMobile);
+
+    const itemVariants: Variants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1,
+            transition: {
+                duration: 0.5,
+                ease: "easeOut"
+            }
+        }
     };
-  }, []);
 
-  // Auto-play video when component mounts
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch(error => {
-        console.log('Video autoplay failed:', error);
-      });
-    }
-  }, []);
+    const buttonVariants: Variants = {
+        hidden: { scale: 0.9, opacity: 0 },
+        visible: {
+            scale: 1,
+            opacity: 1,
+            transition: {
+                delay: 0.8,
+                duration: 0.4
+            }
+        },
+        hover: {
+            scale: 1.05,
+            transition: {
+                duration: 0.2
+            }
+        }
+    };
 
-  // Animation variants for staggered entrance
-  const containerVariants : Variants= {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.3,
-        staggerChildren: 0.2
-      }
-    }
-  };
+    return (
+        <>
+            <section className="relative w-full h-screen flex items-center justify-start overflow-hidden">
+                {/* Background Video with fade-in animation */}
+                <motion.div
+                    className="absolute inset-0 w-full h-full"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.8 }}
+                >
+                    <video
+                        ref={videoRef}
+                        src="https://ui.com/microsite/static/switching-3-D5c7PtKk.mp4"
+                        muted
+                        loop
+                        playsInline
+                        className="w-full h-full object-cover"
+                        preload="metadata"
+                    />
 
-  const itemVariants : Variants= {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut"
-      }
-    }
-  };
+                    {/* Dark overlay for better text readability */}
+                    <div className="absolute inset-0 bg-black/40"></div>
+                </motion.div>
 
-  const buttonVariants : Variants= {
-    hidden: { scale: 0.9, opacity: 0 },
-    visible: {
-      scale: 1,
-      opacity: 1,
-      transition: {
-        delay: 0.8,
-        duration: 0.4
-      }
-    },
-    hover: {
-      scale: 1.05,
-      transition: {
-        duration: 0.2
-      }
-    }
-  };
+                {/* Content Section - Changed to left alignment */}
+                <motion.div
+                    className="relative z-10 text-white px-6 md:px-12 text-left max-w-2xl"
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                >
+                    <motion.h1
+                        className="text-4xl md:text-6xl font-bold mb-4"
+                        variants={itemVariants}
+                    >
+                        Cloud  <span className='text-blue-600'>Gateways</span>
+                    </motion.h1>
+                     <motion.p
+                        className="text-lg md:text-xl mb-6"
+                        variants={itemVariants}
+                    >
+                       Secure Cloud Connectivity.
+                    </motion.p>
+                    <motion.p
+                        className="text-lg md:text-xl mb-6"
+                        variants={itemVariants}
+                    >
+                        Enterprise-grade cloud gateways with advanced security protocols and high-performance routing for seamless cloud application access.
+                    </motion.p>
 
-  return (
-    <>
-    <section className="relative w-full h-screen flex items-center justify-end overflow-hidden">
-      {/* Background Video with fade-in animation */}
-      <motion.div 
-        className="absolute inset-0 w-full h-full"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-      >
-        <video
-          ref={videoRef}
-          src="https://ui.com/microsite/static/switching-3-D5c7PtKk.mp4"
-          muted
-          loop
-          playsInline
-          className="w-full h-full object-cover"
-          preload="metadata"
-        />
+                </motion.div>
+            </section>
 
-        {/* Dark overlay for better text readability */}
-        <div className="absolute inset-0 bg-black/40"></div>
-      </motion.div>
-      
-      {/* Content Section */}
-      <motion.div
-        className="relative z-10 text-white px-6 md:px-12 text-right max-w-2xl"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <motion.h1 
-          className="text-4xl md:text-6xl font-bold mb-4"
-          variants={itemVariants}
-        >
-          Innovative <span className='text-blue-600'>Solutions</span>
-        </motion.h1>
-        <motion.p 
-          className="text-lg md:text-xl mb-6"
-          variants={itemVariants}
-        >
-          Transforming Industries with Cutting-Edge Technology
-        </motion.p>
-       
-      </motion.div>
-    </section>
-    
-    {/* Big gap between sections */}
+            {/* Big gap between sections */}
+        
 
-    <Cloud/>
-
-    </>
-  );
+            <Cloud />
+        </>
+    );
 };
 
-export default Solution;
+export default Page;

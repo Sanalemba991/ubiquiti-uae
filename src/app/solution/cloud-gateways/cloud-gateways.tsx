@@ -190,7 +190,7 @@ const Cloud = () => {
 
   return (
     <div className="bg-gradient-to-r from-blue-900/80 to-transparent overflow-hidden">
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-100">
         <motion.div
           ref={headerRef}
           variants={shouldReduceMotion ? reducedMotionVariants : headerVariants}
