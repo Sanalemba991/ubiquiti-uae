@@ -138,7 +138,7 @@ const About = () => {
             </section>
 
             {/* Who is Ubiquiti-UAE Section */}
-            <section className="py-16 px-6 bg-gray-50">
+            <section className="py-16 px-6 bg-gray-50 overflow-hidden">
                 <div className="max-w-6xl mx-auto">
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
                         <AnimatedSection variants={fadeInLeft}>
@@ -161,7 +161,7 @@ const About = () => {
             </section>
 
             {/* Why Choose Ubiquiti-UAE Section */}
-            <section className="py-16 px-6 bg-white">
+            <section className="py-16 px-6 bg-white overflow-hidden">
                 <div className="max-w-6xl mx-auto">
                     <AnimatedSection className="text-center mb-12">
                         <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">

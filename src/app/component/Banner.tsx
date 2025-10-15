@@ -1,13 +1,12 @@
 "use client";
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Variants } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import Banners from '../../../public/banner/first.jpg';
 
-const Banner = () => {
+const Solution = () => {
     const [isMobile, setIsMobile] = useState(false);
+    const videoRef = useRef<HTMLVideoElement>(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -27,7 +26,16 @@ const Banner = () => {
         router.push('/products');
     };
 
-    // Animation variants for staggeblue entrance
+    // Auto-play video when component mounts
+    useEffect(() => {
+        if (videoRef.current) {
+            videoRef.current.play().catch(error => {
+                console.log('Video autoplay failed:', error);
+            });
+        }
+    }, []);
+
+    // Animation variants for staggered entrance
     const containerVariants: Variants = {
         hidden: { opacity: 0 },
         visible: {
@@ -70,73 +78,68 @@ const Banner = () => {
     };
 
     return (
-        <section className="relative w-full h-[400px] md:h-[500px] flex items-center justify-end overflow-hidden">
-            {/* Background Image with fade-in animation */}
+        <section className="relative w-full h-screen flex items-center justify-start overflow-hidden">
+            {/* Background Video with fade-in animation */}
             <motion.div
                 className="absolute inset-0 w-full h-full"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8 }}
             >
-                <div
-                    className="absolute inset-0 bg-cover bg-center bg-fixed"
-                    style={{
-                        backgroundImage: `url('/banner/first.jpg')`,
-                        filter: 'brightness(0.8)'
-                    }}
+                <video
+                    ref={videoRef}
+                    src="https://ui.com/microsite/static/physical-security-1-Cz6S4fvO.mp4"
+                    muted
+                    loop
+                    playsInline
+                    className="w-full h-full object-cover"
+                    preload="metadata"
                 />
-                {/* Dark overlay for better text visibility */}
-                <div className="absolute inset-0 "></div>
+
+                {/* Dark overlay for better text readability */}
+                <div className="absolute inset-0 bg-black/40"></div>
             </motion.div>
 
-            {/* Text Content with staggeblue animation */}
+            {/* Content Section - Aligned to left */}
             <motion.div
-                className="relative px-8 py-8 max-w-sm mr-8 md:mr-16"
-                variants={containerVariants}
                 initial="hidden"
                 animate="visible"
+                variants={containerVariants}
+                className="relative z-10 text-left space-y-6 mx-8 md:mx-16 lg:mx-24"
             >
-                <motion.div
-                    initial="hidden"
-                    animate="visible"
-                    variants={containerVariants}
-                    className="text-center md:text-left space-y-3"
+                <motion.h1
+                    className="text-4xl md:text-6xl font-bold text-white tracking-tight"
+                    variants={itemVariants}
                 >
-                    <motion.h1
-                        className="text-3xl md:text-3xl font-bold text-gray-900 tracking-tight"
-                        variants={itemVariants}
-                    >
-                        Ubiquiti <span className="text-blue-600">UAE</span>
-                    </motion.h1>
+                    Ubiquiti <span className="text-blue-400">UAE</span>
+                </motion.h1>
 
-                    <motion.h2
-                        className="text-lg md:text-2xl font-semibold text-gray-800"
-                        variants={itemVariants}
-                    >
-                        Building the Future of IT. License Free
-                    </motion.h2>
+                <motion.h2
+                    className="text-xl md:text-3xl font-semibold text-white/90"
+                    variants={itemVariants}
+                >
+                    Building the Future of IT. License Free
+                </motion.h2>
 
-                    <motion.p
-                        className="text-sm md:text-base text-gray-600 max-w-lg"
-                        variants={itemVariants}
-                    >
-                        Empower your business with next-generation digital technology designed for
-                        performance, scalability, and innovation.
-                    </motion.p>
+                <motion.p
+                    className="text-lg md:text-xl text-white/80 max-w-2xl"
+                    variants={itemVariants}
+                >
+                    Empower your business with next-generation digital technology designed for
+                    performance, scalability, and innovation.
+                </motion.p>
 
-                    <motion.button
-                        className="px-6 py-2 border-2 cursor-pointer border-blue-600 text-white/80 hover:bg-blue-600 hover:text-white font-medium transition-colors duration-300"
-                        variants={buttonVariants}
-                        whileHover="hover"
-                        onClick={handleExploreClick}
-                    >
-                        Explore Products
-                    </motion.button>
-                </motion.div>
-
+                <motion.button
+                    className="px-6 py-2 border-2 cursor-pointer border-blue-600 text-white/80 hover:bg-blue-600 hover:text-white font-medium transition-colors duration-300"
+                    variants={buttonVariants}
+                    whileHover="hover"
+                    onClick={handleExploreClick}
+                >
+                    Explore Products
+                </motion.button>
             </motion.div>
         </section>
     );
 };
 
-export default Banner;
+export default Solution;

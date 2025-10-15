@@ -8,7 +8,7 @@ const Last = () => {
     const [isMobile, setIsMobile] = useState(false);
     const [isVideoLoaded, setIsVideoLoaded] = useState(false);
     const [isInView, setIsInView] = useState(false);
-    const videoRef = useRef<HTMLIFrameElement>(null);
+    const videoRef = useRef<HTMLVideoElement>(null); // Fixed type from HTMLIFrameElement to HTMLVideoElement
     const sectionRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
 
@@ -28,8 +28,8 @@ const Last = () => {
                 }
             },
             {
-                threshold: 0.3, // Trigger when 30% of the section is visible
-                rootMargin: '0px 0px -50px 0px' // Adjust trigger point slightly upward
+                threshold: 0.3,
+                rootMargin: '0px 0px -50px 0px'
             }
         );
 
@@ -53,7 +53,6 @@ const Last = () => {
         setIsVideoLoaded(true);
     };
 
-
     const containerVariants: Variants = {
         hidden: { opacity: 0 },
         visible: {
@@ -71,7 +70,7 @@ const Last = () => {
             y: 0,
             opacity: 1,
             transition: {
-                duration: 0.8, 
+                duration: 0.8,
                 ease: "easeOut"
             }
         }
@@ -83,7 +82,7 @@ const Last = () => {
             scale: 1,
             opacity: 1,
             transition: {
-                delay: 1.2, 
+                delay: 1.2,
                 duration: 0.6 
             }
         },
@@ -96,12 +95,12 @@ const Last = () => {
     };
 
     const videoVariants: Variants = {
-        hidden: { opacity: 0, scale: 1.1 }, // Added slight scale for smoother appearance
+        hidden: { opacity: 0, scale: 1.1 },
         visible: {
             opacity: 1,
             scale: 1,
             transition: {
-                duration: 1.5, // Slower video fade in
+                duration: 1.5,
                 ease: "easeOut"
             }
         }
@@ -119,18 +118,21 @@ const Last = () => {
                 initial="hidden"
                 animate={isInView ? "visible" : "hidden"}
             >
-                <iframe
+                <video
                     ref={videoRef}
-                    src="https://www.youtube.com/embed/lpeuIu-ZYJY?autoplay=1&mute=1&loop=1&playlist=lpeuIu-ZYJY&controls=0&showinfo=0&modestbranding=1&iv_load_policy=3&disablekb=1&rel=0"
-                    className="absolute top-0 left-0 w-full h-full"
+                    src="https://ui.com/microsite/static/wifi-1-Nhn7hDnj.mp4"
+                    className="absolute top-0 left-0 w-full h-full object-cover" // Added object-cover for better video scaling
                     style={{ 
                         filter: 'brightness(0.7)',
                         border: 'none',
                         transform: 'scale(1.5)',
                         pointerEvents: 'none'
                     }}
-                    allow="autoplay; fullscreen"
-                    onLoad={handleVideoLoad}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    onLoadedData={handleVideoLoad} // Changed from onLoad to onLoadedData for video elements
                     title="Background Video"
                 />
                 
@@ -138,7 +140,7 @@ const Last = () => {
                 <div className="absolute inset-0 bg-black/40 pointer-events-none"></div>
             </motion.div>
 
-            {/* Text Content with staggered animation - Aligned to left */}
+            {/* Text Content */}
             <motion.div
                 className="relative px-8 py-8 max-w-md ml-8 md:ml-16 lg:ml-24 z-10"
                 variants={containerVariants}
@@ -146,27 +148,26 @@ const Last = () => {
                 animate={isInView ? "visible" : "hidden"}
             >
                 <motion.div
+                    variants={containerVariants}
                     initial="hidden"
                     animate={isInView ? "visible" : "hidden"}
-                    variants={containerVariants}
                     className="text-left space-y-4"
                 >
                     <motion.h1
                         className="text-3xl md:text-4xl font-bold text-white tracking-tight"
                         variants={itemVariants}
                     >
-                      Networking, Physical Security, and More – Unified
+                        Networking, Physical Security, and More – Unified
                     </motion.h1>
 
-                    
                     <motion.p
                         className="text-sm md:text-base text-gray-200 max-w-lg leading-relaxed"
                         variants={itemVariants}
                     >
-                      Seamless Connectivity for 18,000 Fans
+                        Seamless Connectivity for 18,000 Fans
                     </motion.p>
 
-                     <motion.button
+                    <motion.button
                         className="px-6 py-2 border-2 cursor-pointer border-blue-600 text-white/80 hover:bg-blue-600 hover:text-white font-medium transition-colors duration-300"
                         variants={buttonVariants}
                         whileHover="hover"
