@@ -270,17 +270,19 @@ const Cloud = () => {
                                     initial="hidden"
                                     animate={isInView ? "visible" : "hidden"}
                                     className={`absolute inset-0 ${index % 2 === 1
-                                        ? 'bg-gradient-to-l from-black/70 to-transparent'
-                                        : 'bg-gradient-to-r from-black/70 to-transparent'
+                                            ? 'bg-gradient-to-l from-black/70 to-transparent'
+                                            : 'bg-gradient-to-r from-black/70 to-transparent'
                                         }`}
                                 />
 
                                 {/* Content */}
                                 <motion.div
-                                    className="relative z-10 text-white px-4 md:px-8 text-left max-w-2xl mt-32 md:mt-40"
-                                    variants={containerVariants}
+                                    custom={category.alignLeft}
+                                    variants={shouldReduceMotion ? reducedMotionVariants : contentVariants}
                                     initial="hidden"
-                                    animate="visible"
+                                    animate={isInView ? "visible" : "hidden"}
+                                    className={`absolute inset-0 flex flex-col justify-center px-6 md:px-12 text-white ${category.alignLeft ? 'items-start' : 'items-end text-right'
+                                        }`}
                                 >
                                     <motion.h2
                                         custom={shouldReduceMotion ? 0 : 0.3}
