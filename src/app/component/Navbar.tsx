@@ -34,7 +34,7 @@ export default function UniFiNavbar() {
         window.location.href = 'mailto:info@unifi.com';
         break;
       case 'call':
-        window.location.href = 'tel:+1234567890';
+        window.location.href = 'tel:+966 59 701 5415';
         break;
       default:
         break;
@@ -82,7 +82,7 @@ export default function UniFiNavbar() {
                   className={`text-2xl font-bold transition-colors cursor-pointer ${shouldShowWhiteBg ? 'text-gray-900' : 'text-white'
                     }`}
                 >
-                  UniFi
+                 Ubiquiti
                 </button>
               </div>
               {/* Desktop Navigation Items */}
