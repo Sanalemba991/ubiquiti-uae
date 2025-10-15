@@ -105,8 +105,10 @@ const About = () => {
                     <div className="absolute inset-0 bg-black/30"></div>
                 </div>
 
-                {/* Content - Aligned to Left */}
-                <div className="relative z-10 text-left text-white max-w-6xl mx-auto px-6 w-full">
+         
+             
+               {/* Content - Aligned to Left */}
+                <div className="relative z-10 text-left text-white max-w-6xl mx-auto px-4 w-full md:mt-32 md:ml-4 lg:ml-8">
                     <motion.div
                         initial="hidden"
                         animate="visible"

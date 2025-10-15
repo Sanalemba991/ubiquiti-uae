@@ -100,12 +100,13 @@ const Solution = () => {
                 <div className="absolute inset-0 bg-black/40"></div>
             </motion.div>
 
-            {/* Content Section - Aligned to left */}
+         
+           {/* Content Section - Aligned to left */}
             <motion.div
                 initial="hidden"
                 animate="visible"
                 variants={containerVariants}
-                className="relative z-10 text-left space-y-6 mx-8 md:mx-16 lg:mx-24"
+                className="relative z-10 text-left space-y-6 mx-4 md:mx-8 lg:mx-10 md:mt-32"
             >
                 <motion.h1
                     className="text-4xl md:text-6xl font-bold text-white tracking-tight"

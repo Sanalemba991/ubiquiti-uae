@@ -98,7 +98,7 @@ const Page = () => {
 
                 {/* Content Section - Changed to left alignment */}
                 <motion.div
-                    className="relative z-10 text-white px-6 md:px-12 text-left max-w-2xl"
+                    className="relative z-10 text-white px-4 md:px-8 text-left max-w-2xl mt-32 md:mt-40"
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
@@ -109,11 +109,11 @@ const Page = () => {
                     >
                         Cloud  <span className='text-blue-600'>Gateways</span>
                     </motion.h1>
-                     <motion.p
+                    <motion.p
                         className="text-lg md:text-xl mb-6"
                         variants={itemVariants}
                     >
-                       Secure Cloud Connectivity.
+                        Secure Cloud Connectivity.
                     </motion.p>
                     <motion.p
                         className="text-lg md:text-xl mb-6"
@@ -126,7 +126,7 @@ const Page = () => {
             </section>
 
             {/* Big gap between sections */}
-        
+
 
             <Cloud />
         </>

@@ -98,8 +98,9 @@ const Page = () => {
         </motion.div>
 
         {/* Content Section - Now on the left with more content */}
+          {/* Content Section - Now on the left with more content */}
         <motion.div
-          className="relative z-10 text-white px-6 md:px-12 text-left max-w-2xl"
+          className="relative z-10 text-white px-4 md:px-8 text-left max-w-2xl mt-32 md:mt-40"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -116,9 +117,7 @@ const Page = () => {
             className="text-base md:text-lg mb-6 leading-relaxed opacity-90"
             variants={itemVariants}
           >
-            Our comprehensive suite of solutions leverages artificial intelligence, machine learning,
-            and advanced data analytics to drive digital transformation across various sectors.
-            We deliver measurable results through tailored approaches that address your unique challenges.
+            We use AI, machine learning, and data analytics to drive digital transformation and deliver measurable, tailored results.
           </motion.p>
 
 
