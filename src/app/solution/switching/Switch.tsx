@@ -6,52 +6,52 @@ import { motion, useInView, useReducedMotion, Variants } from 'framer-motion';
 const categories = [
     {
         id: 1,
-        title: <>Intrusion Detection &<span className="text-blue-600"> Prevention</span></>,
+        title: <>MC-<span className="text-blue-600">LAG</span></>,
         subtitle: "Secure Cloud Connectivity",
         description:
-            "Intrusion Detection & Prevention UniFi’s IDS/IPS guards against potential threats inside and outside the network. This system swiftly detects and blocks suspicious activity that may signal compromise, using a real-time database of known threats.",
-        video: "https://ui.com/microsite/static/intrusion-detection-DhwOQDrW.mp4",
+            "Multi-Chassis Link Aggregation (MC-LAG) pairs two switches for seamless redundancy and load balancing. Downstream devices link to both, spreading traffic and failing over instantly in the event of switch or fiber failure.",
+        video: "https://ui.com/microsite/static/mc-lag-CLfRr9zw.mp4",
 
         alignLeft: true
     }
     ,
     {
         id: 2,
-        title: <>Application-Aware <span className="text-blue-600">Firewall</span></>,
+        title: <>Switch <span className="text-blue-600">Stacking</span></>,
         subtitle: "Network Infrastructure",
-        description: "Accurately detects and blocks traffic directed at specific applications, websites, and IP addresses. Easily block specific targets that might pose security threats at the network, VLAN, and client device level.",
-        video: "https://ui.com/microsite/static/application-aware-firewall-Cg9wSx3O.mp4",
+        description: "Expand your access layer with UniFi Enterprise Campus switches. Dedicated 100G QSFP28 stacking ports simplify management, boost reliability, and deliver high-speed links for large-scale deployments.",
+        video: "https://ui.com/microsite/static/switch-stacking-CNrJjY19.mp4",
 
         alignLeft: false
     },
     {
         id: 3,
-        title: <>One-Click WiFi & <span className="text-blue-600">VPN Client </span></>,
+        title: <>Etherlighting<span className="text-blue-600">™</span></>,
         subtitle: "Wireless Solutions",
-        description: "UniFi Identity delivers seamless network and physical access. Grant users permissions and IT access with one click.With One-Click VPN, users access your network without credentials - no more VPN configuration nightmares.",
-        video: "https://ui.com/microsite/static/one-click-vpn-BvXfOsJG.mp4",
+        description: "UniFi Etherlighting streamlines network management by using color-coded LEDs for switch ports. Identify VLANs or link speeds at a glance, making troubleshooting and network administration more efficient.",
+        video: "https://ui.com/microsite/static/etherlighting-Dmufq4G0.mp4",
 
         alignLeft: true
     },
     {
         id: 4,
-        title: <>ISP Health<span className="text-blue-600"> Monitoring </span></>,
+        title: <>Port <span className="text-blue-600"> Manager </span></>,
         subtitle: "Integrated Protection",
-        description: "The UniFi Site Manager dashboard at unifi.ui.com features ISP health metrics for quick, insightful monitoring across sites. Receive real-time email and app alerts for site ISP health, with push notifications settings customizable for each site.",
-        video: "https://ui.com/microsite/static/isp-health-monitoring-Ci5GbprH.mp4",
+        description: "UniFi’s Port Manager provides an intuitive way to configure VLANs, PoE settings, and link aggregation—all from a centralized interface. Make quick changes without digging through complex settings.",
+        video: "https://ui.com/microsite/static/port-manager-D-YTp6wn.mp4",
 
         alignLeft: false
     },
     {
         id: 5,
-        title: <>Content<span className="text-blue-600"> Filtering </span></>,
+        title: <>Switch<span className="text-blue-600"> Variety </span></>,
         subtitle: "Advanced Web Security",
-        description: "Block traffic to over 100 categories of malicious, explicit, or unwanted content from your UniFi Network. With just a few clicks, stop traffic to sites linked to spyware, adult content, social media, and more.",
-        video: "https://ui.com/microsite/static/content-filtering-BQcLnwfk.mp4",
+        description: "From PoE-powered compact switches to 100G Campus Core models, UniFi offers a full range of switches—all centrally managed in UniFi without licensing fees. Scale effortlessly while keeping full visibility and control over your network.",
+        video: "https://ui.com/microsite/static/switch-variety-DpOIhpz-.mp4",
         alignLeft: true
     }
 ];
-const Cloud = () => {
+const Switch = () => {
     const shouldReduceMotion = useReducedMotion();
 
     // Refs for each category section
@@ -199,33 +199,35 @@ const Cloud = () => {
                     className="text-center max-w-6xl mx-auto px-6 mb-16"
                 >
                     <motion.h2
-    variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
-    custom={0}
-    initial="hidden"
-    animate={isHeaderInView ? "visible" : "hidden"}
-    className="text-3xl md:text-4xl font-bold text-gray-900 mb-6"
->
-    High-Performance Cloud Infrastructure
-</motion.h2>
-<motion.p
-    variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
-    custom={0.2}
-    initial="hidden"
-    animate={isHeaderInView ? "visible" : "hidden"}
-    className="text-lg md:text-xl text-blue-700 font-medium mb-6"
->
-    Ultra-Low Latency Global Connectivity
-</motion.p>
-<motion.div
-    variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
-    custom={0.4}
-    initial="hidden"
-    animate={isHeaderInView ? "visible" : "hidden"}
-    className="max-w-4xl mx-auto"
->
-    <p className="text-base text-gray-700 leading-relaxed mb-4">
-        Advanced cloud infrastructure powered by globally distributed edge nodes, intelligent load balancing, and adaptive traffic optimization. Engineered to deliver sub-10ms latency with enterprise-grade encryption and automated failover capabilities.
-    </p>
+                        variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
+                        custom={0}
+                        initial="hidden"
+                        animate={isHeaderInView ? "visible" : "hidden"}
+                        className="text-3xl md:text-4xl font-bold text-gray-900 mb-6" // Reduced from 5xl/6xl to 3xl/4xl
+                    >
+                        Network Switching Infrastructure
+                    </motion.h2>
+
+                    <motion.p
+                        variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
+                        custom={0.2}
+                        initial="hidden"
+                        animate={isHeaderInView ? "visible" : "hidden"}
+                        className="text-lg md:text-xl text-blue-700 font-medium mb-6" // Reduced from xl/2xl to lg/xl
+                    >
+                        Professional-Grade Infrastructure for Modern Businesses
+                    </motion.p>
+
+                    <motion.div
+                        variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
+                        custom={0.4}
+                        initial="hidden"
+                        animate={isHeaderInView ? "visible" : "hidden"}
+                        className="max-w-4xl mx-auto"
+                    >
+                        <p className="text-base text-gray-700 leading-relaxed mb-4">
+                        Flexible and high-performance switching solutions designed to optimize traffic flow and ensure reliable, scalable connectivity for today’s enterprise networks.
+                        </p>
 
                     </motion.div>
                 </motion.div>
@@ -321,4 +323,4 @@ const Cloud = () => {
     );
 };
 
-export default Cloud;
+export default Switch;

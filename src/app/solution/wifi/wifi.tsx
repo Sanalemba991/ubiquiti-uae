@@ -6,52 +6,54 @@ import { motion, useInView, useReducedMotion, Variants } from 'framer-motion';
 const categories = [
     {
         id: 1,
-        title: <>Intrusion Detection &<span className="text-blue-600"> Prevention</span></>,
+        title: <>Dedicated Spectral Analyzer 
+ 
+<span className="text-blue-600"> Radio</span></>,
         subtitle: "Secure Cloud Connectivity",
         description:
-            "Intrusion Detection & Prevention UniFi’s IDS/IPS guards against potential threats inside and outside the network. This system swiftly detects and blocks suspicious activity that may signal compromise, using a real-time database of known threats.",
-        video: "https://ui.com/microsite/static/intrusion-detection-DhwOQDrW.mp4",
+            "Our AP's feature a dedicated spectral analyzer radio continuously scans your environment, proactively identifying interference to optimize Wi-Fi performance and reliability.",
+        video: "https://ui.com/microsite/static/spectral-radio-analyzer-PuuMPxME.mp4",
 
         alignLeft: true
     }
     ,
     {
         id: 2,
-        title: <>Application-Aware <span className="text-blue-600">Firewall</span></>,
+        title: <>PRISM™ RF <span className="text-blue-600">Filtering </span></>,
         subtitle: "Network Infrastructure",
-        description: "Accurately detects and blocks traffic directed at specific applications, websites, and IP addresses. Easily block specific targets that might pose security threats at the network, VLAN, and client device level.",
-        video: "https://ui.com/microsite/static/application-aware-firewall-Cg9wSx3O.mp4",
+        description: "PRISM™ active RF filtering blocks adjacent channel 5 GHz interference to boost SNR. By isolating WiFi channels from nearby noise, it preserves client throughput, range, and stability in crowded RF environments.",
+        video: "https://ui.com/microsite/static/prism-BoagyfYM.mp4",
 
         alignLeft: false
     },
     {
         id: 3,
-        title: <>One-Click WiFi & <span className="text-blue-600">VPN Client </span></>,
+        title: <>Punctur<span className="text-blue-600">ing</span></>,
         subtitle: "Wireless Solutions",
-        description: "UniFi Identity delivers seamless network and physical access. Grant users permissions and IT access with one click.With One-Click VPN, users access your network without credentials - no more VPN configuration nightmares.",
-        video: "https://ui.com/microsite/static/one-click-vpn-BvXfOsJG.mp4",
+        description: "WiFi 7's channel puncturing feature allows a higher-width channel to operate non-continuously and notch out noisy interferers for enhanced client performance.",
+        video: "https://ui.com/microsite/static/puncturing-CC4NjlE2.mp4",
 
         alignLeft: true
     },
     {
         id: 4,
-        title: <>ISP Health<span className="text-blue-600"> Monitoring </span></>,
+        title: <>Powerful VLAN <span className="text-blue-600"> Configurations </span></>,
         subtitle: "Integrated Protection",
-        description: "The UniFi Site Manager dashboard at unifi.ui.com features ISP health metrics for quick, insightful monitoring across sites. Receive real-time email and app alerts for site ISP health, with push notifications settings customizable for each site.",
-        video: "https://ui.com/microsite/static/isp-health-monitoring-Ci5GbprH.mp4",
+        description: "Instantly update VLAN assignments across thousands of access points, enabling seamless segmentation and enhanced network security—directly through UniFi Site Manager.",
+        video: "https://ui.com/microsite/static/vlan-configuration-CIcq5Ww1.mp4",
 
         alignLeft: false
     },
     {
         id: 5,
-        title: <>Content<span className="text-blue-600"> Filtering </span></>,
+        title: <>Flexible Authentication <span className="text-blue-600"> Support </span></>,
         subtitle: "Advanced Web Security",
-        description: "Block traffic to over 100 categories of malicious, explicit, or unwanted content from your UniFi Network. With just a few clicks, stop traffic to sites linked to spyware, adult content, social media, and more.",
-        video: "https://ui.com/microsite/static/content-filtering-BQcLnwfk.mp4",
+        description: "Integrate with UniFi Identity for one-click authentication from your source of truth—or use local, AD-based, or cloud-hosted RADIUS. Alternatively, deploy RADIUS directly on your UniFi Gateway.",
+        video: "https://ui.com/microsite/static/flexible-authentication-Bz_O_zt8.mp4",
         alignLeft: true
     }
 ];
-const Cloud = () => {
+const Wifi = () => {
     const shouldReduceMotion = useReducedMotion();
 
     // Refs for each category section
@@ -199,33 +201,35 @@ const Cloud = () => {
                     className="text-center max-w-6xl mx-auto px-6 mb-16"
                 >
                     <motion.h2
-    variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
-    custom={0}
-    initial="hidden"
-    animate={isHeaderInView ? "visible" : "hidden"}
-    className="text-3xl md:text-4xl font-bold text-gray-900 mb-6"
->
-    High-Performance Cloud Infrastructure
-</motion.h2>
-<motion.p
-    variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
-    custom={0.2}
-    initial="hidden"
-    animate={isHeaderInView ? "visible" : "hidden"}
-    className="text-lg md:text-xl text-blue-700 font-medium mb-6"
->
-    Ultra-Low Latency Global Connectivity
-</motion.p>
-<motion.div
-    variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
-    custom={0.4}
-    initial="hidden"
-    animate={isHeaderInView ? "visible" : "hidden"}
-    className="max-w-4xl mx-auto"
->
-    <p className="text-base text-gray-700 leading-relaxed mb-4">
-        Advanced cloud infrastructure powered by globally distributed edge nodes, intelligent load balancing, and adaptive traffic optimization. Engineered to deliver sub-10ms latency with enterprise-grade encryption and automated failover capabilities.
-    </p>
+                        variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
+                        custom={0}
+                        initial="hidden"
+                        animate={isHeaderInView ? "visible" : "hidden"}
+                        className="text-3xl md:text-4xl font-bold text-gray-900 mb-6" // Reduced from 5xl/6xl to 3xl/4xl
+                    >
+                     Wireless Networking Solutions
+                    </motion.h2>
+
+                    <motion.p
+                        variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
+                        custom={0.2}
+                        initial="hidden"
+                        animate={isHeaderInView ? "visible" : "hidden"}
+                        className="text-lg md:text-xl text-blue-700 font-medium mb-6" // Reduced from xl/2xl to lg/xl
+                    >
+                        Reliable, high-performance WiFi for modern enterprises
+                    </motion.p>
+
+                    <motion.div
+                        variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
+                        custom={0.4}
+                        initial="hidden"
+                        animate={isHeaderInView ? "visible" : "hidden"}
+                        className="max-w-4xl mx-auto"
+                    >
+                        <p className="text-base text-gray-700 leading-relaxed mb-4">
+                     Our enterprise WiFi systems deliver seamless connectivity, advanced roaming capabilities, and optimized performance for high-density environments, ensuring uninterrupted access for all users and devices.
+                        </p>
 
                     </motion.div>
                 </motion.div>
@@ -321,4 +325,4 @@ const Cloud = () => {
     );
 };
 
-export default Cloud;
+export default Wifi;

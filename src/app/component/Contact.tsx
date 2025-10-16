@@ -285,8 +285,7 @@ export default function Contact() {
                             variants={fadeInLeft}
                             className="text-base md:text-lg lg:text-xl mb-8 leading-relaxed max-w-2xl"
                         >
-                            Have questions or need assistance? Our team is here to help you with product inquiries, technical support, or partnership opportunities. Reach out to us and experience seamless communication and dedicated support.
-                        </motion.p>
+                            Need help? Our team is here for product support, inquiries, and partnerships.</motion.p>
 
                         <motion.button
                             onClick={goToContact}

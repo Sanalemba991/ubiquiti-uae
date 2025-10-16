@@ -35,7 +35,7 @@ const Solution = () => {
         }
     }, []);
 
-    // Animation variants for staggered entrance
+    // Animation variants for staggered entrance from left
     const containerVariants: Variants = {
         hidden: { opacity: 0 },
         visible: {
@@ -48,9 +48,9 @@ const Solution = () => {
     };
 
     const itemVariants: Variants = {
-        hidden: { y: 20, opacity: 0 },
+        hidden: { x: -50, opacity: 0 }, // Changed to negative x (coming from left)
         visible: {
-            y: 0,
+            x: 0,
             opacity: 1,
             transition: {
                 duration: 0.5,
@@ -100,13 +100,13 @@ const Solution = () => {
                 <div className="absolute inset-0 bg-black/40"></div>
             </motion.div>
 
-         
-           {/* Content Section - Aligned to left */}
+
+            {/* Content Section - Aligned to left */}
             <motion.div
                 initial="hidden"
                 animate="visible"
                 variants={containerVariants}
-                className="relative z-10 text-left space-y-6 mx-4 md:mx-8 lg:mx-10 md:mt-32"
+                className="relative z-10 text-left text-white max-w-6xl mx-auto px-4 w-full md:ml-4 lg:ml-8 mt-32 md:mt-40 space-y-6"
             >
                 <motion.h1
                     className="text-4xl md:text-6xl font-bold text-white tracking-tight"
@@ -115,12 +115,7 @@ const Solution = () => {
                     Ubiquiti <span className="text-blue-400">UAE</span>
                 </motion.h1>
 
-                <motion.h2
-                    className="text-xl md:text-3xl font-semibold text-white/90"
-                    variants={itemVariants}
-                >
-                    Building the Future of IT. License Free
-                </motion.h2>
+              
 
                 <motion.p
                     className="text-lg md:text-xl text-white/80 max-w-2xl"

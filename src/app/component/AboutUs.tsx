@@ -108,7 +108,7 @@ const About = () => {
          
              
                {/* Content - Aligned to Left */}
-                <div className="relative z-10 text-left text-white max-w-6xl mx-auto px-4 w-full md:mt-32 md:ml-4 lg:ml-8">
+                <div className="relative z-10 text-left text-white max-w-6xl mx-auto px-4 w-full md:ml-4 lg:ml-8 mt-32 md:mt-40">
                     <motion.div
                         initial="hidden"
                         animate="visible"
@@ -124,9 +124,7 @@ const About = () => {
                         <motion.p 
                             variants={fadeInLeft} 
                             className="text-base md:text-lg lg:text-xl mb-8 leading-relaxed max-w-2xl"
-                        >
-                            Simplifying IT with industry-leading networking solutions that empower businesses and individuals to achieve seamless connectivity and unified management across their entire infrastructure.
-                        </motion.p>
+                        >Simplifying IT with advanced networking solutions for seamless connectivity and unified management.   </motion.p>
 
                         <motion.button
                             onClick={goToProducts}

@@ -17,7 +17,7 @@ const categories = [
 ,
   {
     id: 2,
-    title: "Switching",
+    title:  <>Switch<span className="text-blue-600">ing</span></>,
     subtitle: "Network Infrastructure",
     description: "Scalable switching solutions with intelligent traffic management and robust connectivity for modern enterprise networks.",
     video: "https://ui.com/microsite/static/switching-2-CbuiXXN-.mp4",
@@ -27,7 +27,7 @@ const categories = [
   },
   { 
     id: 3,
-    title: "WiFi",
+    title: <>Wi<span className="text-blue-600">Fi</span></>,
     subtitle: "Wireless Solutions",
     description: "Enterprise WiFi systems with seamless connectivity, advanced roaming, and optimization for high-density environments.",
     video: "https://ui.com/microsite/static/wifi-2-vDEKxvQ2.mp4",
@@ -47,7 +47,7 @@ const categories = [
   },
   {
     id: 5,
-    title: "Integrations",
+    title:  <>Integrat<span className="text-blue-600">ion</span></>,
     subtitle: "Ecosystem Connectivity",
     description: "Seamless integration solutions for unified data flow and automated workflows across business applications.",
     video: "https://ui.com/microsite/static/storage-1-qhzsueuY.mp4",
