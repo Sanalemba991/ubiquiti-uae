@@ -34,7 +34,7 @@ export default function UniFiNavbar() {
         window.location.href = 'mailto:info@unifi.com';
         break;
       case 'call':
-        window.location.href = 'tel:+966 59 701 5415';
+        window.location.href = 'tel:+96050 966 4956';
         break;
       default:
         break;
