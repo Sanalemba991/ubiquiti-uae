@@ -99,22 +99,22 @@ const Footer = () => {
             {/* Phone Numbers */}
             <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
               <a
-                href="https://wa.me/+971552929644"
+                href="https://wa.me/+96050 966 4956"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center hover:text-blue-600"
               >
                 <WhatsAppIcon />
-                <span className="ml-2">+971 55 2929644</span>
+                <span className="ml-2">+96050 966 4956</span>
               </a>
               <a
-                href="https://wa.me/+971509162488"
+                href="https://wa.me/+96050 966 4956"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center hover:text-blue-600 ml-4"
               >
                 <PhoneIcon />
-                <span className="ml-2">+971 50 916 2488</span>
+                <span className="ml-2">+96050 966 4956</span>
               </a>
             </p>
 
@@ -203,11 +203,9 @@ const PhoneIcon = () => (
     xmlns="http://www.w3.org/2000/svg"
     className="h-5 w-5 flex-shrink-0 text-neutral-600 dark:text-neutral-400"
     viewBox="0 0 24 24"
+    fill="currentColor"
   >
-    <path
-      fill="currentColor"
-      d="M11.25 2.75v18.5a.75.75 0 0 0 1.5 0V2.75a.75.75 0 0 0-1.5 0"
-    ></path>
+    <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24c1.12.37 2.33.57 3.57.57c.55 0 1 .45 1 1V20c0 .55-.45 1-1 1c-9.39 0-17-7.61-17-17c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1c0 1.25.2 2.45.57 3.57c.11.35.03.74-.25 1.02l-2.2 2.2z"/>
   </svg>
 );
 
