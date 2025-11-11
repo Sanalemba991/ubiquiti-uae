@@ -23,22 +23,11 @@ interface Category {
   subCategories?: SubCategory[];
 }
 
-interface NavbarCategory {
-  _id: string;
-  name: string;
-  slug: string;
-  description: string;
-  order: number;
-  categories?: Category[];
-}
-
 export default function UniFiNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [navbarCategories, setNavbarCategories] = useState<NavbarCategory[]>([]);
-  const [allCategories, setAllCategories] = useState<Category[]>([]);
-  const [allSubCategories, setAllSubCategories] = useState<SubCategory[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const router = useRouter();
@@ -52,56 +41,37 @@ export default function UniFiNavbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Fetch navbar categories, categories, and subcategories from API
+  // Fetch categories and subcategories from API
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoadingCategories(true);
         
-        // Fetch all data in parallel
-        const [navbarRes, categoriesRes, subCategoriesRes] = await Promise.all([
-          fetch('/api/navbar-category'),
+        // Fetch categories and subcategories in parallel
+        const [categoriesRes, subCategoriesRes] = await Promise.all([
           fetch('/api/category'),
           fetch('/api/subcategory')
         ]);
         
-        const navbarResult = await navbarRes.json();
         const categoriesResult = await categoriesRes.json();
         const subCategoriesResult = await subCategoriesRes.json();
         
-        if (navbarResult.success && navbarResult.data) {
-          const navbarCats = navbarResult.data;
+        if (categoriesResult.success && categoriesResult.data) {
+          const cats = categoriesResult.data;
           
-          if (categoriesResult.success && categoriesResult.data) {
-            const cats = categoriesResult.data;
-            setAllCategories(cats);
-            
-            // Get subcategories
-            const subCats = subCategoriesResult.success ? subCategoriesResult.data : [];
-            setAllSubCategories(subCats);
-            
-            // Group subcategories by category
-            const catsWithSubCategories = cats.map((cat: Category) => ({
-              ...cat,
-              subCategories: subCats.filter((subCat: any) => 
-                subCat.category?._id === cat._id || 
-                subCat.category === cat._id
-              )
-            }));
-            
-            // Group categories by navbar category
-            const navbarCatsWithCategories = navbarCats.map((navCat: NavbarCategory) => ({
-              ...navCat,
-              categories: catsWithSubCategories.filter((cat: Category) => 
-                (cat as any).navbarCategory?._id === navCat._id || 
-                (cat as any).navbarCategory === navCat._id
-              )
-            }));
-            
-            setNavbarCategories(navbarCatsWithCategories);
-          } else {
-            setNavbarCategories(navbarCats);
-          }
+          // Get subcategories
+          const subCats = subCategoriesResult.success ? subCategoriesResult.data : [];
+          
+          // Group subcategories by category
+          const catsWithSubCategories = cats.map((cat: Category) => ({
+            ...cat,
+            subCategories: subCats.filter((subCat: any) => 
+              subCat.category?._id === cat._id || 
+              subCat.category === cat._id
+            )
+          }));
+          
+          setCategories(catsWithSubCategories);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -129,7 +99,7 @@ export default function UniFiNavbar() {
         window.location.href = 'mailto:info@unifi.com';
         break;
       case 'call':
-        window.location.href = 'tel:+96050 966 4956';
+        window.location.href = 'tel:+96050 966 4956';
         break;
       default:
         break;
@@ -145,8 +115,8 @@ export default function UniFiNavbar() {
   };
 
   // Check if a category page is active
-  const isCategoryActive = (navCatSlug: string) => {
-    return pathname.startsWith(`/${navCatSlug}`);
+  const isCategoryActive = (catSlug: string) => {
+    return pathname.startsWith(`/${catSlug}`);
   };
 
   const actionItems = [
@@ -163,15 +133,15 @@ export default function UniFiNavbar() {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-between h-16">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between h-14">
             {/* Left Section - Logo and Nav Items */}
             <div className="flex items-center space-x-10">
               {/* Logo */}
               <div className="flex items-center">
                 <button
                   onClick={() => handleNavigation('/')}
-                  className={`text-2xl font-bold transition-colors cursor-pointer ${shouldShowWhiteBg ? 'text-gray-900' : 'text-white'
+                  className={`text-xl font-bold transition-colors cursor-pointer ${shouldShowWhiteBg ? 'text-gray-900' : 'text-white'
                     }`}
                 >
                  Ubiquiti
@@ -194,86 +164,81 @@ export default function UniFiNavbar() {
                   Home
                 </button>
 
-                {/* Navbar Categories with Dropdowns */}
-                {navbarCategories.map((navCat) => (
+                {/* Categories with Dropdowns */}
+                {categories.map((cat) => (
                   <div 
-                    key={navCat._id} 
+                    key={cat._id} 
                     className="relative group"
-                    onMouseEnter={() => setOpenDropdown(navCat._id)}
-                    onMouseLeave={() => setOpenDropdown(null)}
+                    onMouseEnter={() => setOpenDropdown(cat._id)}
+                    onMouseLeave={() => {
+                      setOpenDropdown(null);
+                    }}
                   >
                     <button
                       onClick={() => {
-                        if (navCat.categories && navCat.categories.length > 0) {
-                          setOpenDropdown(openDropdown === navCat._id ? null : navCat._id);
+                        if (cat.subCategories && cat.subCategories.length > 0) {
+                          setOpenDropdown(openDropdown === cat._id ? null : cat._id);
                         } else {
-                          handleNavigation(`/${navCat.slug}`);
+                          handleNavigation(`/${cat.slug}`);
                         }
                       }}
                       className={`text-sm font-medium transition-colors cursor-pointer rounded-lg px-4 py-2 mx-1 flex items-center space-x-1 ${shouldShowWhiteBg
-                        ? isCategoryActive(navCat.slug)
-                          ? 'bg-gray-100 text-gray-600'
-                          : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
-                        : isCategoryActive(navCat.slug)
-                          ? 'bg-gray-200/20 text-white'
-                          : 'text-white hover:text-gray-200 hover:bg-white/10'
+                        ? (isCategoryActive(cat.slug) || openDropdown === cat._id)
+                          ? 'bg-gray-100 text-blue-600'
+                          : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
+                        : (isCategoryActive(cat.slug) || openDropdown === cat._id)
+                          ? 'bg-gray-200/20 text-blue-400'
+                          : 'text-white hover:text-blue-400 hover:bg-white/10'
                         }`}
                     >
-                      <span>{navCat.name}</span>
-                      {navCat.categories && navCat.categories.length > 0 && (
-                        <ChevronDown className={`w-4 h-4 transition-transform ${openDropdown === navCat._id ? 'rotate-180' : ''}`} />
-                      )}
+                      <span>{cat.name}</span>
                     </button>
 
-                    {/* Dropdown Menu */}
-                    {navCat.categories && navCat.categories.length > 0 && openDropdown === navCat._id && (
-                      <div className="absolute top-full left-0 mt-2 w-72 bg-white shadow-xl rounded-lg border border-gray-200 py-2 z-50">
-                        {navCat.categories.map((cat) => (
-                          <div key={cat._id} className="relative group/cat">
-                            <button
-                              onClick={() => {
-                                handleNavigation(`/${navCat.slug}/${cat.slug}`);
-                                setOpenDropdown(null);
-                              }}
-                              className="flex items-center justify-between w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                            >
-                              <div className="flex-1">
-                                <div className="font-medium">{cat.name}</div>
-                                {cat.description && (
-                                  <div className="text-xs text-gray-500 mt-0.5 line-clamp-1">
-                                    {cat.description}
-                                  </div>
-                                )}
-                              </div>
-                              {cat.subCategories && cat.subCategories.length > 0 && (
-                                <ChevronDown className="w-4 h-4 -rotate-90" />
-                              )}
-                            </button>
-                            
-                            {/* Subcategories Nested Dropdown */}
-                            {cat.subCategories && cat.subCategories.length > 0 && (
-                              <div className="hidden group-hover/cat:block absolute left-full top-0 ml-1 w-64 bg-white shadow-xl rounded-lg border border-gray-200 py-2 z-50">
-                                {cat.subCategories.map((subCat) => (
-                                  <button
-                                    key={subCat._id}
-                                    onClick={() => {
-                                      handleNavigation(`/${navCat.slug}/${cat.slug}/${subCat.slug}`);
-                                      setOpenDropdown(null);
-                                    }}
-                                    className="block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                                  >
-                                    <div className="font-medium">{subCat.name}</div>
-                                    {subCat.description && (
-                                      <div className="text-xs text-gray-500 mt-0.5 line-clamp-1">
-                                        {subCat.description}
-                                      </div>
+                    {/* Dropdown Menu - Full width, grid cards (no borders, larger images) */}
+                    {cat.subCategories && cat.subCategories.length > 0 && openDropdown === cat._id && (
+                      <div
+                        className="fixed left-0 right-0 top-14 z-50 bg-white shadow-xl"
+                        onMouseEnter={() => setOpenDropdown(cat._id)}
+                        onMouseLeave={() => setOpenDropdown(null)}
+                      >
+                        <div className="w-full">
+                          <div className="max-w-7xl mx-auto px-6 py-2">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                              {cat.subCategories.map((subCat) => (
+                                <button
+                                  key={subCat._id}
+                                  onClick={() => {
+                                    handleNavigation(`/${cat.slug}/${subCat.slug}`);
+                                    setOpenDropdown(null);
+                                  }}
+                                  className="flex flex-col items-center text-center p-4 bg-white rounded-l hover:shadow-md transition-all duration-150 cursor-pointer group/subcategory"
+                                >
+                                  <div className=" bg-transparent overflow-hidden flex items-center justify-center">
+                                    {subCat.image ? (
+                                      <img
+                                        src={subCat.image}
+                                        alt={subCat.name}
+                                        className="w-full h-full object-contain"
+                                      />
+                                    ) : (
+                                      <div className="text-gray-400 text-xs">No Image</div>
                                     )}
-                                  </button>
-                                ))}
-                              </div>
-                            )}
+                                  </div>
+
+                                 <h4 className="text-sm font-semibold text-gray-900 group-hover/subcategory:text-blue-600 transition-colors">
+                                    {subCat.name}
+                                  </h4>
+
+                                  {subCat.description && (
+                                    <p className="text-xs text-gray-500 mt-1 line-clamp-3">
+                                      {subCat.description}
+                                    </p>
+                                  )}
+                                </button>
+                              ))}
+                            </div>
                           </div>
-                        ))}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -291,8 +256,8 @@ export default function UniFiNavbar() {
                       key={item.label}
                       onClick={() => handleActionClick(item.type)}
                       className={`p-2 transition-all duration-200 cursor-pointer rounded-lg ${shouldShowWhiteBg
-                        ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                        : 'text-white hover:text-gray-200 hover:bg-white/10'
+                        ? 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                        : 'text-white hover:text-blue-400 hover:bg-blue-500/10'
                         }`}
                       title={item.label}
                     >
@@ -332,61 +297,87 @@ export default function UniFiNavbar() {
                 </button>
               </div>
 
-              {/* Navbar Categories */}
-              {navbarCategories.map((navCat) => (
-                <div key={navCat._id} className="border-b border-gray-100 last:border-b-0">
+              {/* Categories */}
+              {categories.map((cat) => (
+                <div key={cat._id} className="border-b border-gray-100 last:border-b-0">
                   <div className="flex flex-col">
                     <button
                       onClick={() => {
-                        if (navCat.categories && navCat.categories.length > 0) {
-                          setOpenDropdown(openDropdown === navCat._id ? null : navCat._id);
+                        if (cat.subCategories && cat.subCategories.length > 0) {
+                          setOpenDropdown(openDropdown === cat._id ? null : cat._id);
                         } else {
-                          handleNavigation(`/${navCat.slug}`);
+                          handleNavigation(`/${cat.slug}`);
                         }
                       }}
-                      className={`flex items-center justify-between w-full text-left py-3 font-medium transition-colors cursor-pointer rounded-lg mx-2 my-1 px-3 ${isCategoryActive(navCat.slug)
+                      className={`flex items-center justify-between w-full text-left py-3 font-medium transition-colors cursor-pointer rounded-lg mx-2 my-1 px-3 ${isCategoryActive(cat.slug)
                         ? 'bg-gray-50 text-gray-600 border border-gray-200'
                         : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
                         }`}
                     >
-                      <span>{navCat.name}</span>
-                      {navCat.categories && navCat.categories.length > 0 && (
-                        <ChevronDown className={`w-4 h-4 transition-transform ${openDropdown === navCat._id ? 'rotate-180' : ''}`} />
+                      <span>{cat.name}</span>
+                      {cat.subCategories && cat.subCategories.length > 0 && (
+                        <ChevronDown className={`w-4 h-4 transition-transform ${openDropdown === cat._id ? 'rotate-180' : ''}`} />
                       )}
                     </button>
 
                     {/* Mobile Dropdown */}
-                    {navCat.categories && navCat.categories.length > 0 && openDropdown === navCat._id && (
+                    {cat.subCategories && cat.subCategories.length > 0 && openDropdown === cat._id && (
                       <div className="ml-4 pb-2">
-                        {navCat.categories.map((cat) => (
-                          <div key={cat._id}>
-                            <button
-                              onClick={() => {
-                                handleNavigation(`/${navCat.slug}/${cat.slug}`);
-                                setOpenDropdown(null);
-                              }}
-                              className="block w-full text-left py-2 px-4 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors font-medium"
-                            >
-                              {cat.name}
-                            </button>
-                            
-                            {/* Mobile Subcategories */}
-                            {cat.subCategories && cat.subCategories.length > 0 && (
-                              <div className="ml-4 mt-1 mb-2 space-y-1">
-                                {cat.subCategories.map((subCat) => (
-                                  <button
-                                    key={subCat._id}
-                                    onClick={() => {
-                                      handleNavigation(`/${navCat.slug}/${cat.slug}/${subCat.slug}`);
-                                      setOpenDropdown(null);
-                                    }}
-                                    className="block w-full text-left py-1.5 px-4 text-xs text-gray-500 hover:bg-gray-50 rounded-lg transition-colors"
-                                  >
-                                    → {subCat.name}
-                                  </button>
-                                ))}
+                        {/* Category Overview in Mobile */}
+                        <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+                          <div className="flex flex-col items-center text-center">
+                            {cat.image && (
+                              <div className="w-24 h-24 bg-white rounded-lg overflow-hidden mb-3">
+                                <img 
+                                  src={cat.image} 
+                                  alt={cat.name}
+                                  className="w-full h-full object-contain p-2"
+                                />
                               </div>
                             )}
+                            <h3 className="font-bold text-base text-gray-900 mb-1">{cat.name}</h3>
+                            {cat.description && (
+                              <p className="text-xs text-gray-600">
+                                {cat.description}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Subcategories */}
+                        {cat.subCategories.map((subCat) => (
+                          <div key={subCat._id} className="mb-3">
+                            <button
+                              onClick={() => {
+                                handleNavigation(`/${cat.slug}/${subCat.slug}`);
+                                setOpenDropdown(null);
+                              }}
+                              className="block w-full text-left"
+                            >
+                              <div className="p-3 bg-white rounded-lg hover:bg-gray-50 transition-colors border border-gray-200">
+                                <div className="flex items-center space-x-3">
+                                  {subCat.image && (
+                                    <div className="w-12 h-12 bg-gray-50 rounded overflow-hidden flex-shrink-0">
+                                      <img 
+                                        src={subCat.image} 
+                                        alt={subCat.name}
+                                        className="w-full h-full object-contain p-1"
+                                      />
+                                    </div>
+                                  )}
+                                  <div className="flex-1 min-w-0">
+                                    <h4 className="font-bold text-sm text-gray-900 mb-0.5">
+                                      {subCat.name}
+                                    </h4>
+                                    {subCat.description && (
+                                      <p className="text-xs text-gray-500 line-clamp-2">
+                                        {subCat.description}
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </button>
                           </div>
                         ))}
                       </div>
