@@ -20,7 +20,23 @@ interface Category {
   description: string;
   image: string;
   order: number;
+  navbarCategory?: any;
   subCategories?: SubCategory[];
+}
+
+interface NavbarCategory {
+  _id: string;
+  name: string;
+  slug: string;
+  description: string;
+  order: number;
+  categories?: any[];
+}
+
+interface NavLink {
+  label: string;
+  slug: string;
+  href: string;
 }
 
 export default function UniFiNavbar() {
@@ -28,8 +44,14 @@ export default function UniFiNavbar() {
   const [isHovered, setIsHovered] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [navbarCategories, setNavbarCategories] = useState<NavbarCategory[]>([]);
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [navLinks, setNavLinks] = useState<NavLink[]>([
+    { label: 'About', slug: 'about', href: '/about' },
+    { label: 'Solutions', slug: 'solutions', href: '/solution' },
+    { label: 'Contact Us', slug: 'contact', href: '/contact' },
+  ]);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -41,40 +63,43 @@ export default function UniFiNavbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Fetch categories and subcategories from API
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoadingCategories(true);
-        
-        // Fetch categories and subcategories in parallel
-        const [categoriesRes, subCategoriesRes] = await Promise.all([
+
+        const [navbarRes, categoriesRes, subCategoriesRes] = await Promise.all([
+          fetch('/api/navbar-category'),
           fetch('/api/category'),
           fetch('/api/subcategory')
         ]);
-        
-        const categoriesResult = await categoriesRes.json();
-        const subCategoriesResult = await subCategoriesRes.json();
-        
+
+        const navbarResult = await navbarRes.json().catch(() => ({ success: false, data: [] }));
+        const categoriesResult = await categoriesRes.json().catch(() => ({ success: false, data: [] }));
+        const subCategoriesResult = await subCategoriesRes.json().catch(() => ({ success: false, data: [] }));
+
+        const navbarCats = navbarResult.success && navbarResult.data ? navbarResult.data : [];
+        setNavbarCategories(navbarCats);
+
         if (categoriesResult.success && categoriesResult.data) {
-          const cats = categoriesResult.data;
-          
-          // Get subcategories
-          const subCats = subCategoriesResult.success ? subCategoriesResult.data : [];
-          
-          // Group subcategories by category
-          const catsWithSubCategories = cats.map((cat: Category) => ({
+          const cats: Category[] = categoriesResult.data;
+          const subCats: SubCategory[] = subCategoriesResult.success && subCategoriesResult.data ? subCategoriesResult.data : [];
+
+          const catsWithSub = cats.map((cat) => ({
             ...cat,
-            subCategories: subCats.filter((subCat: any) => 
-              subCat.category?._id === cat._id || 
-              subCat.category === cat._id
+            subCategories: subCats.filter((sub) =>
+              (typeof sub.category === 'object' && sub.category !== null && (sub.category as any)._id === cat._id) || sub.category === cat._id || sub.category === cat.slug
             )
           }));
-          
-          setCategories(catsWithSubCategories);
+
+          setCategories(catsWithSub);
+        } else {
+          setCategories([]);
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching navbar/categories:', error);
+        setCategories([]);
+        setNavbarCategories([]);
       } finally {
         setIsLoadingCategories(false);
       }
@@ -84,6 +109,38 @@ export default function UniFiNavbar() {
   }, []);
 
   const shouldShowWhiteBg = isScrolled || isHovered || isMobileMenuOpen;
+
+  const findNavbarSlugForCategory = (cat: Category): string | null => {
+    if ((cat as any).navbarCategory) {
+      const nc = (cat as any).navbarCategory;
+      if (typeof nc === 'string') {
+        const found = navbarCategories.find((n) => (n._id === nc || n._id === (nc as any)?._id));
+        return found ? found.slug : null;
+      } else if (typeof nc === 'object' && nc.slug) {
+        return nc.slug;
+      }
+    }
+
+    const foundNav = navbarCategories.find((nav) => {
+      if (!nav.categories) return false;
+      return nav.categories.some((c: any) =>
+        c === cat._id || c === cat.slug || (c && (c._id === cat._id || c.slug === cat.slug))
+      );
+    });
+    if (foundNav) return foundNav.slug;
+
+    return null;
+  };
+
+  const buildCategoryHref = (cat: Category) => {
+    const parent = findNavbarSlugForCategory(cat);
+    return parent ? `/${parent}/${cat.slug}` : `/${cat.slug}`;
+  };
+
+  const buildSubCategoryHref = (cat: Category, sub: SubCategory) => {
+    const parent = findNavbarSlugForCategory(cat);
+    return parent ? `/${parent}/${cat.slug}/${sub.slug}` : `/${cat.slug}/${sub.slug}`;
+  };
 
   const handleNavigation = (href: string) => {
     router.push(href);
@@ -108,15 +165,15 @@ export default function UniFiNavbar() {
   };
 
   const isActivePath = (href: string) => {
-    if (href === '/') {
-      return pathname === '/';
-    }
+    if (href === '/') return pathname === '/';
     return pathname.startsWith(href);
   };
 
-  // Check if a category page is active
   const isCategoryActive = (catSlug: string) => {
-    return pathname.startsWith(`/${catSlug}`);
+    if (pathname.startsWith(`/${catSlug}`)) return true;
+    const parts = pathname.split('/').filter(Boolean);
+    if (parts.length >= 2 && parts[1] === catSlug) return true;
+    return false;
   };
 
   const actionItems = [
@@ -144,7 +201,7 @@ export default function UniFiNavbar() {
                   className={`text-xl font-bold transition-colors cursor-pointer ${shouldShowWhiteBg ? 'text-gray-900' : 'text-white'
                     }`}
                 >
-                 Ubiquiti
+                  Ubiquiti
                 </button>
               </div>
               {/* Desktop Navigation Items */}
@@ -154,11 +211,11 @@ export default function UniFiNavbar() {
                   onClick={() => handleNavigation('/')}
                   className={`text-sm font-medium transition-colors cursor-pointer rounded-lg px-4 py-2 mx-1 ${shouldShowWhiteBg
                     ? isActivePath('/')
-                      ? 'bg-gray-100 text-gray-600'
-                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                      ? 'bg-gray-100 text-blue-600'
+                      : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
                     : isActivePath('/')
-                      ? 'bg-gray-200/20 text-white'
-                      : 'text-white hover:text-gray-200 hover:bg-white/10'
+                      ? 'bg-gray-200/20 text-blue-400'
+                      : 'text-white hover:text-blue-400 hover:bg-white/10'
                     }`}
                 >
                   Home
@@ -166,8 +223,8 @@ export default function UniFiNavbar() {
 
                 {/* Categories with Dropdowns */}
                 {categories.map((cat) => (
-                  <div 
-                    key={cat._id} 
+                  <div
+                    key={cat._id}
                     className="relative group"
                     onMouseEnter={() => setOpenDropdown(cat._id)}
                     onMouseLeave={() => {
@@ -179,7 +236,7 @@ export default function UniFiNavbar() {
                         if (cat.subCategories && cat.subCategories.length > 0) {
                           setOpenDropdown(openDropdown === cat._id ? null : cat._id);
                         } else {
-                          handleNavigation(`/${cat.slug}`);
+                          handleNavigation(buildCategoryHref(cat));
                         }
                       }}
                       className={`text-sm font-medium transition-colors cursor-pointer rounded-lg px-4 py-2 mx-1 flex items-center space-x-1 ${shouldShowWhiteBg
@@ -194,7 +251,7 @@ export default function UniFiNavbar() {
                       <span>{cat.name}</span>
                     </button>
 
-                    {/* Dropdown Menu - Full width, grid cards (no borders, larger images) */}
+                    {/* Dropdown Menu */}
                     {cat.subCategories && cat.subCategories.length > 0 && openDropdown === cat._id && (
                       <div
                         className="fixed left-0 right-0 top-14 z-50 bg-white shadow-xl"
@@ -208,7 +265,7 @@ export default function UniFiNavbar() {
                                 <button
                                   key={subCat._id}
                                   onClick={() => {
-                                    handleNavigation(`/${cat.slug}/${subCat.slug}`);
+                                    handleNavigation(buildSubCategoryHref(cat, subCat));
                                     setOpenDropdown(null);
                                   }}
                                   className="flex flex-col items-center text-center p-4 bg-white rounded-l hover:shadow-md transition-all duration-150 cursor-pointer group/subcategory"
@@ -225,7 +282,7 @@ export default function UniFiNavbar() {
                                     )}
                                   </div>
 
-                                 <h4 className="text-sm font-semibold text-gray-900 group-hover/subcategory:text-blue-600 transition-colors">
+                                  <h4 className="text-sm font-semibold text-gray-900 group-hover/subcategory:text-blue-600 transition-colors">
                                     {subCat.name}
                                   </h4>
 
@@ -242,6 +299,24 @@ export default function UniFiNavbar() {
                       </div>
                     )}
                   </div>
+                ))}
+
+                {/* Nav Links - About, Solutions, Contact Us */}
+                {navLinks.map((link) => (
+                  <button
+                    key={link.slug}
+                    onClick={() => handleNavigation(link.href)}
+                    className={`text-sm font-medium transition-colors cursor-pointer rounded-lg px-4 py-2 mx-1 ${shouldShowWhiteBg
+                      ? isActivePath(link.href)
+                        ? 'bg-gray-100 text-blue-600'
+                        : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
+                      : isActivePath(link.href)
+                        ? 'bg-gray-200/20 text-blue-400'
+                        : 'text-white hover:text-blue-400 hover:bg-white/10'
+                      }`}
+                  >
+                    {link.label}
+                  </button>
                 ))}
               </div>
             </div>
@@ -289,8 +364,8 @@ export default function UniFiNavbar() {
                 <button
                   onClick={() => handleNavigation('/')}
                   className={`block w-full text-left py-3 font-medium transition-colors cursor-pointer rounded-lg mx-2 my-1 px-3 ${isActivePath('/')
-                    ? 'bg-gray-50 text-gray-600 border border-gray-200'
-                    : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                    ? 'bg-gray-50 text-blue-600 border border-blue-200'
+                    : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
                     }`}
                 >
                   Home
@@ -306,12 +381,12 @@ export default function UniFiNavbar() {
                         if (cat.subCategories && cat.subCategories.length > 0) {
                           setOpenDropdown(openDropdown === cat._id ? null : cat._id);
                         } else {
-                          handleNavigation(`/${cat.slug}`);
+                          handleNavigation(buildCategoryHref(cat));
                         }
                       }}
                       className={`flex items-center justify-between w-full text-left py-3 font-medium transition-colors cursor-pointer rounded-lg mx-2 my-1 px-3 ${isCategoryActive(cat.slug)
-                        ? 'bg-gray-50 text-gray-600 border border-gray-200'
-                        : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                        ? 'bg-gray-50 text-blue-600 border border-blue-200'
+                        : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
                         }`}
                     >
                       <span>{cat.name}</span>
@@ -328,8 +403,8 @@ export default function UniFiNavbar() {
                           <div className="flex flex-col items-center text-center">
                             {cat.image && (
                               <div className="w-24 h-24 bg-white rounded-lg overflow-hidden mb-3">
-                                <img 
-                                  src={cat.image} 
+                                <img
+                                  src={cat.image}
                                   alt={cat.name}
                                   className="w-full h-full object-contain p-2"
                                 />
@@ -349,7 +424,7 @@ export default function UniFiNavbar() {
                           <div key={subCat._id} className="mb-3">
                             <button
                               onClick={() => {
-                                handleNavigation(`/${cat.slug}/${subCat.slug}`);
+                                handleNavigation(buildSubCategoryHref(cat, subCat));
                                 setOpenDropdown(null);
                               }}
                               className="block w-full text-left"
@@ -358,8 +433,8 @@ export default function UniFiNavbar() {
                                 <div className="flex items-center space-x-3">
                                   {subCat.image && (
                                     <div className="w-12 h-12 bg-gray-50 rounded overflow-hidden flex-shrink-0">
-                                      <img 
-                                        src={subCat.image} 
+                                      <img
+                                        src={subCat.image}
                                         alt={subCat.name}
                                         className="w-full h-full object-contain p-1"
                                       />
@@ -386,6 +461,21 @@ export default function UniFiNavbar() {
                 </div>
               ))}
 
+              {/* Mobile Nav Links */}
+              {navLinks.map((link) => (
+                <div key={link.slug} className="border-b border-gray-100">
+                  <button
+                    onClick={() => handleNavigation(link.href)}
+                    className={`block w-full text-left py-3 font-medium transition-colors cursor-pointer rounded-lg mx-2 my-1 px-3 ${isActivePath(link.href)
+                      ? 'bg-gray-50 text-blue-600 border border-blue-200'
+                      : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
+                      }`}
+                  >
+                    {link.label}
+                  </button>
+                </div>
+              ))}
+
               {/* Mobile Action Items */}
               <div className="pt-4 border-t border-gray-200">
                 <div className="flex items-center space-x-4 py-3 px-2">
@@ -395,7 +485,7 @@ export default function UniFiNavbar() {
                       <button
                         key={item.label}
                         onClick={() => handleActionClick(item.type)}
-                        className="flex items-center space-x-2 text-gray-700 hover:text-gray-900 transition-colors p-2 hover:bg-gray-50 rounded-lg cursor-pointer"
+                        className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors p-2 hover:bg-gray-50 rounded-lg cursor-pointer"
                       >
                         <IconComponent className="w-5 h-5" />
                       </button>
