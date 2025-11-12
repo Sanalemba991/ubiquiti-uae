@@ -199,33 +199,33 @@ const Cloud = () => {
                     className="text-center max-w-6xl mx-auto px-6 mb-16"
                 >
                     <motion.h2
-    variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
-    custom={0}
-    initial="hidden"
-    animate={isHeaderInView ? "visible" : "hidden"}
-    className="text-3xl md:text-4xl font-bold text-gray-900 mb-6"
->
-    High-Performance Cloud Infrastructure
-</motion.h2>
-<motion.p
-    variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
-    custom={0.2}
-    initial="hidden"
-    animate={isHeaderInView ? "visible" : "hidden"}
-    className="text-lg md:text-xl text-blue-700 font-medium mb-6"
->
-    Ultra-Low Latency Global Connectivity
-</motion.p>
-<motion.div
-    variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
-    custom={0.4}
-    initial="hidden"
-    animate={isHeaderInView ? "visible" : "hidden"}
-    className="max-w-4xl mx-auto"
->
-    <p className="text-base text-gray-700 leading-relaxed mb-4">
-        Advanced cloud infrastructure powered by globally distributed edge nodes, intelligent load balancing, and adaptive traffic optimization. Engineered to deliver sub-10ms latency with enterprise-grade encryption and automated failover capabilities.
-    </p>
+                        variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
+                        custom={0}
+                        initial="hidden"
+                        animate={isHeaderInView ? "visible" : "hidden"}
+                        className="text-3xl md:text-4xl font-bold text-gray-900 mb-6"
+                    >
+                        High-Performance Cloud Infrastructure
+                    </motion.h2>
+                    <motion.p
+                        variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
+                        custom={0.2}
+                        initial="hidden"
+                        animate={isHeaderInView ? "visible" : "hidden"}
+                        className="text-lg md:text-xl text-blue-700 font-medium mb-6"
+                    >
+                        Ultra-Low Latency Global Connectivity
+                    </motion.p>
+                    <motion.div
+                        variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
+                        custom={0.4}
+                        initial="hidden"
+                        animate={isHeaderInView ? "visible" : "hidden"}
+                        className="max-w-4xl mx-auto"
+                    >
+                        <p className="text-base text-gray-700 leading-relaxed mb-4">
+                            Advanced cloud infrastructure powered by globally distributed edge nodes, intelligent load balancing, and adaptive traffic optimization. Engineered to deliver sub-10ms latency with enterprise-grade encryption and automated failover capabilities.
+                        </p>
 
                     </motion.div>
                 </motion.div>
@@ -266,8 +266,8 @@ const Cloud = () => {
                                     initial="hidden"
                                     animate={isInView ? "visible" : "hidden"}
                                     className={`absolute inset-0 ${index % 2 === 1
-                                            ? 'bg-gradient-to-l from-black/70 to-transparent'
-                                            : 'bg-gradient-to-r from-black/70 to-transparent'
+                                        ? 'bg-gradient-to-l from-black/70 to-transparent'
+                                        : 'bg-gradient-to-r from-black/70 to-transparent'
                                         }`}
                                 />
 
