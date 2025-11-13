@@ -146,9 +146,7 @@ const About = () => {
                             <p className="text-lg mb-6">
                                 We are an authorized Ubiquiti distributor in the UAE, providing a complete range of genuine Ubiquiti products including UniFi networking equipment, security solutions, and smart device platforms. Our authorization ensures customers receive only original products backed by Ubiquiti's trusted warranty and support. As an official partner, we deliver reliable services, seamless supply, and tailored solutions to meet the growing digital infrastructure needs of businesses and individuals across the UAE.
                             </p>
-                            <p className="text-lg font-semibold">
-                                Ubiquiti-UAE professional dealer in UAE
-                            </p>
+                            
                         </AnimatedSection>
                     </div>
                 </div>
