@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ChevronDown, Menu, X, MapPin, Mail, Phone } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 
@@ -52,6 +52,8 @@ export default function UniFiNavbar() {
     { label: 'Solutions', slug: 'solutions', href: '/solution' },
     { label: 'Contact Us', slug: 'contact', href: '/contact' },
   ]);
+  
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -176,6 +178,20 @@ export default function UniFiNavbar() {
     return false;
   };
 
+  // Enhanced hover handlers with delay for smoother unhover
+  const handleMouseEnter = (categoryId: string) => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+    setOpenDropdown(categoryId);
+  };
+
+  const handleMouseLeave = () => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setOpenDropdown(null);
+    }, 500); // Increased to 500ms for slower unhover
+  };
+
   const actionItems = [
     { icon: MapPin, label: 'Location', type: 'location' },
     { icon: Mail, label: 'Email', type: 'email' },
@@ -226,10 +242,8 @@ export default function UniFiNavbar() {
                   <div
                     key={cat._id}
                     className="relative group"
-                    onMouseEnter={() => setOpenDropdown(cat._id)}
-                    onMouseLeave={() => {
-                      setOpenDropdown(null);
-                    }}
+                    onMouseEnter={() => handleMouseEnter(cat._id)}
+                    onMouseLeave={handleMouseLeave}
                   >
                     <button
                       onClick={() => {
@@ -254,9 +268,9 @@ export default function UniFiNavbar() {
                     {/* Dropdown Menu */}
                     {cat.subCategories && cat.subCategories.length > 0 && openDropdown === cat._id && (
                       <div
-                        className="fixed left-0 right-0 top-14 z-50 bg-white shadow-xl"
-                        onMouseEnter={() => setOpenDropdown(cat._id)}
-                        onMouseLeave={() => setOpenDropdown(null)}
+                        className="fixed left-0 right-0 top-14 z-50 bg-white shadow-xl transition-opacity duration-300"
+                        onMouseEnter={() => handleMouseEnter(cat._id)}
+                        onMouseLeave={handleMouseLeave}
                       >
                         <div className="w-full">
                           <div className="max-w-7xl mx-auto px-6 py-2">
@@ -268,7 +282,7 @@ export default function UniFiNavbar() {
                                     handleNavigation(buildSubCategoryHref(cat, subCat));
                                     setOpenDropdown(null);
                                   }}
-                                  className="flex flex-col items-center text-center p-4 bg-white rounded-l hover:shadow-md transition-all duration-150 cursor-pointer group/subcategory"
+                                  className="flex flex-col items-center text-center p-4 bg-white rounded-lg hover:shadow-md transition-all duration-150 cursor-pointer group/subcategory"
                                 >
                                   <div className=" bg-transparent overflow-hidden flex items-center justify-center">
                                     {subCat.image ? (
@@ -395,62 +409,25 @@ export default function UniFiNavbar() {
                       )}
                     </button>
 
-                    {/* Mobile Dropdown */}
+                    {/* Mobile Dropdown - Only links, no images */}
                     {cat.subCategories && cat.subCategories.length > 0 && openDropdown === cat._id && (
                       <div className="ml-4 pb-2">
-                        {/* Category Overview in Mobile */}
-                        <div className="mb-4 p-4 bg-gray-50 rounded-lg">
-                          <div className="flex flex-col items-center text-center">
-                            {cat.image && (
-                              <div className="w-24 h-24 bg-white rounded-lg overflow-hidden mb-3">
-                                <img
-                                  src={cat.image}
-                                  alt={cat.name}
-                                  className="w-full h-full object-contain p-2"
-                                />
-                              </div>
-                            )}
-                            <h3 className="font-bold text-base text-gray-900 mb-1">{cat.name}</h3>
-                            {cat.description && (
-                              <p className="text-xs text-gray-600">
-                                {cat.description}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Subcategories */}
                         {cat.subCategories.map((subCat) => (
-                          <div key={subCat._id} className="mb-3">
+                          <div key={subCat._id} className="mb-2">
                             <button
                               onClick={() => {
                                 handleNavigation(buildSubCategoryHref(cat, subCat));
                                 setOpenDropdown(null);
                               }}
-                              className="block w-full text-left"
+                              className="block w-full text-left py-2 px-3 text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors rounded-lg cursor-pointer"
                             >
-                              <div className="p-3 bg-white rounded-lg hover:bg-gray-50 transition-colors border border-gray-200">
-                                <div className="flex items-center space-x-3">
-                                  {subCat.image && (
-                                    <div className="w-12 h-12 bg-gray-50 rounded overflow-hidden flex-shrink-0">
-                                      <img
-                                        src={subCat.image}
-                                        alt={subCat.name}
-                                        className="w-full h-full object-contain p-1"
-                                      />
-                                    </div>
-                                  )}
-                                  <div className="flex-1 min-w-0">
-                                    <h4 className="font-bold text-sm text-gray-900 mb-0.5">
-                                      {subCat.name}
-                                    </h4>
-                                    {subCat.description && (
-                                      <p className="text-xs text-gray-500 line-clamp-2">
-                                        {subCat.description}
-                                      </p>
-                                    )}
-                                  </div>
-                                </div>
+                              <div className="flex items-center justify-between">
+                                <span className="font-medium text-sm">{subCat.name}</span>
+                                {subCat.description && (
+                                  <span className="text-xs text-gray-500 truncate ml-2 max-w-[120px]">
+                                    {subCat.description}
+                                  </span>
+                                )}
                               </div>
                             </button>
                           </div>
@@ -478,16 +455,17 @@ export default function UniFiNavbar() {
 
               {/* Mobile Action Items */}
               <div className="pt-4 border-t border-gray-200">
-                <div className="flex items-center space-x-4 py-3 px-2">
+                <div className="flex items-center justify-around py-3 px-2">
                   {actionItems.map((item) => {
                     const IconComponent = item.icon;
                     return (
                       <button
                         key={item.label}
                         onClick={() => handleActionClick(item.type)}
-                        className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors p-2 hover:bg-gray-50 rounded-lg cursor-pointer"
+                        className="flex flex-col items-center p-3 text-gray-700 hover:text-blue-600 transition-colors hover:bg-gray-50 rounded-lg cursor-pointer"
                       >
-                        <IconComponent className="w-5 h-5" />
+                        <IconComponent className="w-5 h-5 mb-1" />
+                        <span className="text-xs font-medium">{item.label}</span>
                       </button>
                     );
                   })}

@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { FaArrowLeft, FaFolder, FaBox, FaChevronRight } from 'react-icons/fa';
+import { FaArrowLeft, FaFolder, FaBox, FaChevronRight, FaHome } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
@@ -411,8 +411,8 @@ export default function CategoryPageClient({
             variants={contentSlideIn}
             className="max-w-2xl text-left"
           >
-            {/* Breadcrumb */}
-
+            {/* Breadcrumb (added) */}
+           
 
             <motion.h1
               className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight leading-tight"
@@ -435,17 +435,62 @@ export default function CategoryPageClient({
             )}
 
             {/* Call to Action Button */}
-
           </motion.div>
         </div>
 
-        {/* Scroll Indicator */}
-
+        {/* Scroll Indicator (added) */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9, duration: 0.8 }}
+          >
+            <button
+              onClick={() => {
+                const el = document.getElementById('subcategories');
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                  window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+                }
+              }}
+              className="flex flex-col items-center text-white/80 hover:text-white transition-colors cursor-pointer focus:outline-none group"
+              aria-label="Scroll to subcategories"
+            >
+              <span className="text-xs font-medium mb-2 uppercase tracking-wider group-hover:text-white">Scroll Down</span>
+              <motion.div
+                animate={{ y: [0, 8, 0] }}
+                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+              >
+                <FaChevronRight className="w-4 h-4 rotate-90" />
+              </motion.div>
+            </button>
+          </motion.div>
+        </div>
       </div>
 
       {/* Content Section */}
       <div id="subcategories" className="relative bg-gradient-to-br from-slate-50 to-slate-100">
+        
         <div className="max-w-7xl mx-auto px-6 lg:px-12 py-20 lg:py-28">
+          {/* Breadcrumb Navigation */}
+          <motion.nav
+            className="inline-flex items-center gap-x-1 sm:gap-x-1.5 text-[10px] sm:text-xs bg-white/80 backdrop-blur-sm rounded-full px-2.5 sm:px-3 py-1.5 mb-8 sm:mb-10 md:mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+          >
+            <Link 
+              href="/" 
+              className="text-slate-600 hover:text-slate-900 transition-colors flex items-center group flex-shrink-0"
+            >
+              <FaHome className="w-2.5 h-2.5 sm:w-3 sm:h-3 group-hover:scale-110 transition-transform" />
+            </Link>
+            <FaChevronRight className="w-2 h-2 text-slate-400 flex-shrink-0" />
+            
+            <span className="text-blue-500 font-semibold">{currentCategory.name}</span>
+          </motion.nav>
+
           {/* Sub-Categories Section */}
           {subCategories.length > 0 && (
             <motion.section
@@ -464,7 +509,7 @@ export default function CategoryPageClient({
                     Sub-Categories
                   </h2>
                   <p className="text-lg text-slate-600 max-w-2xl">
-                    Explore detailed topics within {currentCategory.name}
+                    Explore detailed topics within <span className='text-blue-500'>{currentCategory.name}</span>
                   </p>
                 </div>
                 <motion.div

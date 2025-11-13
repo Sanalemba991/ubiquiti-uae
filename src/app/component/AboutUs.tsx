@@ -126,13 +126,7 @@ const About = () => {
                             className="text-base md:text-lg lg:text-xl mb-8 leading-relaxed max-w-2xl"
                         >Simplifying IT with advanced networking solutions for seamless connectivity and unified management.   </motion.p>
 
-                        <motion.button
-                            onClick={goToProducts}
-                           
-                            className="border-2 border-blue-500 text-white/80 px-8 py-3 text-base font-medium hover:bg-blue-500 hover:text-white transition-all duration-300 ease-in-out cursor-pointer"
-                        >
-                            View Our Products
-                        </motion.button>
+                        
                     </motion.div>
                 </div>
             </section>
