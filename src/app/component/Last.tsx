@@ -120,7 +120,7 @@ const Last = () => {
             >
                 <video
                     ref={videoRef}
-                    src="https://ui.com/microsite/static/wifi-1-Nhn7hDnj.mp4"
+                    src="/video/last.mp4"
                     className="absolute top-0 left-0 w-full h-full object-cover" // Added object-cover for better video scaling
                     style={{ 
                         filter: 'brightness(0.7)',
