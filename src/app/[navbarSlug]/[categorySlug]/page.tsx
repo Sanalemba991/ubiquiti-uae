@@ -26,15 +26,25 @@ interface NavbarCategory {
   description: string;
 }
 
+// Add this for production builds
+export const dynamicParams = true;
+
 async function getCategories(navbarSlug: string) {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  
+  if (!apiUrl) {
+    console.error('NEXT_PUBLIC_API_URL is not defined');
+    return null;
+  }
+  
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
     const res = await fetch(
-      `${baseUrl}/api/category/by-navbar/${navbarSlug}`,
+      `${apiUrl}/api/category/by-navbar/${navbarSlug}`,
       { 
-        cache: 'no-store',
-        // Add timeout for Vercel
-        next: { revalidate: 0 }
+        next: { revalidate: 60 },
+        headers: {
+          'Content-Type': 'application/json',
+        }
       }
     );
     
@@ -47,13 +57,21 @@ async function getCategories(navbarSlug: string) {
 }
 
 async function getSubCategories(categorySlug: string) {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  
+  if (!apiUrl) {
+    console.error('NEXT_PUBLIC_API_URL is not defined');
+    return null;
+  }
+  
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
     const res = await fetch(
-      `${baseUrl}/api/subcategory/by-category/${categorySlug}`,
+      `${apiUrl}/api/subcategory/by-category/${categorySlug}`,
       { 
-        cache: 'no-store',
-        next: { revalidate: 0 }
+        next: { revalidate: 60 },
+        headers: {
+          'Content-Type': 'application/json',
+        }
       }
     );
     
@@ -65,6 +83,22 @@ async function getSubCategories(categorySlug: string) {
   }
 }
 
+// Optional: Pre-generate static params for better performance
+export async function generateStaticParams() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  
+  if (!apiUrl) return [];
+  
+  try {
+    // Fetch all your navbar/category combinations here
+    // This is optional but improves performance
+    return [];
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    return [];
+  }
+}
+
 export default async function CategoryPage({
   params,
 }: {
@@ -72,40 +106,33 @@ export default async function CategoryPage({
 }) {
   const { navbarSlug, categorySlug } = params;
 
-  try {
-    // Fetch data in parallel on the server
-    const [categoriesResult, subCategoriesResult] = await Promise.all([
-      getCategories(navbarSlug),
-      getSubCategories(categorySlug),
-    ]);
+  const [categoriesResult, subCategoriesResult] = await Promise.all([
+    getCategories(navbarSlug),
+    getSubCategories(categorySlug),
+  ]);
 
-    if (!categoriesResult?.success) {
-      notFound();
-    }
-
-    const categories: Category[] = categoriesResult.data || [];
-    const navbarCategory: NavbarCategory | null = categoriesResult.navbarCategory || null;
-    const subCategories: SubCategory[] = subCategoriesResult?.success ? subCategoriesResult.data : [];
-
-    const currentCategory = categories.find(cat => cat.slug === categorySlug);
-
-    if (!currentCategory) {
-      notFound();
-    }
-
-    // Pass data to client component
-    return (
-      <CategoryPageClient
-        currentCategory={currentCategory}
-        categories={categories}
-        subCategories={subCategories}
-        navbarCategory={navbarCategory}
-        navbarSlug={navbarSlug}
-        categorySlug={categorySlug}
-      />
-    );
-  } catch (error) {
-    console.error('Error in CategoryPage:', error);
+  if (!categoriesResult?.success) {
     notFound();
   }
+
+  const categories: Category[] = categoriesResult.data || [];
+  const navbarCategory: NavbarCategory | null = categoriesResult.navbarCategory || null;
+  const subCategories: SubCategory[] = subCategoriesResult?.success ? subCategoriesResult.data : [];
+
+  const currentCategory = categories.find(cat => cat.slug === categorySlug);
+
+  if (!currentCategory) {
+    notFound();
+  }
+
+  return (
+    <CategoryPageClient
+      currentCategory={currentCategory}
+      categories={categories}
+      subCategories={subCategories}
+      navbarCategory={navbarCategory}
+      navbarSlug={navbarSlug}
+      categorySlug={categorySlug}
+    />
+  );
 }
