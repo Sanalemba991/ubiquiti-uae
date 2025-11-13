@@ -27,23 +27,42 @@ interface NavbarCategory {
 }
 
 async function getCategories(navbarSlug: string) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/category/by-navbar/${navbarSlug}`,
-    { cache: 'no-store' }
-  );
-  
-  if (!res.ok) return null;
-  return res.json();
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+    const res = await fetch(
+      `${baseUrl}/api/category/by-navbar/${navbarSlug}`,
+      { 
+        cache: 'no-store',
+        // Add timeout for Vercel
+        next: { revalidate: 0 }
+      }
+    );
+    
+    if (!res.ok) return null;
+    return res.json();
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    return null;
+  }
 }
 
 async function getSubCategories(categorySlug: string) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/subcategory/by-category/${categorySlug}`,
-    { cache: 'no-store' }
-  );
-  
-  if (!res.ok) return null;
-  return res.json();
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+    const res = await fetch(
+      `${baseUrl}/api/subcategory/by-category/${categorySlug}`,
+      { 
+        cache: 'no-store',
+        next: { revalidate: 0 }
+      }
+    );
+    
+    if (!res.ok) return null;
+    return res.json();
+  } catch (error) {
+    console.error('Error fetching subcategories:', error);
+    return null;
+  }
 }
 
 export default async function CategoryPage({
@@ -53,35 +72,40 @@ export default async function CategoryPage({
 }) {
   const { navbarSlug, categorySlug } = params;
 
-  // Fetch data in parallel on the server
-  const [categoriesResult, subCategoriesResult] = await Promise.all([
-    getCategories(navbarSlug),
-    getSubCategories(categorySlug),
-  ]);
+  try {
+    // Fetch data in parallel on the server
+    const [categoriesResult, subCategoriesResult] = await Promise.all([
+      getCategories(navbarSlug),
+      getSubCategories(categorySlug),
+    ]);
 
-  if (!categoriesResult?.success) {
+    if (!categoriesResult?.success) {
+      notFound();
+    }
+
+    const categories: Category[] = categoriesResult.data || [];
+    const navbarCategory: NavbarCategory | null = categoriesResult.navbarCategory || null;
+    const subCategories: SubCategory[] = subCategoriesResult?.success ? subCategoriesResult.data : [];
+
+    const currentCategory = categories.find(cat => cat.slug === categorySlug);
+
+    if (!currentCategory) {
+      notFound();
+    }
+
+    // Pass data to client component
+    return (
+      <CategoryPageClient
+        currentCategory={currentCategory}
+        categories={categories}
+        subCategories={subCategories}
+        navbarCategory={navbarCategory}
+        navbarSlug={navbarSlug}
+        categorySlug={categorySlug}
+      />
+    );
+  } catch (error) {
+    console.error('Error in CategoryPage:', error);
     notFound();
   }
-
-  const categories: Category[] = categoriesResult.data || [];
-  const navbarCategory: NavbarCategory | null = categoriesResult.navbarCategory || null;
-  const subCategories: SubCategory[] = subCategoriesResult?.success ? subCategoriesResult.data : [];
-
-  const currentCategory = categories.find(cat => cat.slug === categorySlug);
-
-  if (!currentCategory) {
-    notFound();
-  }
-
-  // Pass data to client component
-  return (
-    <CategoryPageClient
-      currentCategory={currentCategory}
-      categories={categories}
-      subCategories={subCategories}
-      navbarCategory={navbarCategory}
-      navbarSlug={navbarSlug}
-      categorySlug={categorySlug}
-    />
-  );
 }
