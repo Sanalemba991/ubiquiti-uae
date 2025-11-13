@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import ProductClient from './ProductClient';
+
 interface Product {
   _id: string;
   name: string;
@@ -37,15 +38,30 @@ interface Product {
   };
 }
 
-async function getProduct(productSlug: string): Promise<Product | null> {
+// Add this for production builds
+export const dynamicParams = true;
+
+async function getProduct(productSlug: string) {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  
+  if (!apiUrl) {
+    console.error('NEXT_PUBLIC_API_URL is not defined');
+    return null;
+  }
+  
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/product/by-slug/${productSlug}`, {
-      cache: 'no-store', // or 'force-cache' for static generation
-    });
-
+    const res = await fetch(
+      `${apiUrl}/api/product/by-slug/${productSlug}`,
+      { 
+        next: { revalidate: 60 },
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
+    );
+    
     if (!res.ok) return null;
-
+    
     const result = await res.json();
     return result.success ? result.data : null;
   } catch (error) {
@@ -54,16 +70,28 @@ async function getProduct(productSlug: string): Promise<Product | null> {
   }
 }
 
-async function getRelatedProducts(product: Product): Promise<Product[]> {
+async function getRelatedProducts(product: Product) {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  
+  if (!apiUrl) {
+    console.error('NEXT_PUBLIC_API_URL is not defined');
+    return [];
+  }
+  
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     const relatedQuery = product.subcategory 
       ? `subcategory=${product.subcategory._id}`
       : `category=${product.category._id}`;
     
-    const res = await fetch(`${baseUrl}/api/product?${relatedQuery}`, {
-      cache: 'no-store',
-    });
+    const res = await fetch(
+      `${apiUrl}/api/product?${relatedQuery}`,
+      { 
+        next: { revalidate: 60 },
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
+    );
 
     if (!res.ok) return [];
 
@@ -81,6 +109,22 @@ async function getRelatedProducts(product: Product): Promise<Product[]> {
   }
 }
 
+// Optional: Pre-generate static params for better performance
+export async function generateStaticParams() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  
+  if (!apiUrl) return [];
+  
+  try {
+    // Fetch all your product slugs here
+    // This is optional but improves performance
+    return [];
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    return [];
+  }
+}
+
 export default async function ProductPage({
   params,
 }: {
@@ -91,21 +135,27 @@ export default async function ProductPage({
     productSlug: string;
   };
 }) {
-  const product = await getProduct(params.productSlug);
+  const { navbarSlug, categorySlug, productSlug } = params;
+
+  const [product, relatedProducts] = await Promise.all([
+    getProduct(productSlug),
+    // We'll get related products after we have the product data
+    Promise.resolve([]),
+  ]);
 
   if (!product) {
     notFound();
   }
 
-  const relatedProducts = await getRelatedProducts(product);
+  // Now get related products with the product data
+  const finalRelatedProducts = await getRelatedProducts(product);
 
   return (
     <ProductClient
       product={product}
-      relatedProducts={relatedProducts}
-      navbarSlug={params.navbarSlug}
-      categorySlug={params.categorySlug}
-     
+      relatedProducts={finalRelatedProducts}
+      navbarSlug={navbarSlug}
+      categorySlug={categorySlug}
     />
   );
 }
