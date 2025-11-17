@@ -143,11 +143,11 @@ const RelatedProductCard = ({
       custom={index}
       className="group p-2 sm:p-3 md:p-4"
     >
-      <Link 
+      <Link
         href={product.subcategory
           ? `/${product.navbarCategory.slug}/${product.category.slug}/${product.subcategory.slug}/${product.slug}`
           : `/${product.navbarCategory.slug}/${product.category.slug}/${product.slug}`
-        } 
+        }
         className="block"
       >
         <motion.div
@@ -250,7 +250,7 @@ export default function ProductClient({
     e.preventDefault();
 
     setIsSubmitting(true);
-    
+
     try {
       const response = await fetch('/api/product-enquiry', {
         method: 'POST',
@@ -366,44 +366,43 @@ export default function ProductClient({
       </div>
 
       {/* Content Section */}
-      <div id="product-details" className="relative bg-gradient-to-br from-slate-50 to-slate-100">
+      <div className="relative bg-gradient-to-br from-slate-50 to-slate-100">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 py-20 lg:py-28">
           {/* Breadcrumb Navigation */}
           <motion.nav
-            className="inline-flex items-center gap-x-1 sm:gap-x-1.5 text-[10px] sm:text-xs bg-white/80 backdrop-blur-sm rounded-full px-2.5 sm:px-3 py-1.5 mb-8 sm:mb-10 md:mb-12"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-          >
-            <Link 
-              href="/" 
-              className="text-slate-600 hover:text-slate-900 transition-colors flex items-center group flex-shrink-0"
-            >
-              <FaHome className="w-2.5 h-2.5 sm:w-3 sm:h-3 group-hover:scale-110 transition-transform" />
-            </Link>
-            
-           
-            <FaChevronRight className="w-2 h-2 text-slate-400 flex-shrink-0" />
-            <Link 
-              href={`/${navbarSlug}/${categorySlug}`}
-              className="text-slate-600 hover:text-slate-900 transition-colors font-medium text-[10px] sm:text-xs"
-            >
-              {product.category.name}
-            </Link>
-            {product.subcategory && (
-              <>
-                <FaChevronRight className="w-2 h-2 text-slate-400 flex-shrink-0" />
-                <Link 
-                  href={`/${navbarSlug}/${categorySlug}/${product.subcategory.slug}`}
-                  className="text-slate-600 hover:text-slate-900 transition-colors font-medium text-[10px] sm:text-xs"
-                >
-                  {product.subcategory.name}
-                </Link>
-              </>
-            )}
-            <FaChevronRight className="w-2 h-2 text-slate-400 flex-shrink-0" />
-            <span className="text-blue-600 font-semibold text-[10px] sm:text-xs">{product.name}</span>
-          </motion.nav>
+  className="inline-flex items-center gap-x-1 sm:gap-x-1.5 text-[9px] sm:text-xs bg-white/80 backdrop-blur-sm rounded-full px-2 sm:px-3 py-1 sm:py-1.5 mb-6 sm:mb-10 md:mb-12"
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.2, duration: 0.6 }}
+>
+  <Link
+    href="/"
+    className="text-slate-600 hover:text-slate-900 transition-colors flex items-center group flex-shrink-0"
+  >
+    <FaHome className="w-2 h-2 sm:w-3 sm:h-3 group-hover:scale-110 transition-transform" />
+  </Link>
+
+  <FaChevronRight className="w-1.5 h-1.5 sm:w-2 sm:h-2 text-slate-400 flex-shrink-0" />
+  <Link
+    href={`/${navbarSlug}/${categorySlug}`}
+    className="text-slate-600 hover:text-slate-900 transition-colors font-medium text-[9px] sm:text-xs"
+  >
+    {product.category.name}
+  </Link>
+  {product.subcategory && (
+    <>
+      <FaChevronRight className="w-1.5 h-1.5 sm:w-2 sm:h-2 text-slate-400 flex-shrink-0" />
+      <Link
+        href={`/${navbarSlug}/${categorySlug}/${product.subcategory.slug}`}
+        className="text-slate-600 hover:text-slate-900 transition-colors font-medium text-[9px] sm:text-xs"
+      >
+        {product.subcategory.name}
+      </Link>
+    </>
+  )}
+  <FaChevronRight className="w-1.5 h-1.5 sm:w-2 sm:h-2 text-slate-400 flex-shrink-0" />
+  <span className="text-blue-600 font-semibold text-[9px] sm:text-xs">{product.name}</span>
+</motion.nav>
 
           {/* Product Details Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
@@ -416,21 +415,21 @@ export default function ProductClient({
               className="space-y-6"
             >
               {/* Main Image */}
-              <motion.div 
+              <motion.div
                 variants={itemVariants}
-                className="relative h-[500px] bg-white rounded-2xl overflow-hidden shadow-xl border border-slate-200"
+                className="relative h-[380px] bg-white rounded-xl overflow-hidden shadow-lg border border-slate-200"
               >
                 <Image
                   src={images[selectedImage]}
                   alt={product.name}
                   fill
-                  className="object-contain p-8"
+                  className="object-contain p-6"
                 />
               </motion.div>
 
               {/* Thumbnail Images */}
               {images.length > 1 && (
-                <motion.div 
+                <motion.div
                   variants={itemVariants}
                   className="grid grid-cols-4 gap-4"
                 >
@@ -438,11 +437,10 @@ export default function ProductClient({
                     <button
                       key={index}
                       onClick={() => setSelectedImage(index)}
-                      className={`relative h-24 bg-white border-2 rounded-xl overflow-hidden transition-all ${
-                        selectedImage === index 
-                          ? 'border-blue-500 ring-2 ring-blue-500/50' 
-                          : 'border-slate-200 hover:border-blue-500/50'
-                      }`}
+                      className={`relative h-24 bg-white border-2 rounded-xl overflow-hidden transition-all ${selectedImage === index
+                        ? 'border-blue-500 ring-2 ring-blue-500/50'
+                        : 'border-slate-200 hover:border-blue-500/50'
+                        }`}
                     >
                       <Image
                         src={img}
@@ -456,89 +454,58 @@ export default function ProductClient({
               )}
             </motion.div>
 
-            {/* Product Details */}
+
+
             <motion.div
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.1 }}
               variants={containerVariants}
-              className="space-y-8"
+              className="flex flex-col"
             >
-              <motion.div variants={itemVariants}>
-                <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
+              {/* Product Title & Description Card */}
+              <motion.div variants={itemVariants} className="mb-8  p-8 rounded-xl  ">
+                <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-2 leading-tight">
                   {product.name}
                 </h1>
-                <p className="text-slate-600 text-lg leading-relaxed">
+
+                {/* Subtitle (uses category / subcategory as fallback) */}
+                <div className="text-sm text-slate-600 font-medium mb-4">
+                  {product.subcategory?.name || product.category.name}
+                </div>
+                <div className="h-1 w-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full mb-6"></div>
+                <p className="text-base text-slate-600 leading-relaxed mb-6">
                   {product.description}
                 </p>
-              </motion.div>
-
-              {/* Category Information */}
-              <motion.div variants={itemVariants} className="flex flex-wrap gap-3">
-                <span className="px-4 py-2 bg-blue-500/20 text-blue-600 rounded-lg text-sm font-medium border border-blue-500/30">
-                  {product.navbarCategory.name}
-                </span>
-                <span className="px-4 py-2 bg-indigo-500/20 text-indigo-600 rounded-lg text-sm font-medium border border-indigo-500/30">
-                  {product.category.name}
-                </span>
-                {product.subcategory && (
-                  <span className="px-4 py-2 bg-purple-500/20 text-purple-600 rounded-lg text-sm font-medium border border-purple-500/30">
-                    {product.subcategory.name}
-                  </span>
-                )}
-              </motion.div>
-
-              {/* Key Features */}
-              {product.keyFeatures && product.keyFeatures.length > 0 && (
-                <motion.div 
-                  variants={itemVariants}
-                  className="bg-white rounded-2xl p-8 shadow-lg border border-slate-200"
-                >
-                  <h2 className="text-2xl font-bold text-slate-900 mb-6">Key Features</h2>
-                  <ul className="space-y-4">
-                    {product.keyFeatures.map((feature, index) => (
-                      <li key={index} className="flex items-start space-x-4">
-                        <FaCheckCircle className="text-green-500 mt-1 flex-shrink-0 text-lg" />
-                        <span className="text-slate-700 text-lg">{feature}</span>
+                {/* Compact bullet list to match screenshot */}
+                {product.keyFeatures && product.keyFeatures.length > 0 && (
+                  <ul className="list-disc pl-5 text-slate-700 space-y-2 mb-6">
+                    {product.keyFeatures.map((feature, idx) => (
+                      <li key={idx} className="text-sm leading-relaxed">
+                        {feature}
                       </li>
                     ))}
                   </ul>
-                </motion.div>
-              )}
-
-              {/* Action Buttons */}
-              <motion.div variants={itemVariants} className="space-y-4">
-                <button
-                  onClick={() => setIsEnquiryModalOpen(true)}
-                  className="w-full flex items-center justify-center space-x-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-4 rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 shadow-lg shadow-blue-500/30 font-semibold text-lg"
-                >
-                  <FaEnvelope />
-                  <span>Contact Us About This Product</span>
-                </button>
-
-                <Link
-                  href={product.subcategory 
-                    ? `/${navbarSlug}/${categorySlug}/${product.subcategory.slug}`
-                    : `/${navbarSlug}/${categorySlug}`
-                  }
-                  className="inline-flex items-center space-x-3 text-blue-600 hover:text-blue-700 transition-colors px-6 py-3 rounded-lg hover:bg-blue-50"
-                >
-                  <FaArrowLeft />
-                  <span className="font-medium">Back to {product.subcategory?.name || product.category.name}</span>
-                </Link>
+                )}
+                {/* Prominent Shop Now CTA */}
+                <div className="mt-2">
+                  <button
+                    onClick={() => setIsEnquiryModalOpen(true)}
+                    className="px-4 py-1.5 border border-blue-600 text-black-600 hover:bg-blue-600 hover:text-white font-medium text-sm transition-colors duration-200 cursor-pointer"
+                  >
+                    Contact Us
+                  </button>
+                </div>
               </motion.div>
             </motion.div>
           </div>
-
-      
-          
         </div>
       </div>
 
       {/* Enhanced Enquiry Modal */}
       {isEnquiryModalOpen && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -546,14 +513,14 @@ export default function ProductClient({
           >
             <div className="sticky top-0 bg-white border-b border-slate-200 p-6 flex justify-between items-center">
               <h2 className="text-2xl font-bold text-slate-900">Product Enquiry</h2>
-              <button 
-                onClick={() => setIsEnquiryModalOpen(false)} 
+              <button
+                onClick={() => setIsEnquiryModalOpen(false)}
                 className="text-slate-400 hover:text-slate-600 transition p-2 rounded-lg hover:bg-slate-100"
               >
                 <FaTimes className="w-6 h-6" />
               </button>
             </div>
-            
+
             <form onSubmit={handleEnquirySubmit} className="p-6 space-y-6">
               {/* Product Name (Read-only) */}
               <div>

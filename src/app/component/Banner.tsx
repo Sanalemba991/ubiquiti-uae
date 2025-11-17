@@ -88,7 +88,7 @@ const Solution = () => {
             >
                 <video
                     ref={videoRef}
-                    src="https://ui.com/microsite/static/physical-security-1-Cz6S4fvO.mp4"
+                    src="/video/homeban.mp4"
                     muted
                     loop
                     playsInline

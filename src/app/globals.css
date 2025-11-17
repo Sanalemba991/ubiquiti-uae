@@ -127,23 +127,3 @@ body {
 
 /* Hide Scrollbars */
 /* Sidebar scrollbar */
-aside nav::-webkit-scrollbar {
-  display: none;
-}
-
-aside nav {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-/* Main content scrollbar */
-main::-webkit-scrollbar,
-body::-webkit-scrollbar,
-html::-webkit-scrollbar {
-  display: none;
-}
-
-body, html, main {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
