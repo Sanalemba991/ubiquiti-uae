@@ -3,11 +3,44 @@
 
 import { useEffect, useState } from 'react';
 
+interface Category {
+  _id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  image?: string;
+}
+
 const Footer = () => {
   const [currentYear, setCurrentYear] = useState('');
+  const [products, setProducts] = useState<Category[]>([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
 
   useEffect(() => {
     setCurrentYear(new Date().getFullYear().toString());
+  }, []);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoadingProducts(true);
+        const response = await fetch('/api/category');
+        const result = await response.json();
+
+        if (result.success && result.data) {
+          setProducts(result.data);
+        } else {
+          setProducts([]);
+        }
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        setProducts([]);
+      } finally {
+        setIsLoadingProducts(false);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
   return (
@@ -65,13 +98,26 @@ const Footer = () => {
              <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
               <a href="/solution/integrations" className="hover:text-blue-600">Integration</a>
             </p>
-            
           </div>
 
-          {/* Brands */}
+          {/* Products - Fetched from category API */}
           <div className="col-span-1">
             <h3 className="font-bold text-neutral-800 dark:text-neutral-200">Products</h3>
-           
+            {isLoadingProducts ? (
+              <p className="mt-3 text-sm text-neutral-500 dark:text-neutral-500">Loading...</p>
+            ) : products.length > 0 ? (
+              <div className="mt-3 space-y-2">
+                {products.slice(0, 5).map((product) => (
+                  <p key={product._id} className="text-sm text-neutral-600 dark:text-neutral-400">
+                    <a href={`/${product.slug}`} className="hover:text-blue-600">
+                      {product.name}
+                    </a>
+                  </p>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-3 text-sm text-neutral-500 dark:text-neutral-500">No products available</p>
+            )}
           </div>
 
           {/* Contact Information */}
@@ -99,22 +145,22 @@ const Footer = () => {
             {/* Phone Numbers */}
             <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
               <a
-                href="https://wa.me/+96050 966 4956"
+                href="https://wa.me/+96050 966 4956"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center hover:text-blue-600"
               >
                 <WhatsAppIcon />
-                <span className="ml-2">+96050 966 4956</span>
+                <span className="ml-2">+96050 966 4956</span>
               </a>
               <a
-                href="https://wa.me/+96050 966 4956"
+                href="https://wa.me/+96050 966 4956"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center hover:text-blue-600 ml-4"
               >
                 <PhoneIcon />
-                <span className="ml-2">+96050 966 4956</span>
+                <span className="ml-2">+96050 966 4956</span>
               </a>
             </p>
 
