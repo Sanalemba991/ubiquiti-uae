@@ -9,7 +9,7 @@ const categories = [
   subtitle: "Secure Cloud Connectivity",
   description:
     "Enterprise-grade cloud gateways with advanced security protocols and high-performance routing for seamless cloud application access.",
-  video: "https://ui.com/microsite/static/cg-2-DCneerJl.mp4",
+  video: "/video/cloudgateway.mp4",
   buttonText: "Explore Gateways",
   buttonLink: "/solution/cloud-gateways",
   alignLeft: true
@@ -20,7 +20,7 @@ const categories = [
     title:  <>Switch<span className="text-blue-600">ing</span></>,
     subtitle: "Network Infrastructure",
     description: "Scalable switching solutions with intelligent traffic management and robust connectivity for modern enterprise networks.",
-    video: "https://ui.com/microsite/static/switching-2-CbuiXXN-.mp4",
+    video: "/video/switching.mp4",
     buttonText: "View Switches",
     buttonLink: "/solution/switching",
     alignLeft: false
@@ -30,7 +30,7 @@ const categories = [
     title: <>Wi<span className="text-blue-600">Fi</span></>,
     subtitle: "Wireless Solutions",
     description: "Enterprise WiFi systems with seamless connectivity, advanced roaming, and optimization for high-density environments.",
-    video: "https://ui.com/microsite/static/wifi-2-vDEKxvQ2.mp4",
+    video: "/video/wifi.mp4",
     buttonText: "Discover WiFi",
     buttonLink: "/solution/wifi",
     alignLeft: true
@@ -40,7 +40,7 @@ const categories = [
     title: <>Physical <span className="text-blue-600">Security</span></>,
     subtitle: "Integrated Protection",
     description: "Comprehensive security systems combining access control, surveillance, and monitoring with network integration.",
-    video: "https://ui.com/microsite/static/physical-security-2-Cuug28Ls.mp4",
+    video: "/video/pyshical.mp4",
     buttonText: "Secure Now",
     buttonLink: "/solution/physical-security",
     alignLeft: false
@@ -50,7 +50,7 @@ const categories = [
     title:  <>Integrat<span className="text-blue-600">ion</span></>,
     subtitle: "Ecosystem Connectivity",
     description: "Seamless integration solutions for unified data flow and automated workflows across business applications.",
-    video: "https://ui.com/microsite/static/storage-1-qhzsueuY.mp4",
+    video: "/video/storage.mp4",
     buttonText: "Integrate Systems",
     buttonLink: "/solution/integrations",
     alignLeft: true

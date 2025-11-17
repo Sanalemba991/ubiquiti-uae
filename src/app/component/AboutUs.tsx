@@ -98,7 +98,7 @@ const About = () => {
                         className="absolute inset-0 w-full h-full object-cover"
                         style={{ filter: 'brightness(0.6)' }}
                     >
-                        <source src="https://ui.com/microsite/static/lte-backup-pro-Czq1Xzlj.mp4" type="video/mp4" />
+                        <source src="/video/about.mp4" type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
                     {/* Overlay for better text readability */}

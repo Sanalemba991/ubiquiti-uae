@@ -85,7 +85,7 @@ const Page = () => {
         >
           <video
             ref={videoRef}
-            src="https://ui.com/microsite/static/cg-1-DEvu98aB.mp4"
+            src="/video/solution.mp4"
             muted
             loop
             playsInline
@@ -98,7 +98,7 @@ const Page = () => {
         </motion.div>
 
         {/* Content Section - Now on the left with more content */}
-          {/* Content Section - Now on the left with more content */}
+        {/* Content Section - Now on the left with more content */}
         <motion.div
           className="relative z-10 text-white px-4 md:px-8 text-left max-w-2xl mt-32 md:mt-40"
           variants={containerVariants}
@@ -128,8 +128,8 @@ const Page = () => {
         </motion.div>
       </section>
 
-     
-      
+
+
 
       <SolutionSec />
     </>
