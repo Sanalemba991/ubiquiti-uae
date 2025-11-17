@@ -11,7 +11,7 @@ const categories = [
     "Enterprise-grade cloud gateways with advanced security protocols and high-performance routing for seamless cloud application access.",
   video: "/video/cloudgateway.mp4",
   buttonText: "Explore Gateways",
-  buttonLink: "/solution/cloud-gateways",
+  buttonLink: "/solution/cloud-gatewayss",
   alignLeft: true
 }
 ,
@@ -22,7 +22,7 @@ const categories = [
     description: "Scalable switching solutions with intelligent traffic management and robust connectivity for modern enterprise networks.",
     video: "/video/switching.mp4",
     buttonText: "View Switches",
-    buttonLink: "/solution/switching",
+    buttonLink: "/solution/switchings",
     alignLeft: false
   },
   { 
@@ -32,7 +32,7 @@ const categories = [
     description: "Enterprise WiFi systems with seamless connectivity, advanced roaming, and optimization for high-density environments.",
     video: "/video/wifi.mp4",
     buttonText: "Discover WiFi",
-    buttonLink: "/solution/wifi",
+    buttonLink: "/solution/wifis",
     alignLeft: true
   },
   {
@@ -42,7 +42,7 @@ const categories = [
     description: "Comprehensive security systems combining access control, surveillance, and monitoring with network integration.",
     video: "/video/pyshical.mp4",
     buttonText: "Secure Now",
-    buttonLink: "/solution/physical-security",
+    buttonLink: "/solution/physical-securitys",
     alignLeft: false
   },
   {
@@ -52,7 +52,7 @@ const categories = [
     description: "Seamless integration solutions for unified data flow and automated workflows across business applications.",
     video: "/video/storage.mp4",
     buttonText: "Integrate Systems",
-    buttonLink: "/solution/integrations",
+    buttonLink: "/solution/integrationss",
     alignLeft: true
   }
 ];

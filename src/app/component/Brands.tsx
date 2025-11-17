@@ -11,8 +11,6 @@ const logoData = [
   { name: 'Rutgers', logo: '/partner/partner (7).png' },
   { name: 'NSD', logo: '/partner/partner (8).png' },
   { name: 'IntelyCare', logo: '/partner/partner (9).png' },
-  { name: 'Oasis', logo: '/partner/logo.png' },
-  { name: 'Ezviz', logo: '/partner/ezviz.png' },
 ];
 
 export default function Brands() {

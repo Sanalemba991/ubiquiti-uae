@@ -147,6 +147,7 @@ export default function UniFiNavbar() {
   const handleNavigation = (href: string) => {
     router.push(href);
     setIsMobileMenuOpen(false);
+    setOpenDropdown(null);
   };
 
   const handleActionClick = (type: string) => {
@@ -189,7 +190,7 @@ export default function UniFiNavbar() {
   const handleMouseLeave = () => {
     hoverTimeoutRef.current = setTimeout(() => {
       setOpenDropdown(null);
-    }, 500); // Increased to 500ms for slower unhover
+    }, 500);
   };
 
   const actionItems = [
@@ -225,7 +226,7 @@ export default function UniFiNavbar() {
                 {/* Home Link */}
                 <button
                   onClick={() => handleNavigation('/')}
-                  className={`text-sm font-medium transition-colors cursor-pointer rounded-lg px-4 py-2 mx-1 ${shouldShowWhiteBg
+                  className={`text-xs font-medium transition-colors cursor-pointer rounded-lg px-3 py-2 mx-0.5 ${shouldShowWhiteBg
                     ? isActivePath('/')
                       ? 'bg-gray-100 text-blue-600'
                       : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
@@ -237,7 +238,7 @@ export default function UniFiNavbar() {
                   Home
                 </button>
 
-                {/* Categories with Dropdowns */}
+                {/* Categories with Dropdowns - Navigate on click */}
                 {categories.map((cat) => (
                   <div
                     key={cat._id}
@@ -246,14 +247,8 @@ export default function UniFiNavbar() {
                     onMouseLeave={handleMouseLeave}
                   >
                     <button
-                      onClick={() => {
-                        if (cat.subCategories && cat.subCategories.length > 0) {
-                          setOpenDropdown(openDropdown === cat._id ? null : cat._id);
-                        } else {
-                          handleNavigation(buildCategoryHref(cat));
-                        }
-                      }}
-                      className={`text-sm font-medium transition-colors cursor-pointer rounded-lg px-4 py-2 mx-1 flex items-center space-x-1 ${shouldShowWhiteBg
+                      onClick={() => handleNavigation(buildCategoryHref(cat))}
+                      className={`text-xs font-medium transition-colors cursor-pointer rounded-lg px-3 py-2 mx-0.5 flex items-center space-x-1 ${shouldShowWhiteBg
                         ? (isCategoryActive(cat.slug) || openDropdown === cat._id)
                           ? 'bg-gray-100 text-blue-600'
                           : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
@@ -265,7 +260,7 @@ export default function UniFiNavbar() {
                       <span>{cat.name}</span>
                     </button>
 
-                    {/* Dropdown Menu */}
+                    {/* Dropdown Menu - Hover only */}
                     {cat.subCategories && cat.subCategories.length > 0 && openDropdown === cat._id && (
                       <div
                         className="fixed left-0 right-0 top-14 z-50 bg-white shadow-xl transition-opacity duration-300"
@@ -278,13 +273,10 @@ export default function UniFiNavbar() {
                               {cat.subCategories.map((subCat) => (
                                 <button
                                   key={subCat._id}
-                                  onClick={() => {
-                                    handleNavigation(buildSubCategoryHref(cat, subCat));
-                                    setOpenDropdown(null);
-                                  }}
+                                  onClick={() => handleNavigation(buildSubCategoryHref(cat, subCat))}
                                   className="flex flex-col items-center text-center p-4 bg-white rounded-lg hover:shadow-md transition-all duration-150 cursor-pointer group/subcategory"
                                 >
-                                  <div className=" bg-transparent overflow-hidden flex items-center justify-center">
+                                  <div className="bg-transparent overflow-hidden flex items-center justify-center">
                                     {subCat.image ? (
                                       <img
                                         src={subCat.image}
@@ -315,12 +307,12 @@ export default function UniFiNavbar() {
                   </div>
                 ))}
 
-                {/* Nav Links - About, Solutions, Contact Us */}
+                {/* Nav Links - About, Solutions, Contact Us - Smaller */}
                 {navLinks.map((link) => (
                   <button
                     key={link.slug}
                     onClick={() => handleNavigation(link.href)}
-                    className={`text-sm font-medium transition-colors cursor-pointer rounded-lg px-4 py-2 mx-1 ${shouldShowWhiteBg
+                    className={`text-xs font-medium transition-colors cursor-pointer rounded-lg px-3 py-2 mx-0.5 ${shouldShowWhiteBg
                       ? isActivePath(link.href)
                         ? 'bg-gray-100 text-blue-600'
                         : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
@@ -415,10 +407,7 @@ export default function UniFiNavbar() {
                         {cat.subCategories.map((subCat) => (
                           <div key={subCat._id} className="mb-2">
                             <button
-                              onClick={() => {
-                                handleNavigation(buildSubCategoryHref(cat, subCat));
-                                setOpenDropdown(null);
-                              }}
+                              onClick={() => handleNavigation(buildSubCategoryHref(cat, subCat))}
                               className="block w-full text-left py-2 px-3 text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors rounded-lg cursor-pointer"
                             >
                               <div className="flex items-center justify-between">
