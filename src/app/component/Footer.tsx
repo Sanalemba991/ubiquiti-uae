@@ -3,45 +3,118 @@
 
 import { useEffect, useState } from 'react';
 
+interface SubCategory {
+  _id: string;
+  name: string;
+  slug: string;
+  description: string;
+  image: string;
+  order: number;
+  category: string;
+}
+
 interface Category {
   _id: string;
   name: string;
   slug: string;
-  description?: string;
-  image?: string;
+  description: string;
+  image: string;
+  order: number;
+  navbarCategory?: any;
+  subCategories?: SubCategory[];
+}
+
+interface NavbarCategory {
+  _id: string;
+  name: string;
+  slug: string;
+  description: string;
+  order: number;
+  categories?: any[];
 }
 
 const Footer = () => {
   const [currentYear, setCurrentYear] = useState('');
-  const [products, setProducts] = useState<Category[]>([]);
-  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [navbarCategories, setNavbarCategories] = useState<NavbarCategory[]>([]);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
 
   useEffect(() => {
     setCurrentYear(new Date().getFullYear().toString());
   }, []);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       try {
-        setIsLoadingProducts(true);
-        const response = await fetch('/api/category');
-        const result = await response.json();
+        setIsLoadingCategories(true);
 
-        if (result.success && result.data) {
-          setProducts(result.data);
+        const [navbarRes, categoriesRes, subCategoriesRes] = await Promise.all([
+          fetch('/api/navbar-category'),
+          fetch('/api/category'),
+          fetch('/api/subcategory')
+        ]);
+
+        const navbarResult = await navbarRes.json().catch(() => ({ success: false, data: [] }));
+        const categoriesResult = await categoriesRes.json().catch(() => ({ success: false, data: [] }));
+        const subCategoriesResult = await subCategoriesRes.json().catch(() => ({ success: false, data: [] }));
+
+        const navbarCats = navbarResult.success && navbarResult.data ? navbarResult.data : [];
+        setNavbarCategories(navbarCats);
+
+        if (categoriesResult.success && categoriesResult.data) {
+          const cats: Category[] = categoriesResult.data;
+          const subCats: SubCategory[] = subCategoriesResult.success && subCategoriesResult.data ? subCategoriesResult.data : [];
+
+          const catsWithSub = cats.map((cat) => ({
+            ...cat,
+            subCategories: subCats.filter((sub) =>
+              (typeof sub.category === 'object' && sub.category !== null && (sub.category as any)._id === cat._id) || sub.category === cat._id || sub.category === cat.slug
+            )
+          }));
+
+          setCategories(catsWithSub);
         } else {
-          setProducts([]);
+          setCategories([]);
         }
       } catch (error) {
-        console.error('Error fetching categories:', error);
-        setProducts([]);
+        console.error('Error fetching footer categories:', error);
+        setCategories([]);
+        setNavbarCategories([]);
       } finally {
-        setIsLoadingProducts(false);
+        setIsLoadingCategories(false);
       }
     };
 
-    fetchProducts();
+    fetchData();
   }, []);
+
+  // Helper function to build category href (same as navbar)
+  const findNavbarSlugForCategory = (cat: Category): string | null => {
+    if ((cat as any).navbarCategory) {
+      const nc = (cat as any).navbarCategory;
+      if (typeof nc === 'string') {
+        const found = navbarCategories.find((n) => (n._id === nc || n._id === (nc as any)?._id));
+        return found ? found.slug : null;
+      } else if (typeof nc === 'object' && nc.slug) {
+        return nc.slug;
+      }
+    }
+
+    const foundNav = navbarCategories.find((nav) => {
+      if (!nav.categories) return false;
+      return nav.categories.some((c: any) =>
+        c === cat._id || c === cat.slug || (c && (c._id === cat._id || c.slug === cat.slug))
+      );
+    });
+    if (foundNav) return foundNav.slug;
+
+    return null;
+  };
+
+  const buildCategoryHref = (cat: Category) => {
+    const parent = findNavbarSlugForCategory(cat);
+    return parent ? `/${parent}/${cat.slug}` : `/${cat.slug}`;
+  };
 
   return (
     <footer className="w-full bg-neutral-300 dark:bg-neutral-900">
@@ -57,7 +130,7 @@ const Footer = () => {
               />
             </a>
             <h3 className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-              Uquibity UAE specializes in custom fabrication and surveillance solutions in Dubai. 
+              Uquibity UAE specializes in custom fabrication and surveillance solutions in Dubai.
               We are committed to delivering top-quality services tailored to meet your needs.
             </h3>
           </div>
@@ -79,38 +152,22 @@ const Footer = () => {
           </div>
 
           {/* Solutions */}
-          <div className="col-span-1">
-            <h3 className="font-bold text-neutral-800 dark:text-neutral-200">
-              Solution
-            </h3>
-            <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-              <a href="/solution/cloud-gateways" className="hover:text-blue-600">Cloud Gateways</a>
-            </p>
-            <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-              <a href="/solution/switching" className="hover:text-blue-600">Switching</a>
-            </p>
-            <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-              <a href="/solution/wifi" className="hover:text-blue-600">WiFi</a>
-            </p>
-            <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-              <a href="/solution/physical-security" className="hover:text-blue-600">Physical Security</a>
-            </p>
-             <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-              <a href="/solution/integrations" className="hover:text-blue-600">Integration</a>
-            </p>
-          </div>
 
-          {/* Products - Fetched from category API */}
+
+          {/* Products - Fetched from category API (same as navbar) */}
           <div className="col-span-1">
             <h3 className="font-bold text-neutral-800 dark:text-neutral-200">Products</h3>
-            {isLoadingProducts ? (
+            {isLoadingCategories ? (
               <p className="mt-3 text-sm text-neutral-500 dark:text-neutral-500">Loading...</p>
-            ) : products.length > 0 ? (
+            ) : categories.length > 0 ? (
               <div className="mt-3 space-y-2">
-                {products.slice(0, 5).map((product) => (
-                  <p key={product._id} className="text-sm text-neutral-600 dark:text-neutral-400">
-                    <a href={`/${product.slug}`} className="hover:text-blue-600">
-                      {product.name}
+                {categories.slice(0, 5).map((category) => (
+                  <p key={category._id} className="text-sm text-neutral-600 dark:text-neutral-400">
+                    <a
+                      href={buildCategoryHref(category)}
+                      className="hover:text-blue-600"
+                    >
+                      {category.name}
                     </a>
                   </p>
                 ))}
@@ -125,7 +182,7 @@ const Footer = () => {
             <h3 className="font-bold text-neutral-800 dark:text-neutral-200">
               Stay up to date
             </h3>
-            
+
             {/* Address */}
             <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
               <a
@@ -154,14 +211,13 @@ const Footer = () => {
                 <span className="ml-2">+96050 966 4956</span>
               </a>
               <a
-                href="https://wa.me/+96050 966 4956"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center hover:text-blue-600 ml-4"
+                href="tel:+960509664956"
+                className="inline-flex items-center hover:text-blue-600 ml-4 no-underline"
               >
                 <PhoneIcon />
                 <span className="ml-2">+96050 966 4956</span>
               </a>
+
             </p>
 
             {/* Email */}
@@ -178,7 +234,7 @@ const Footer = () => {
         </div>
 
         <hr className="mt-6 border-t border-neutral-400 dark:border-neutral-700" />
-        
+
         {/* Footer Bottom */}
         <div className="mt-2 grid gap-y-2 text-center sm:flex sm:items-center sm:justify-between sm:gap-y-0 sm:text-left">
           <div className="flex w-full flex-col items-center sm:flex-row sm:justify-between">
@@ -189,22 +245,9 @@ const Footer = () => {
                 href="https://uquibity-uae.com"
                 target="_blank"
                 rel="noopener noreferrer"
-              >
-                .
+              >.
               </a>
             </p>
-            
-            {/* Social Media */}
-            <div className="mt-4 flex space-x-4 sm:mt-0">
-              <a
-                href="https://www.instagram.com/uquibity_uae"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-              >
-                <InstagramIcon />
-              </a>
-            </div>
           </div>
         </div>
       </div>
@@ -212,7 +255,7 @@ const Footer = () => {
   );
 };
 
-// Icon Components
+// Icon Components (keep the same as before)
 const LocationIcon = () => (
   <svg
     className="h-6 w-6 flex-shrink-0 text-neutral-600 dark:text-neutral-400"
@@ -251,7 +294,7 @@ const PhoneIcon = () => (
     viewBox="0 0 24 24"
     fill="currentColor"
   >
-    <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24c1.12.37 2.33.57 3.57.57c.55 0 1 .45 1 1V20c0 .55-.45 1-1 1c-9.39 0-17-7.61-17-17c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1c0 1.25.2 2.45.57 3.57c.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+    <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24c1.12.37 2.33.57 3.57.57c.55 0 1 .45 1 1V20c0 .55-.45 1-1 1c-9.39 0-17-7.61-17-17c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1c0 1.25.2 2.45.57 3.57c.11.35.03.74-.25 1.02l-2.2 2.2z" />
   </svg>
 );
 

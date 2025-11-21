@@ -54,6 +54,7 @@ export default function UniFiNavbar() {
   ]);
   
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -110,7 +111,34 @@ export default function UniFiNavbar() {
     fetchData();
   }, []);
 
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isMobileMenuOpen && mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+        setIsMobileMenuOpen(false);
+        setOpenDropdown(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isMobileMenuOpen]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
+
   const shouldShowWhiteBg = isScrolled || isHovered || isMobileMenuOpen;
+  const isAnyDropdownOpen = openDropdown !== null;
 
   const findNavbarSlugForCategory = (cat: Category): string | null => {
     if ((cat as any).navbarCategory) {
@@ -202,8 +230,9 @@ export default function UniFiNavbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${shouldShowWhiteBg ? 'bg-white shadow-md' : 'bg-transparent'
-          }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          shouldShowWhiteBg ? 'bg-white shadow-md' : 'bg-transparent'
+        }`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -215,25 +244,28 @@ export default function UniFiNavbar() {
               <div className="flex items-center">
                 <button
                   onClick={() => handleNavigation('/')}
-                  className={`text-xl font-bold transition-colors cursor-pointer ${shouldShowWhiteBg ? 'text-gray-900' : 'text-white'
-                    }`}
+                  className={`text-xl font-bold transition-colors cursor-pointer ${
+                    shouldShowWhiteBg ? 'text-gray-900' : 'text-white'
+                  }`}
                 >
                   Ubiquiti
                 </button>
               </div>
-              {/* Desktop Navigation Items */}
-              <div className="hidden lg:flex items-center space-x-1">
+              
+              {/* Desktop Navigation Items - Hidden on iPad and smaller */}
+              <div className="hidden xl:flex items-center space-x-1">
                 {/* Home Link */}
                 <button
                   onClick={() => handleNavigation('/')}
-                  className={`text-xs font-medium transition-colors cursor-pointer rounded-lg px-3 py-2 mx-0.5 ${shouldShowWhiteBg
-                    ? isActivePath('/')
-                      ? 'bg-gray-100 text-blue-600'
-                      : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
-                    : isActivePath('/')
-                      ? 'bg-gray-200/20 text-blue-400'
-                      : 'text-white hover:text-blue-400 hover:bg-white/10'
-                    }`}
+                  className={`text-xs font-medium transition-colors cursor-pointer rounded-lg px-3 py-2 mx-0.5 ${
+                    shouldShowWhiteBg
+                      ? isActivePath('/')
+                        ? 'bg-gray-100 text-blue-600'
+                        : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
+                      : isActivePath('/')
+                        ? 'bg-gray-200/20 text-blue-400'
+                        : 'text-white hover:text-blue-400 hover:bg-white/10'
+                  }`}
                 >
                   Home
                 </button>
@@ -248,14 +280,15 @@ export default function UniFiNavbar() {
                   >
                     <button
                       onClick={() => handleNavigation(buildCategoryHref(cat))}
-                      className={`text-xs font-medium transition-colors cursor-pointer rounded-lg px-3 py-2 mx-0.5 flex items-center space-x-1 ${shouldShowWhiteBg
-                        ? (isCategoryActive(cat.slug) || openDropdown === cat._id)
-                          ? 'bg-gray-100 text-blue-600'
-                          : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
-                        : (isCategoryActive(cat.slug) || openDropdown === cat._id)
-                          ? 'bg-gray-200/20 text-blue-400'
-                          : 'text-white hover:text-blue-400 hover:bg-white/10'
-                        }`}
+                      className={`text-xs font-medium transition-colors cursor-pointer rounded-lg px-3 py-2 mx-0.5 flex items-center space-x-1 ${
+                        shouldShowWhiteBg
+                          ? (isCategoryActive(cat.slug) || openDropdown === cat._id)
+                            ? 'bg-gray-100 text-blue-600'
+                            : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
+                          : (isCategoryActive(cat.slug) || openDropdown === cat._id)
+                            ? 'bg-gray-200/20 text-blue-400'
+                            : 'text-white hover:text-blue-400 hover:bg-white/10'
+                      }`}
                     >
                       <span>{cat.name}</span>
                     </button>
@@ -312,34 +345,41 @@ export default function UniFiNavbar() {
                   <button
                     key={link.slug}
                     onClick={() => handleNavigation(link.href)}
-                    className={`text-xs font-medium transition-colors cursor-pointer rounded-lg px-3 py-2 mx-0.5 ${shouldShowWhiteBg
-                      ? isActivePath(link.href)
-                        ? 'bg-gray-100 text-blue-600'
-                        : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
-                      : isActivePath(link.href)
-                        ? 'bg-gray-200/20 text-blue-400'
-                        : 'text-white hover:text-blue-400 hover:bg-white/10'
-                      }`}
+                    className={`text-xs font-medium transition-colors cursor-pointer rounded-lg px-3 py-2 mx-0.5 ${
+                      shouldShowWhiteBg
+                        ? isActivePath(link.href)
+                          ? 'bg-gray-100 text-blue-600'
+                          : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
+                        : isActivePath(link.href)
+                          ? 'bg-gray-200/20 text-blue-400'
+                          : 'text-white hover:text-blue-400 hover:bg-white/10'
+                    }`}
                   >
                     {link.label}
                   </button>
                 ))}
               </div>
             </div>
+            
             {/* Right Section - Action Icons */}
             <div className="flex items-center space-x-6">
-              {/* Action Icons */}
-              <div className="hidden md:flex items-center space-x-5">
+              {/* Action Icons - Hidden on iPad (764px to 1024px) and when dropdown is open OR mobile menu is open */}
+              <div className={`hidden xl:flex items-center space-x-5 transition-all duration-200 ${
+                isAnyDropdownOpen || isMobileMenuOpen
+                  ? 'opacity-0 invisible scale-95' 
+                  : 'opacity-100 visible scale-100'
+              }`}>
                 {actionItems.map((item) => {
                   const IconComponent = item.icon;
                   return (
                     <button
                       key={item.label}
                       onClick={() => handleActionClick(item.type)}
-                      className={`p-2 transition-all duration-200 cursor-pointer rounded-lg ${shouldShowWhiteBg
-                        ? 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
-                        : 'text-white hover:text-blue-400 hover:bg-blue-500/10'
-                        }`}
+                      className={`p-2 transition-all duration-200 cursor-pointer rounded-lg ${
+                        shouldShowWhiteBg
+                          ? 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                          : 'text-white hover:text-blue-400 hover:bg-blue-500/10'
+                      }`}
                       title={item.label}
                     >
                       <IconComponent className="w-5 h-5" />
@@ -347,111 +387,138 @@ export default function UniFiNavbar() {
                   );
                 })}
               </div>
-              {/* Mobile Menu Button */}
+              
+              {/* Mobile Menu Button - Always visible on iPad and smaller, shows only toggle when menu is open */}
               <button
-                className={`md:hidden p-2 transition-colors rounded-lg cursor-pointer ${shouldShowWhiteBg
-                  ? 'text-gray-700 hover:bg-gray-100'
-                  : 'text-white hover:bg-white/10'
-                  }`}
+                className={`xl:hidden p-2 transition-colors rounded-lg cursor-pointer ${
+                  shouldShowWhiteBg
+                    ? 'text-gray-700 hover:bg-gray-100'
+                    : 'text-white hover:bg-white/10'
+                }`}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
           </div>
-          {/* Mobile Menu */}
+          
+          {/* Enhanced Mobile & iPad Menu */}
           <div
-            className={`lg:hidden transition-all duration-300 overflow-y-auto ${isMobileMenuOpen ? 'max-h-[80vh] opacity-100' : 'max-h-0 opacity-0'
-              }`}
+            ref={mobileMenuRef}
+            className={`xl:hidden transition-all duration-300 ease-in-out ${
+              isMobileMenuOpen 
+                ? 'max-h-[80vh] opacity-100 visible' 
+                : 'max-h-0 opacity-0 invisible'
+            }`}
           >
-            <div className="py-4 border-t border-gray-200">
-              {/* Home */}
-              <div className="border-b border-gray-100">
-                <button
-                  onClick={() => handleNavigation('/')}
-                  className={`block w-full text-left py-3 font-medium transition-colors cursor-pointer rounded-lg mx-2 my-1 px-3 ${isActivePath('/')
-                    ? 'bg-gray-50 text-blue-600 border border-blue-200'
-                    : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
-                    }`}
-                >
-                  Home
-                </button>
-              </div>
-
-              {/* Categories */}
-              {categories.map((cat) => (
-                <div key={cat._id} className="border-b border-gray-100 last:border-b-0">
-                  <div className="flex flex-col">
-                    <button
-                      onClick={() => {
-                        if (cat.subCategories && cat.subCategories.length > 0) {
-                          setOpenDropdown(openDropdown === cat._id ? null : cat._id);
-                        } else {
-                          handleNavigation(buildCategoryHref(cat));
-                        }
-                      }}
-                      className={`flex items-center justify-between w-full text-left py-3 font-medium transition-colors cursor-pointer rounded-lg mx-2 my-1 px-3 ${isCategoryActive(cat.slug)
+            <div className="py-4 border-t border-gray-200 bg-white">
+              {/* Scrollable Container - Vertical scrolling only, horizontal disabled */}
+              <div 
+                className="max-h-[60vh] overflow-y-auto overflow-x-hidden overscroll-contain"
+                style={{ scrollbarWidth: 'thin', scrollbarColor: '#9CA3AF #F3F4F6' }}
+              >
+                
+                {/* Home */}
+                <div className="border-b border-gray-100">
+                  <button
+                    onClick={() => handleNavigation('/')}
+                    className={`block w-full text-left py-3 font-medium transition-colors cursor-pointer rounded-lg mx-2 my-1 px-3 ${
+                      isActivePath('/')
                         ? 'bg-gray-50 text-blue-600 border border-blue-200'
                         : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
-                        }`}
-                    >
-                      <span>{cat.name}</span>
-                      {cat.subCategories && cat.subCategories.length > 0 && (
-                        <ChevronDown className={`w-4 h-4 transition-transform ${openDropdown === cat._id ? 'rotate-180' : ''}`} />
-                      )}
-                    </button>
-
-                    {/* Mobile Dropdown - Only links, no images */}
-                    {cat.subCategories && cat.subCategories.length > 0 && openDropdown === cat._id && (
-                      <div className="ml-4 pb-2">
-                        {cat.subCategories.map((subCat) => (
-                          <div key={subCat._id} className="mb-2">
-                            <button
-                              onClick={() => handleNavigation(buildSubCategoryHref(cat, subCat))}
-                              className="block w-full text-left py-2 px-3 text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors rounded-lg cursor-pointer"
-                            >
-                              <div className="flex items-center justify-between">
-                                <span className="font-medium text-sm">{subCat.name}</span>
-                                {subCat.description && (
-                                  <span className="text-xs text-gray-500 truncate ml-2 max-w-[120px]">
-                                    {subCat.description}
-                                  </span>
-                                )}
-                              </div>
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-
-              {/* Mobile Nav Links */}
-              {navLinks.map((link) => (
-                <div key={link.slug} className="border-b border-gray-100">
-                  <button
-                    onClick={() => handleNavigation(link.href)}
-                    className={`block w-full text-left py-3 font-medium transition-colors cursor-pointer rounded-lg mx-2 my-1 px-3 ${isActivePath(link.href)
-                      ? 'bg-gray-50 text-blue-600 border border-blue-200'
-                      : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
-                      }`}
+                    }`}
                   >
-                    {link.label}
+                    Home
                   </button>
                 </div>
-              ))}
 
-              {/* Mobile Action Items */}
-              <div className="pt-4 border-t border-gray-200">
-                <div className="flex items-center justify-around py-3 px-2">
+                {/* Categories with Enhanced Dropdown */}
+                {categories.map((cat) => (
+                  <div key={cat._id} className="border-b border-gray-100 last:border-b-0">
+                    <div className="flex flex-col">
+                      <button
+                        onClick={() => {
+                          if (cat.subCategories && cat.subCategories.length > 0) {
+                            setOpenDropdown(openDropdown === cat._id ? null : cat._id);
+                          } else {
+                            handleNavigation(buildCategoryHref(cat));
+                          }
+                        }}
+                        className={`flex items-center justify-between w-full text-left py-3 font-medium transition-colors cursor-pointer rounded-lg mx-2 my-1 px-3 ${
+                          isCategoryActive(cat.slug) || openDropdown === cat._id
+                            ? 'bg-gray-50 text-blue-600 border border-blue-200'
+                            : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
+                        }`}
+                      >
+                        <span className="text-sm font-semibold">{cat.name}</span>
+                        {cat.subCategories && cat.subCategories.length > 0 && (
+                          <ChevronDown 
+                            className={`w-4 h-4 transition-transform duration-200 ${
+                              openDropdown === cat._id ? 'rotate-180' : ''
+                            }`} 
+                          />
+                        )}
+                      </button>
+
+                      {/* Enhanced Mobile Dropdown - Vertical scrolling only */}
+                      {cat.subCategories && cat.subCategories.length > 0 && openDropdown === cat._id && (
+                        <div className="ml-4 mr-2 mb-2 mt-1 bg-gray-50 rounded-lg border border-gray-200">
+                          <div 
+                            className="max-h-48 overflow-y-auto overflow-x-hidden py-2"
+                            style={{ scrollbarWidth: 'thin', scrollbarColor: '#9CA3AF #F3F4F6' }}
+                          >
+                            {cat.subCategories.map((subCat) => (
+                              <button
+                                key={subCat._id}
+                                onClick={() => handleNavigation(buildSubCategoryHref(cat, subCat))}
+                                className="block w-full text-left py-2.5 px-4 text-gray-700 hover:text-blue-600 hover:bg-white transition-colors cursor-pointer border-b border-gray-100 last:border-b-0"
+                              >
+                                <div className="flex flex-col">
+                                  <span className="font-medium text-sm text-gray-900 mb-1">
+                                    {subCat.name}
+                                  </span>
+                                  {subCat.description && (
+                                    <span className="text-xs text-gray-500 line-clamp-2 text-left">
+                                      {subCat.description}
+                                    </span>
+                                  )}
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+
+                {/* Mobile & iPad Nav Links */}
+                {navLinks.map((link) => (
+                  <div key={link.slug} className="border-b border-gray-100">
+                    <button
+                      onClick={() => handleNavigation(link.href)}
+                      className={`block w-full text-left py-3 font-medium transition-colors cursor-pointer rounded-lg mx-2 my-1 px-3 ${
+                        isActivePath(link.href)
+                          ? 'bg-gray-50 text-blue-600 border border-blue-200'
+                          : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
+                      }`}
+                    >
+                      {link.label}
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {/* Mobile & iPad Action Items - Fixed at bottom */}
+              <div className="pt-4 border-t border-gray-200 bg-white">
+                <div className="flex items-center justify-around py-3 px-2 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg mx-2">
                   {actionItems.map((item) => {
                     const IconComponent = item.icon;
                     return (
                       <button
                         key={item.label}
                         onClick={() => handleActionClick(item.type)}
-                        className="flex flex-col items-center p-3 text-gray-700 hover:text-blue-600 transition-colors hover:bg-gray-50 rounded-lg cursor-pointer"
+                        className="flex flex-col items-center p-3 text-gray-700 hover:text-blue-600 transition-colors hover:bg-white rounded-lg cursor-pointer flex-1 mx-1"
                       >
                         <IconComponent className="w-5 h-5 mb-1" />
                         <span className="text-xs font-medium">{item.label}</span>
@@ -464,6 +531,17 @@ export default function UniFiNavbar() {
           </div>
         </div>
       </nav>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="xl:hidden fixed inset-0 bg-black bg-opacity-50 z-40 top-14"
+          onClick={() => {
+            setIsMobileMenuOpen(false);
+            setOpenDropdown(null);
+          }}
+        />
+      )}
     </>
   );
 }
