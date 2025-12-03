@@ -111,7 +111,6 @@ export default function UniFiNavbar() {
     fetchData();
   }, []);
 
-  // Close mobile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (isMobileMenuOpen && mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
@@ -124,7 +123,6 @@ export default function UniFiNavbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isMobileMenuOpen]);
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -207,7 +205,6 @@ export default function UniFiNavbar() {
     return false;
   };
 
-  // Enhanced hover handlers with delay for smoother unhover
   const handleMouseEnter = (categoryId: string) => {
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
@@ -237,24 +234,20 @@ export default function UniFiNavbar() {
         onMouseLeave={() => setIsHovered(false)}
       >
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between h-14">
+          {/* Desktop Navbar */}
+          <div className="hidden lg:flex items-center justify-between h-14">
             {/* Left Section - Logo and Nav Items */}
             <div className="flex items-center space-x-10">
-              {/* Logo */}
-              <div className="flex items-center">
-                <button
-                  onClick={() => handleNavigation('/')}
-                  className={`text-xl font-bold transition-colors cursor-pointer ${
-                    shouldShowWhiteBg ? 'text-gray-900' : 'text-white'
-                  }`}
-                >
-                  Ubiquiti
-                </button>
-              </div>
+              <button
+                onClick={() => handleNavigation('/')}
+                className={`text-xl font-bold transition-colors cursor-pointer ${
+                  shouldShowWhiteBg ? 'text-gray-900' : 'text-white'
+                }`}
+              >
+                Ubiquiti
+              </button>
               
-              {/* Desktop Navigation Items - Hidden on iPad and smaller */}
-              <div className="hidden xl:flex items-center space-x-1">
-                {/* Home Link */}
+              <div className="flex items-center space-x-1">
                 <button
                   onClick={() => handleNavigation('/')}
                   className={`text-xs font-medium transition-colors cursor-pointer rounded-lg px-3 py-2 mx-0.5 ${
@@ -270,7 +263,6 @@ export default function UniFiNavbar() {
                   Home
                 </button>
 
-                {/* Categories with Dropdowns - Navigate on click */}
                 {categories.map((cat) => (
                   <div
                     key={cat._id}
@@ -293,46 +285,43 @@ export default function UniFiNavbar() {
                       <span>{cat.name}</span>
                     </button>
 
-                    {/* Dropdown Menu - Hover only */}
                     {cat.subCategories && cat.subCategories.length > 0 && openDropdown === cat._id && (
                       <div
                         className="fixed left-0 right-0 top-14 z-50 bg-white shadow-xl transition-opacity duration-300"
                         onMouseEnter={() => handleMouseEnter(cat._id)}
                         onMouseLeave={handleMouseLeave}
                       >
-                        <div className="w-full">
-                          <div className="max-w-7xl mx-auto px-6 py-2">
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                              {cat.subCategories.map((subCat) => (
-                                <button
-                                  key={subCat._id}
-                                  onClick={() => handleNavigation(buildSubCategoryHref(cat, subCat))}
-                                  className="flex flex-col items-center text-center p-4 bg-white rounded-lg hover:shadow-md transition-all duration-150 cursor-pointer group/subcategory"
-                                >
-                                  <div className="bg-transparent overflow-hidden flex items-center justify-center">
-                                    {subCat.image ? (
-                                      <img
-                                        src={subCat.image}
-                                        alt={subCat.name}
-                                        className="w-full h-full object-contain"
-                                      />
-                                    ) : (
-                                      <div className="text-gray-400 text-xs">No Image</div>
-                                    )}
-                                  </div>
-
-                                  <h4 className="text-sm font-semibold text-gray-900 group-hover/subcategory:text-blue-600 transition-colors">
-                                    {subCat.name}
-                                  </h4>
-
-                                  {subCat.description && (
-                                    <p className="text-xs text-gray-500 mt-1 line-clamp-3">
-                                      {subCat.description}
-                                    </p>
+                        <div className="max-w-7xl mx-auto px-6 py-2">
+                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                            {cat.subCategories.map((subCat) => (
+                              <button
+                                key={subCat._id}
+                                onClick={() => handleNavigation(buildSubCategoryHref(cat, subCat))}
+                                className="flex flex-col items-center text-center p-4 bg-white rounded-lg hover:shadow-md transition-all duration-150 cursor-pointer group/subcategory"
+                              >
+                                <div className="bg-transparent overflow-hidden flex items-center justify-center">
+                                  {subCat.image ? (
+                                    <img
+                                      src={subCat.image}
+                                      alt={subCat.name}
+                                      className="w-full h-full object-contain"
+                                    />
+                                  ) : (
+                                    <div className="text-gray-400 text-xs">No Image</div>
                                   )}
-                                </button>
-                              ))}
-                            </div>
+                                </div>
+
+                                <h4 className="text-sm font-semibold text-gray-900 group-hover/subcategory:text-blue-600 transition-colors">
+                                  {subCat.name}
+                                </h4>
+
+                                {subCat.description && (
+                                  <p className="text-xs text-gray-500 mt-1 line-clamp-3">
+                                    {subCat.description}
+                                  </p>
+                                )}
+                              </button>
+                            ))}
                           </div>
                         </div>
                       </div>
@@ -340,7 +329,6 @@ export default function UniFiNavbar() {
                   </div>
                 ))}
 
-                {/* Nav Links - About, Solutions, Contact Us - Smaller */}
                 {navLinks.map((link) => (
                   <button
                     key={link.slug}
@@ -362,166 +350,144 @@ export default function UniFiNavbar() {
             </div>
             
             {/* Right Section - Action Icons */}
-            <div className="flex items-center space-x-6">
-              {/* Action Icons - Hidden on iPad (764px to 1024px) and when dropdown is open OR mobile menu is open */}
-              <div className={`hidden xl:flex items-center space-x-5 transition-all duration-200 ${
-                isAnyDropdownOpen || isMobileMenuOpen
-                  ? 'opacity-0 invisible scale-95' 
-                  : 'opacity-100 visible scale-100'
-              }`}>
-                {actionItems.map((item) => {
-                  const IconComponent = item.icon;
-                  return (
-                    <button
-                      key={item.label}
-                      onClick={() => handleActionClick(item.type)}
-                      className={`p-2 transition-all duration-200 cursor-pointer rounded-lg ${
-                        shouldShowWhiteBg
-                          ? 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
-                          : 'text-white hover:text-blue-400 hover:bg-blue-500/10'
-                      }`}
-                      title={item.label}
-                    >
-                      <IconComponent className="w-5 h-5" />
-                    </button>
-                  );
-                })}
-              </div>
-              
-              {/* Mobile Menu Button - Always visible on iPad and smaller, shows only toggle when menu is open */}
-              <button
-                className={`xl:hidden p-2 transition-colors rounded-lg cursor-pointer ${
-                  shouldShowWhiteBg
-                    ? 'text-gray-700 hover:bg-gray-100'
-                    : 'text-white hover:bg-white/10'
-                }`}
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              >
-                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
+            <div className={`flex items-center space-x-5 transition-all duration-200 ${
+              isAnyDropdownOpen || isMobileMenuOpen
+                ? 'opacity-0 invisible scale-95' 
+                : 'opacity-100 visible scale-100'
+            }`}>
+              {actionItems.map((item) => {
+                const IconComponent = item.icon;
+                return (
+                  <button
+                    key={item.label}
+                    onClick={() => handleActionClick(item.type)}
+                    className={`p-2 transition-all duration-200 cursor-pointer rounded-lg ${
+                      shouldShowWhiteBg
+                        ? 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                        : 'text-white hover:text-blue-400 hover:bg-blue-500/10'
+                    }`}
+                    title={item.label}
+                  >
+                    <IconComponent className="w-5 h-5" />
+                  </button>
+                );
+              })}
             </div>
           </div>
-          
-          {/* Enhanced Mobile & iPad Menu */}
-          <div
-            ref={mobileMenuRef}
-            className={`xl:hidden transition-all duration-300 ease-in-out ${
-              isMobileMenuOpen 
-                ? 'max-h-[80vh] opacity-100 visible' 
-                : 'max-h-0 opacity-0 invisible'
-            }`}
-          >
-            <div className="py-4 border-t border-gray-200 bg-white">
-              {/* Scrollable Container - Vertical scrolling only, horizontal disabled */}
-              <div 
-                className="max-h-[60vh] overflow-y-auto overflow-x-hidden overscroll-contain"
-                style={{ scrollbarWidth: 'thin', scrollbarColor: '#9CA3AF #F3F4F6' }}
+
+          {/* Mobile & Tablet Header */}
+          <div className="lg:hidden flex items-center justify-between h-14">
+            <button
+              onClick={() => handleNavigation('/')}
+              className={`text-lg font-bold transition-colors cursor-pointer ${
+                shouldShowWhiteBg ? 'text-gray-900' : 'text-white'
+              }`}
+            >
+              Ubiquiti
+            </button>
+
+            <button
+              className={`p-2 transition-colors rounded-lg cursor-pointer ${
+                shouldShowWhiteBg
+                  ? 'text-gray-700 hover:bg-gray-100'
+                  : 'text-white hover:bg-white/10'
+              }`}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+        </div>
+        
+        {/* Mobile & Tablet Menu - Completely Different Design */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden bg-white border-t border-gray-200">
+            <div 
+              ref={mobileMenuRef}
+              className="max-h-[calc(100vh-56px)] overflow-y-auto"
+              style={{ scrollbarWidth: 'thin', scrollbarColor: '#9CA3AF #F3F4F6' }}
+            >
+              {/* Home */}
+              <button
+                onClick={() => handleNavigation('/')}
+                className="w-full text-left px-4 py-3 font-medium text-sm border-b border-gray-100 hover:bg-blue-50 text-gray-900 transition-colors"
               >
-                
-                {/* Home */}
-                <div className="border-b border-gray-100">
+                Home
+              </button>
+
+              {/* Categories */}
+              {categories.map((cat) => (
+                <div key={cat._id} className="border-b border-gray-100">
                   <button
-                    onClick={() => handleNavigation('/')}
-                    className={`block w-full text-left py-3 font-medium transition-colors cursor-pointer rounded-lg mx-2 my-1 px-3 ${
-                      isActivePath('/')
-                        ? 'bg-gray-50 text-blue-600 border border-blue-200'
-                        : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
+                    onClick={() => {
+                      if (cat.subCategories && cat.subCategories.length > 0) {
+                        setOpenDropdown(openDropdown === cat._id ? null : cat._id);
+                      } else {
+                        handleNavigation(buildCategoryHref(cat));
+                      }
+                    }}
+                    className={`w-full flex items-center justify-between px-4 py-3 font-medium text-sm transition-colors ${
+                      isCategoryActive(cat.slug) || openDropdown === cat._id
+                        ? 'bg-blue-50 text-blue-600'
+                        : 'text-gray-900 hover:bg-gray-50'
                     }`}
                   >
-                    Home
-                  </button>
-                </div>
-
-                {/* Categories with Enhanced Dropdown */}
-                {categories.map((cat) => (
-                  <div key={cat._id} className="border-b border-gray-100 last:border-b-0">
-                    <div className="flex flex-col">
-                      <button
-                        onClick={() => {
-                          if (cat.subCategories && cat.subCategories.length > 0) {
-                            setOpenDropdown(openDropdown === cat._id ? null : cat._id);
-                          } else {
-                            handleNavigation(buildCategoryHref(cat));
-                          }
-                        }}
-                        className={`flex items-center justify-between w-full text-left py-3 font-medium transition-colors cursor-pointer rounded-lg mx-2 my-1 px-3 ${
-                          isCategoryActive(cat.slug) || openDropdown === cat._id
-                            ? 'bg-gray-50 text-blue-600 border border-blue-200'
-                            : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
+                    <span>{cat.name}</span>
+                    {cat.subCategories && cat.subCategories.length > 0 && (
+                      <ChevronDown 
+                        className={`w-4 h-4 transition-transform ${
+                          openDropdown === cat._id ? 'rotate-180' : ''
                         }`}
-                      >
-                        <span className="text-sm font-semibold">{cat.name}</span>
-                        {cat.subCategories && cat.subCategories.length > 0 && (
-                          <ChevronDown 
-                            className={`w-4 h-4 transition-transform duration-200 ${
-                              openDropdown === cat._id ? 'rotate-180' : ''
-                            }`} 
-                          />
-                        )}
-                      </button>
+                      />
+                    )}
+                  </button>
 
-                      {/* Enhanced Mobile Dropdown - Vertical scrolling only */}
-                      {cat.subCategories && cat.subCategories.length > 0 && openDropdown === cat._id && (
-                        <div className="ml-4 mr-2 mb-2 mt-1 bg-gray-50 rounded-lg border border-gray-200">
-                          <div 
-                            className="max-h-48 overflow-y-auto overflow-x-hidden py-2"
-                            style={{ scrollbarWidth: 'thin', scrollbarColor: '#9CA3AF #F3F4F6' }}
-                          >
-                            {cat.subCategories.map((subCat) => (
-                              <button
-                                key={subCat._id}
-                                onClick={() => handleNavigation(buildSubCategoryHref(cat, subCat))}
-                                className="block w-full text-left py-2.5 px-4 text-gray-700 hover:text-blue-600 hover:bg-white transition-colors cursor-pointer border-b border-gray-100 last:border-b-0"
-                              >
-                                <div className="flex flex-col">
-                                  <span className="font-medium text-sm text-gray-900 mb-1">
-                                    {subCat.name}
-                                  </span>
-                                  {subCat.description && (
-                                    <span className="text-xs text-gray-500 line-clamp-2 text-left">
-                                      {subCat.description}
-                                    </span>
-                                  )}
-                                </div>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                  {/* Mobile Subcategories - Simple list */}
+                  {cat.subCategories && cat.subCategories.length > 0 && openDropdown === cat._id && (
+                    <div className="bg-gray-50">
+                      {cat.subCategories.map((subCat) => (
+                        <button
+                          key={subCat._id}
+                          onClick={() => handleNavigation(buildSubCategoryHref(cat, subCat))}
+                          className="w-full text-left px-6 py-2.5 text-sm text-gray-700 hover:text-blue-600 hover:bg-white border-b border-gray-100 last:border-b-0 transition-colors"
+                        >
+                          {subCat.name}
+                        </button>
+                      ))}
                     </div>
-                  </div>
-                ))}
+                  )}
+                </div>
+              ))}
 
-                {/* Mobile & iPad Nav Links */}
-                {navLinks.map((link) => (
-                  <div key={link.slug} className="border-b border-gray-100">
-                    <button
-                      onClick={() => handleNavigation(link.href)}
-                      className={`block w-full text-left py-3 font-medium transition-colors cursor-pointer rounded-lg mx-2 my-1 px-3 ${
-                        isActivePath(link.href)
-                          ? 'bg-gray-50 text-blue-600 border border-blue-200'
-                          : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
-                      }`}
-                    >
-                      {link.label}
-                    </button>
-                  </div>
-                ))}
-              </div>
+              {/* Nav Links */}
+              {navLinks.map((link) => (
+                <button
+                  key={link.slug}
+                  onClick={() => handleNavigation(link.href)}
+                  className={`w-full text-left px-4 py-3 font-medium text-sm border-b border-gray-100 transition-colors ${
+                    isActivePath(link.href)
+                      ? 'bg-blue-50 text-blue-600'
+                      : 'text-gray-900 hover:bg-gray-50'
+                  }`}
+                >
+                  {link.label}
+                </button>
+              ))}
 
-              {/* Mobile & iPad Action Items - Fixed at bottom */}
-              <div className="pt-4 border-t border-gray-200 bg-white">
-                <div className="flex items-center justify-around py-3 px-2 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg mx-2">
+              {/* Mobile Action Items */}
+              <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-4 mt-2">
+                <p className="text-xs font-semibold text-gray-600 mb-3 uppercase">Contact</p>
+                <div className="space-y-2">
                   {actionItems.map((item) => {
                     const IconComponent = item.icon;
                     return (
                       <button
                         key={item.label}
                         onClick={() => handleActionClick(item.type)}
-                        className="flex flex-col items-center p-3 text-gray-700 hover:text-blue-600 transition-colors hover:bg-white rounded-lg cursor-pointer flex-1 mx-1"
+                        className="w-full flex items-center space-x-3 px-3 py-2.5 text-gray-700 hover:text-blue-600 hover:bg-white rounded-lg transition-colors text-sm"
                       >
-                        <IconComponent className="w-5 h-5 mb-1" />
-                        <span className="text-xs font-medium">{item.label}</span>
+                        <IconComponent className="w-5 h-5" />
+                        <span>{item.label}</span>
                       </button>
                     );
                   })}
@@ -529,13 +495,13 @@ export default function UniFiNavbar() {
               </div>
             </div>
           </div>
-        </div>
+        )}
       </nav>
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div 
-          className="xl:hidden fixed inset-0 bg-black bg-opacity-50 z-40 top-14"
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-30 z-40 top-14"
           onClick={() => {
             setIsMobileMenuOpen(false);
             setOpenDropdown(null);

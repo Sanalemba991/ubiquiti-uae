@@ -215,7 +215,7 @@ const Footer = () => {
                 className="inline-flex items-center hover:text-blue-600 ml-4 no-underline"
               >
                 <PhoneIcon />
-                <span className="ml-2">+96050 966 4956</span>
+                <span className="ml-2">+96050 966 4956</span>
               </a>
 
             </p>
