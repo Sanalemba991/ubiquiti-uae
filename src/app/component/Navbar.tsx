@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { ChevronDown, Menu, X, MapPin, Mail, Phone } from 'lucide-react';
+import { ChevronDown, Menu, X, MapPin, Mail, Phone, ChevronRight } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 
 interface SubCategory {
@@ -179,10 +179,10 @@ export default function UniFiNavbar() {
   const handleActionClick = (type: string) => {
     switch (type) {
       case 'location':
-        window.open('https://maps.google.com', '_blank');
+        window.open('https://www.google.com/maps/place/Digital+Link+Technology+LLC+-+UNV+National+Distributor+in+Dubai,+UAE/@25.2735063,55.3066148,683m/data=!3m2!1e3!4b1!4m6!3m5!1s0x3e5f432649d77a05:0x329bece680652a9d!8m2!3d25.2735015!4d55.3091897!16s%2Fg%2F11k53tb1x1?entry=ttu&g_ep=EgoyMDI1MTAxNC4wIKXMDSoASAFQAw%3D%3D', '_blank');
         break;
       case 'email':
-        window.location.href = 'mailto:info@unifi.com';
+        window.location.href = 'mailto:sales@uquibity-uae.com';
         break;
       case 'call':
         window.location.href = 'tel:+96050 966 4956';
@@ -219,9 +219,9 @@ export default function UniFiNavbar() {
   };
 
   const actionItems = [
-    { icon: MapPin, label: 'Location', type: 'location' },
-    { icon: Mail, label: 'Email', type: 'email' },
-    { icon: Phone, label: 'Call', type: 'call' },
+    { icon: MapPin, label: 'Location', type: 'location', description: 'Find us' },
+    { icon: Mail, label: 'Email', type: 'email', description: 'info@unifi.com' },
+    { icon: Phone, label: 'Call', type: 'call', description: '+960 50 966 4956' },
   ];
 
   return (
@@ -250,15 +250,17 @@ export default function UniFiNavbar() {
               <div className="flex items-center space-x-1">
                 <button
                   onClick={() => handleNavigation('/')}
-                  className={`text-xs font-medium transition-colors cursor-pointer rounded-lg px-3 py-2 mx-0.5 ${
-                    shouldShowWhiteBg
-                      ? isActivePath('/')
-                        ? 'bg-gray-100 text-blue-600'
-                        : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
-                      : isActivePath('/')
-                        ? 'bg-gray-200/20 text-blue-400'
-                        : 'text-white hover:text-blue-400 hover:bg-white/10'
-                  }`}
+                  className={`text-xs font-medium transition-colors cursor-pointer rounded-lg px-3 py-2 mx-0.5 
+                    @[1024px]:text-[10px]
+                    ${
+                      shouldShowWhiteBg
+                        ? isActivePath('/')
+                          ? 'bg-gray-100 text-blue-600'
+                          : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
+                        : isActivePath('/')
+                          ? 'bg-gray-200/20 text-blue-400'
+                          : 'text-white hover:text-blue-400 hover:bg-white/10'
+                    }`}
                 >
                   Home
                 </button>
@@ -272,15 +274,17 @@ export default function UniFiNavbar() {
                   >
                     <button
                       onClick={() => handleNavigation(buildCategoryHref(cat))}
-                      className={`text-xs font-medium transition-colors cursor-pointer rounded-lg px-3 py-2 mx-0.5 flex items-center space-x-1 ${
-                        shouldShowWhiteBg
-                          ? (isCategoryActive(cat.slug) || openDropdown === cat._id)
-                            ? 'bg-gray-100 text-blue-600'
-                            : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
-                          : (isCategoryActive(cat.slug) || openDropdown === cat._id)
-                            ? 'bg-gray-200/20 text-blue-400'
-                            : 'text-white hover:text-blue-400 hover:bg-white/10'
-                      }`}
+                      className={`text-xs font-medium transition-colors cursor-pointer rounded-lg px-3 py-2 mx-0.5 flex items-center space-x-1 
+                        @[1024px]:text-[10px]
+                        ${
+                          shouldShowWhiteBg
+                            ? (isCategoryActive(cat.slug) || openDropdown === cat._id)
+                              ? 'bg-gray-100 text-blue-600'
+                              : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
+                            : (isCategoryActive(cat.slug) || openDropdown === cat._id)
+                              ? 'bg-gray-200/20 text-blue-400'
+                              : 'text-white hover:text-blue-400 hover:bg-white/10'
+                        }`}
                     >
                       <span>{cat.name}</span>
                     </button>
@@ -292,14 +296,14 @@ export default function UniFiNavbar() {
                         onMouseLeave={handleMouseLeave}
                       >
                         <div className="max-w-7xl mx-auto px-6 py-2">
-                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
                             {cat.subCategories.map((subCat) => (
                               <button
                                 key={subCat._id}
                                 onClick={() => handleNavigation(buildSubCategoryHref(cat, subCat))}
-                                className="flex flex-col items-center text-center p-4 bg-white rounded-lg hover:shadow-md transition-all duration-150 cursor-pointer group/subcategory"
+                                className="flex flex-col items-center text-center p-3 sm:p-4 bg-white rounded-lg hover:shadow-md transition-all duration-150 cursor-pointer group/subcategory"
                               >
-                                <div className="bg-transparent overflow-hidden flex items-center justify-center">
+                                <div className="bg-transparent overflow-hidden flex items-center justify-center h-16 sm:h-20 md:h-24 lg:h-28 w-full">
                                   {subCat.image ? (
                                     <img
                                       src={subCat.image}
@@ -311,12 +315,12 @@ export default function UniFiNavbar() {
                                   )}
                                 </div>
 
-                                <h4 className="text-sm font-semibold text-gray-900 group-hover/subcategory:text-blue-600 transition-colors">
+                                <h4 className="text-xs sm:text-sm font-semibold text-gray-900 group-hover/subcategory:text-blue-600 transition-colors mt-2 line-clamp-2">
                                   {subCat.name}
                                 </h4>
 
                                 {subCat.description && (
-                                  <p className="text-xs text-gray-500 mt-1 line-clamp-3">
+                                  <p className="text-xs text-gray-500 mt-1 line-clamp-2 sm:line-clamp-3 hidden sm:block">
                                     {subCat.description}
                                   </p>
                                 )}
@@ -333,15 +337,17 @@ export default function UniFiNavbar() {
                   <button
                     key={link.slug}
                     onClick={() => handleNavigation(link.href)}
-                    className={`text-xs font-medium transition-colors cursor-pointer rounded-lg px-3 py-2 mx-0.5 ${
-                      shouldShowWhiteBg
-                        ? isActivePath(link.href)
-                          ? 'bg-gray-100 text-blue-600'
-                          : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
-                        : isActivePath(link.href)
-                          ? 'bg-gray-200/20 text-blue-400'
-                          : 'text-white hover:text-blue-400 hover:bg-white/10'
-                    }`}
+                    className={`text-xs font-medium transition-colors cursor-pointer rounded-lg px-3 py-2 mx-0.5 
+                      @[1024px]:text-[10px]
+                      ${
+                        shouldShowWhiteBg
+                          ? isActivePath(link.href)
+                            ? 'bg-gray-100 text-blue-600'
+                            : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
+                          : isActivePath(link.href)
+                            ? 'bg-gray-200/20 text-blue-400'
+                            : 'text-white hover:text-blue-400 hover:bg-white/10'
+                      }`}
                   >
                     {link.label}
                   </button>
@@ -399,95 +405,134 @@ export default function UniFiNavbar() {
           </div>
         </div>
         
-        {/* Mobile & Tablet Menu - Completely Different Design */}
+        {/* Mobile & Tablet Menu - Ultra Professional Design */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden bg-white border-t border-gray-200">
+          <div className="lg:hidden bg-gradient-to-b from-white to-gray-50/50 border-t border-gray-200 shadow-2xl">
             <div 
               ref={mobileMenuRef}
               className="max-h-[calc(100vh-56px)] overflow-y-auto"
-              style={{ scrollbarWidth: 'thin', scrollbarColor: '#9CA3AF #F3F4F6' }}
+              style={{ 
+                scrollbarWidth: 'thin', 
+                scrollbarColor: '#CBD5E1 #F1F5F9',
+                WebkitOverflowScrolling: 'touch'
+              }}
             >
-              {/* Home */}
-              <button
-                onClick={() => handleNavigation('/')}
-                className="w-full text-left px-4 py-3 font-medium text-sm border-b border-gray-100 hover:bg-blue-50 text-gray-900 transition-colors"
-              >
-                Home
-              </button>
-
-              {/* Categories */}
-              {categories.map((cat) => (
-                <div key={cat._id} className="border-b border-gray-100">
-                  <button
-                    onClick={() => {
-                      if (cat.subCategories && cat.subCategories.length > 0) {
-                        setOpenDropdown(openDropdown === cat._id ? null : cat._id);
-                      } else {
-                        handleNavigation(buildCategoryHref(cat));
-                      }
-                    }}
-                    className={`w-full flex items-center justify-between px-4 py-3 font-medium text-sm transition-colors ${
-                      isCategoryActive(cat.slug) || openDropdown === cat._id
-                        ? 'bg-blue-50 text-blue-600'
-                        : 'text-gray-900 hover:bg-gray-50'
-                    }`}
-                  >
-                    <span>{cat.name}</span>
-                    {cat.subCategories && cat.subCategories.length > 0 && (
-                      <ChevronDown 
-                        className={`w-4 h-4 transition-transform ${
-                          openDropdown === cat._id ? 'rotate-180' : ''
-                        }`}
-                      />
-                    )}
-                  </button>
-
-                  {/* Mobile Subcategories - Simple list */}
-                  {cat.subCategories && cat.subCategories.length > 0 && openDropdown === cat._id && (
-                    <div className="bg-gray-50">
-                      {cat.subCategories.map((subCat) => (
-                        <button
-                          key={subCat._id}
-                          onClick={() => handleNavigation(buildSubCategoryHref(cat, subCat))}
-                          className="w-full text-left px-6 py-2.5 text-sm text-gray-700 hover:text-blue-600 hover:bg-white border-b border-gray-100 last:border-b-0 transition-colors"
-                        >
-                          {subCat.name}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-
-              {/* Nav Links */}
-              {navLinks.map((link) => (
+              <div className="px-4 py-2">
+                {/* Home */}
                 <button
-                  key={link.slug}
-                  onClick={() => handleNavigation(link.href)}
-                  className={`w-full text-left px-4 py-3 font-medium text-sm border-b border-gray-100 transition-colors ${
-                    isActivePath(link.href)
-                      ? 'bg-blue-50 text-blue-600'
-                      : 'text-gray-900 hover:bg-gray-50'
+                  onClick={() => handleNavigation('/')}
+                  className={`w-full flex items-center justify-between px-4 py-3.5 font-medium text-sm rounded-xl mb-1 transition-all duration-200 ${
+                    isActivePath('/')
+                      ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30'
+                      : 'text-gray-900 hover:bg-white active:bg-gray-100'
                   }`}
                 >
-                  {link.label}
+                  <span>Home</span>
+                  {isActivePath('/') && <ChevronRight className="w-4 h-4" />}
                 </button>
-              ))}
 
-              {/* Mobile Action Items */}
-              <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-4 mt-2">
-                <p className="text-xs font-semibold text-gray-600 mb-3 uppercase">Contact</p>
-                <div className="space-y-2">
+                {/* Categories */}
+                {categories.map((cat) => (
+                  <div key={cat._id} className="mb-1">
+                    <button
+                      onClick={() => {
+                        if (cat.subCategories && cat.subCategories.length > 0) {
+                          setOpenDropdown(openDropdown === cat._id ? null : cat._id);
+                        } else {
+                          handleNavigation(buildCategoryHref(cat));
+                        }
+                      }}
+                      className={`w-full flex items-center justify-between px-4 py-3.5 font-medium text-sm rounded-xl transition-all duration-200 ${
+                        isCategoryActive(cat.slug)
+                          ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30'
+                          : openDropdown === cat._id
+                            ? 'bg-blue-50 text-blue-700'
+                            : 'text-gray-900 hover:bg-white active:bg-gray-100'
+                      }`}
+                    >
+                      <span>{cat.name}</span>
+                      <div className="flex items-center gap-2">
+                        {isCategoryActive(cat.slug) && !cat.subCategories?.length && (
+                          <ChevronRight className="w-4 h-4" />
+                        )}
+                        {cat.subCategories && cat.subCategories.length > 0 && (
+                          <div className="flex items-center gap-1">
+                            <span className="text-xs opacity-75">
+                              {cat.subCategories.length}
+                            </span>
+                            <ChevronDown 
+                              className={`w-4 h-4 transition-transform duration-300 ${
+                                openDropdown === cat._id ? 'rotate-180' : ''
+                              }`}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </button>
+
+                    {/* Mobile Subcategories - Premium Card Grid */}
+                    {cat.subCategories && cat.subCategories.length > 0 && openDropdown === cat._id && (
+                      <div className="mt-2 mb-3 px-2">
+                        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-3 overflow-hidden">
+                          <div className="flex flex-col gap-1">
+                            {cat.subCategories.map((subCat) => (
+                              <button
+                                key={subCat._id}
+                                onClick={() => handleNavigation(buildSubCategoryHref(cat, subCat))}
+                                className="w-full flex items-center justify-between px-4 py-3.5 text-sm rounded-xl transition-all duration-200 text-gray-900 hover:bg-white active:bg-gray-100"
+                              >
+                                <span className="text-left">{subCat.name}</span>
+                                <ChevronRight className="w-4 h-4 text-gray-400" />
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                {/* Nav Links */}
+                {navLinks.map((link) => (
+                  <button
+                    key={link.slug}
+                    onClick={() => handleNavigation(link.href)}
+                    className={`w-full flex items-center justify-between px-4 py-3.5 font-medium text-sm rounded-xl mb-1 transition-all duration-200 ${
+                      isActivePath(link.href)
+                        ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30'
+                        : 'text-gray-900 hover:bg-white active:bg-gray-100'
+                    }`}
+                  >
+                    <span>{link.label}</span>
+                    {isActivePath(link.href) && <ChevronRight className="w-4 h-4" />}
+                  </button>
+                ))}
+              </div>
+
+              {/* Mobile Action Items - Premium Contact Section */}
+              <div className="bg-gradient-to-br from-blue-50 via-indigo-50/40 to-purple-50/30 px-4 py-6 mt-4 border-t border-gray-200">
+                <div className="mb-4">
+                  <h3 className="text-base font-medium text-gray-900 mb-1">Get in Touch</h3>
+                  <p className="text-xs text-gray-600">We're here to help you anytime</p>
+                </div>
+                
+                <div className="space-y-2.5">
                   {actionItems.map((item) => {
                     const IconComponent = item.icon;
                     return (
                       <button
                         key={item.label}
                         onClick={() => handleActionClick(item.type)}
-                        className="w-full flex items-center space-x-3 px-3 py-2.5 text-gray-700 hover:text-blue-600 hover:bg-white rounded-lg transition-colors text-sm"
+                        className="group w-full flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-200 hover:border-blue-300 hover:shadow-xl active:scale-[0.98] transition-all duration-200"
                       >
-                        <IconComponent className="w-5 h-5" />
-                        <span>{item.label}</span>
+                        <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:shadow-xl group-hover:shadow-blue-500/40 transition-all duration-200">
+                          <IconComponent className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="flex-1 text-left">
+                          <div className="text-sm font-medium text-gray-900 mb-0.5">{item.label}</div>
+                          <div className="text-xs text-gray-600">{item.description}</div>
+                        </div>
+                        <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" />
                       </button>
                     );
                   })}
@@ -501,13 +546,38 @@ export default function UniFiNavbar() {
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div 
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-30 z-40 top-14"
+          className="lg:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-40 top-14 transition-opacity duration-300"
           onClick={() => {
             setIsMobileMenuOpen(false);
             setOpenDropdown(null);
           }}
         />
       )}
+
+      {/* Responsive Typography Styles */}
+      <style jsx global>{`
+        @media (max-width: 1024px) and (max-height: 1366px) {
+          nav button span,
+          nav button {
+            font-size: 0.65rem !important;
+          }
+          
+          nav .text-xs {
+            font-size: 0.60rem;
+          }
+          
+          nav .text-sm {
+            font-size: 0.65rem;
+          }
+        }
+        
+        /* Smooth scrolling for mobile menu */
+        @media (max-width: 1024px) {
+          .overflow-y-auto {
+            -webkit-overflow-scrolling: touch;
+          }
+        }
+      `}</style>
     </>
   );
 }
