@@ -183,7 +183,7 @@ export default function UniFiNavbar() {
         window.open('https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d185.85699190367959!2d55.30896546588453!3d25.27341693672885!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f5d48ffab5a65%3A0x8c2898929d4589f7!2sLovosis%20Technology%20L.L.C!5e1!3m2!1sen!2sin!4v1764833527855!5m2!1sen!2sin', '_blank');
         break;
       case 'email':
-        window.location.href = 'mailto:sales@uquibity-uae.com';
+        window.location.href = 'mailto:sales@ubiquiti-uae.com ';
         break;
       case 'call':
         window.location.href = 'tel:+971050 966 4956';
@@ -221,8 +221,8 @@ export default function UniFiNavbar() {
 
   const actionItems = [
     { icon: MapPin, label: 'Location', type: 'location', description: 'Find us' },
-    { icon: Mail, label: 'Email', type: 'email', description: 'info@unifi.com' },
-    { icon: Phone, label: 'Call', type: 'call', description: '+960 50 966 4956' },
+    { icon: Mail, label: 'Email', type: 'email', description: 'sales@ubiquiti-uae.com ' },
+    { icon: Phone, label: 'Call', type: 'call', description: '+971050 966 4956' },
   ];
 
   return (
