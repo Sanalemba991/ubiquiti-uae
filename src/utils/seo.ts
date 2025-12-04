@@ -141,27 +141,20 @@ export const organizationSchema = {
     foundingDate: '2018-01-01',
     contactPoint: {
         '@type': 'ContactPoint',
-        telephone: '+96050 966 4956',
+        telephone: '+971509664956',
         contactType: 'customer service',
-        email: 'sales@ubiquiti-uae.com',
+        email: 'sales@ubiquiti-uae.com ',
         areaServed: 'AE',
         availableLanguage: ['English', 'Arabic'],
     },
     address: {
         '@type': 'PostalAddress',
-        streetAddress: 'Dubai Silicon Oasis',
-        addressLocality: 'Dubai',
-        addressRegion: 'Dubai',
-        postalCode: '00000',
+        streetAddress: 'Baghlaf Building Showroom No.5 Satellite Market Naif Deira - Dubai United Arab Emirates.',
+        addressLocality: '25th St - Naif - Dubai',
+        addressRegion: '25th St - Naif - Dubai',
+        postalCode: '123421',
         addressCountry: 'AE',
     },
-    sameAs: [
-        'https://www.instagram.com/ubiquitiuae',
-        'https://www.facebook.com/ubiquitiuae',
-        'https://www.linkedin.com/company/ubiquiti-uae',
-        'https://twitter.com/ubiquitiuae',
-        'https://www.ui.com/'
-    ],
     areaServed: {
         '@type': 'Country',
         name: 'United Arab Emirates',

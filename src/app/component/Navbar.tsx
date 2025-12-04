@@ -180,13 +180,13 @@ export default function UniFiNavbar() {
   const handleActionClick = (type: string) => {
     switch (type) {
       case 'location':
-        window.open('https://www.google.com/maps/place/Digital+Link+Technology+LLC+-+UNV+National+Distributor+in+Dubai,+UAE/@25.2735063,55.3066148,683m/data=!3m2!1e3!4b1!4m6!3m5!1s0x3e5f432649d77a05:0x329bece680652a9d!8m2!3d25.2735015!4d55.3091897!16s%2Fg%2F11k53tb1x1?entry=ttu&g_ep=EgoyMDI1MTAxNC4wIKXMDSoASAFQAw%3D%3D', '_blank');
+        window.open('https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d185.85699190367959!2d55.30896546588453!3d25.27341693672885!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f5d48ffab5a65%3A0x8c2898929d4589f7!2sLovosis%20Technology%20L.L.C!5e1!3m2!1sen!2sin!4v1764833527855!5m2!1sen!2sin', '_blank');
         break;
       case 'email':
         window.location.href = 'mailto:sales@uquibity-uae.com';
         break;
       case 'call':
-        window.location.href = 'tel:+96050 966 4956';
+        window.location.href = 'tel:+971050 966 4956';
         break;
       default:
         break;

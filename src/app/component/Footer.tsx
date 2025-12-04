@@ -1,7 +1,30 @@
-// components/Footer.tsx
-'use client';
+"use client";
+import Logo from "../../../public/logoua.png";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { FaInstagram, FaWhatsapp, FaFacebook } from "react-icons/fa";
 
-import { useEffect, useState } from 'react';
+interface Product {
+  _id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  shortDescription?: string;
+  price: number;
+  comparePrice?: number;
+  images: string[];
+  categoryId: string;
+  subCategoryId: string;
+  sku: string;
+  stock: number;
+  isActive: boolean;
+  features: string[];
+  specifications: Record<string, string>;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+}
 
 interface SubCategory {
   _id: string;
@@ -33,43 +56,107 @@ interface NavbarCategory {
   categories?: any[];
 }
 
-const Footer = () => {
-  const [currentYear, setCurrentYear] = useState('');
+export default function Footer() {
+  const [featublueProducts, setFeatublueProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // State for categories data from previous footer
   const [categories, setCategories] = useState<Category[]>([]);
-  const [navbarCategories, setNavbarCategories] = useState<NavbarCategory[]>([]);
+  const [navbarCategories, setNavbarCategories] = useState<NavbarCategory[]>(
+    []
+  );
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
 
+  // Fetch featublue products
   useEffect(() => {
-    setCurrentYear(new Date().getFullYear().toString());
+    async function fetchFeatublueProducts() {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const apiBase = (process.env.NEXT_PUBLIC_API_URL || "").replace(
+          /\/$/,
+          ""
+        );
+        const endpoint = apiBase
+          ? `${apiBase}/api/products?featublue=true&limit=4`
+          : "/api/products?featublue=true&limit=4";
+
+        const res = await fetch(endpoint, {
+          headers: { "Content-Type": "application/json" },
+        });
+
+        if (!res.ok) {
+          throw new Error(`Failed to fetch products: ${res.status}`);
+        }
+
+        const data = await res.json();
+
+        if (data.success) {
+          const activeProducts = data.data
+            .filter((product: Product) => product.isActive)
+            .slice(0, 4);
+          setFeatublueProducts(activeProducts);
+        } else {
+          throw new Error("Failed to load products");
+        }
+      } catch (error) {
+        console.error("Error fetching featublue products:", error);
+        setError(
+          error instanceof Error ? error.message : "Failed to load products"
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchFeatublueProducts();
   }, []);
 
+  // Fetch categories from previous footer
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoadingCategories(true);
 
         const [navbarRes, categoriesRes, subCategoriesRes] = await Promise.all([
-          fetch('/api/navbar-category'),
-          fetch('/api/category'),
-          fetch('/api/subcategory')
+          fetch("/api/navbar-category"),
+          fetch("/api/category"),
+          fetch("/api/subcategory"),
         ]);
 
-        const navbarResult = await navbarRes.json().catch(() => ({ success: false, data: [] }));
-        const categoriesResult = await categoriesRes.json().catch(() => ({ success: false, data: [] }));
-        const subCategoriesResult = await subCategoriesRes.json().catch(() => ({ success: false, data: [] }));
+        const navbarResult = await navbarRes
+          .json()
+          .catch(() => ({ success: false, data: [] }));
+        const categoriesResult = await categoriesRes
+          .json()
+          .catch(() => ({ success: false, data: [] }));
+        const subCategoriesResult = await subCategoriesRes
+          .json()
+          .catch(() => ({ success: false, data: [] }));
 
-        const navbarCats = navbarResult.success && navbarResult.data ? navbarResult.data : [];
+        const navbarCats =
+          navbarResult.success && navbarResult.data ? navbarResult.data : [];
         setNavbarCategories(navbarCats);
 
         if (categoriesResult.success && categoriesResult.data) {
           const cats: Category[] = categoriesResult.data;
-          const subCats: SubCategory[] = subCategoriesResult.success && subCategoriesResult.data ? subCategoriesResult.data : [];
+          const subCats: SubCategory[] =
+            subCategoriesResult.success && subCategoriesResult.data
+              ? subCategoriesResult.data
+              : [];
 
           const catsWithSub = cats.map((cat) => ({
             ...cat,
-            subCategories: subCats.filter((sub) =>
-              (typeof sub.category === 'object' && sub.category !== null && (sub.category as any)._id === cat._id) || sub.category === cat._id || sub.category === cat.slug
-            )
+            subCategories: subCats.filter(
+              (sub) =>
+                (typeof sub.category === "object" &&
+                  sub.category !== null &&
+                  (sub.category as any)._id === cat._id) ||
+                sub.category === cat._id ||
+                sub.category === cat.slug
+            ),
           }));
 
           setCategories(catsWithSub);
@@ -77,7 +164,7 @@ const Footer = () => {
           setCategories([]);
         }
       } catch (error) {
-        console.error('Error fetching footer categories:', error);
+        console.error("Error fetching footer categories:", error);
         setCategories([]);
         setNavbarCategories([]);
       } finally {
@@ -88,22 +175,26 @@ const Footer = () => {
     fetchData();
   }, []);
 
-  // Helper function to build category href (same as navbar)
   const findNavbarSlugForCategory = (cat: Category): string | null => {
     if ((cat as any).navbarCategory) {
       const nc = (cat as any).navbarCategory;
-      if (typeof nc === 'string') {
-        const found = navbarCategories.find((n) => (n._id === nc || n._id === (nc as any)?._id));
+      if (typeof nc === "string") {
+        const found = navbarCategories.find(
+          (n) => n._id === nc || n._id === (nc as any)?._id
+        );
         return found ? found.slug : null;
-      } else if (typeof nc === 'object' && nc.slug) {
+      } else if (typeof nc === "object" && nc.slug) {
         return nc.slug;
       }
     }
 
     const foundNav = navbarCategories.find((nav) => {
       if (!nav.categories) return false;
-      return nav.categories.some((c: any) =>
-        c === cat._id || c === cat.slug || (c && (c._id === cat._id || c.slug === cat.slug))
+      return nav.categories.some(
+        (c: any) =>
+          c === cat._id ||
+          c === cat.slug ||
+          (c && (c._id === cat._id || c.slug === cat.slug))
       );
     });
     if (foundNav) return foundNav.slug;
@@ -117,215 +208,287 @@ const Footer = () => {
   };
 
   return (
-    <footer className="w-full bg-neutral-300 dark:bg-neutral-900">
-      <div className="mx-auto w-full max-w-[85rem] px-4 py-8 sm:px-6 lg:px-16 lg:pt-20 2xl:max-w-screen-2xl">
-        <div className="grid grid-cols-1 gap-6 text-center md:grid-cols-4 md:text-left lg:grid-cols-7">
-          {/* Brand Section */}
-          <div className="col-span-full lg:col-span-2">
-            <a href="/" aria-label="Brand">
-              <img
-                src="/pictures/logo.png"
-                alt="Uquibity UAE Logo"
-                className="w-38 mx-auto h-12 md:mx-0"
-              />
-            </a>
-            <h3 className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-              Uquibity UAE specializes in custom fabrication and surveillance solutions in Dubai.
-              We are committed to delivering top-quality services tailored to meet your needs.
-            </h3>
+    <footer className="bg-gray-300 text-white">
+      <div className="container mx-auto px-6 py-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          {/* Company Info - Column 1 */}
+          <div className="animate-slideUp">
+            <div className="flex items-center mb-3">
+              <div className="border-gray-400 pl-2 flex items-center">
+                <Image src={Logo} alt="Ubiquiti UAE" width={250} height={40} />
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs leading-relaxed mb-3 max-w-xs">
+              Ubiquiti UAE is the largest distributor of all kind of Ubiquiti
+              products in the surveillance market of Dubai UAE & Middle East.
+              Follow us on social media to get to know about our latest product
+              line.
+            </p>
+
+            {/* Social Media Links - Added here */}
+            <div className="flex gap-4 mt-4">
+              {/* Instagram */}
+              <a
+                href=""
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:opacity-80 transition-opacity duration-200"
+                aria-label="Visit our Instagram"
+              >
+                {/* Replace with your Instagram logo image or use react-icons */}
+                <FaInstagram className="w-6 h-6 text-pink-600" />
+              </a>
+
+              {/* WhatsApp */}
+              <a
+                href="https://wa.me/+971050 966 4956"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:opacity-80 transition-opacity duration-200"
+                aria-label="Contact us on WhatsApp"
+              >
+                <FaWhatsapp className="w-6 h-6 text-green-500" />
+              </a>
+
+              {/* Facebook */}
+              <a
+                href=""
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:opacity-80 transition-opacity duration-200"
+                aria-label="Visit our Facebook page"
+              >
+                <FaFacebook className="w-6 h-6 text-blue-600" />
+              </a>
+            </div>
           </div>
 
-          {/* Quick Links */}
-          <div className="col-span-1">
-            <h3 className="font-bold text-neutral-800 dark:text-neutral-200">
-              Quick Link
+          {/* Quick Links - Column 2 */}
+          <div className="animate-slideUp animation-delay-200">
+            <h3 className="text-sm font-semibold text-black mb-3">
+              Quick Links
             </h3>
-            <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
-              <a href="/" className="hover:text-blue-600">Home</a>
-            </p>
-            <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-              <a href="/about" className="hover:text-blue-600">About</a>
-            </p>
-            <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-              <a href="/contact" className="hover:text-blue-600">Contact</a>
-            </p>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <span className="text-blue-500 text-xs font-bold">•</span>
+                <Link
+                  href="/"
+                  className="text-gray-600 hover:text-blue-400 transition-all duration-200 text-xs hover:translate-x-1"
+                >
+                  Home
+                </Link>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className="text-blue-500 text-xs font-bold">•</span>
+                <Link
+                  href="/about"
+                  className="text-gray-600 hover:text-blue-400 transition-all duration-200 text-xs hover:translate-x-1"
+                >
+                  About Us
+                </Link>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className="text-blue-500 text-xs font-bold">•</span>
+                <Link
+                  href="/solution"
+                  className="text-gray-600 hover:text-blue-400 transition-all duration-200 text-xs hover:translate-x-1"
+                >
+                  Solutions
+                </Link>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className="text-blue-500 text-xs font-bold">•</span>
+                <Link
+                  href="/contact"
+                  className="text-gray-600 hover:text-blue-400 transition-all duration-200 text-xs hover:translate-x-1"
+                >
+                  Contact Us
+                </Link>
+              </div>
+            </div>
           </div>
 
-          {/* Solutions */}
-
-
-          {/* Products - Fetched from category API (same as navbar) */}
-          <div className="col-span-1">
-            <h3 className="font-bold text-neutral-800 dark:text-neutral-200">Products</h3>
-            {isLoadingCategories ? (
-              <p className="mt-3 text-sm text-neutral-500 dark:text-neutral-500">Loading...</p>
-            ) : categories.length > 0 ? (
-              <div className="mt-3 space-y-2">
-                {categories.slice(0, 5).map((category) => (
-                  <p key={category._id} className="text-sm text-neutral-600 dark:text-neutral-400">
-                    <a
+          {/* Categories (Previously Featublue Products) - Column 3 */}
+          <div className="animate-slideUp animation-delay-400">
+            <h3 className="text-sm font-semibold text-black mb-3">Products</h3>
+            <div className="space-y-2">
+              {isLoadingCategories ? (
+                // Loading skeleton
+                Array.from({ length: 6 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center space-x-2 animate-pulse"
+                  >
+                    <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
+                    <div className="h-3 bg-gray-600 rounded w-32"></div>
+                  </div>
+                ))
+              ) : categories.length > 0 ? (
+                categories.slice(0, 6).map((category) => (
+                  <div
+                    key={category._id}
+                    className="flex items-center space-x-2 group"
+                  >
+                    <span className="text-blue-500 text-xs font-bold transition-transform duration-200">
+                      •
+                    </span>
+                    <Link
                       href={buildCategoryHref(category)}
-                      className="hover:text-blue-600"
+                      className="text-gray-600 hover:text-blue-400 transition-all duration-200 text-xs hover:translate-x-1 line-clamp-1"
+                      title={category.name}
                     >
                       {category.name}
-                    </a>
-                  </p>
-                ))}
-              </div>
-            ) : (
-              <p className="mt-3 text-sm text-neutral-500 dark:text-neutral-500">No products available</p>
-            )}
+                    </Link>
+                  </div>
+                ))
+              ) : (
+                <div className="text-gray-600 text-xs flex items-center space-x-2">
+                  <span>📦</span>
+                  <span>No categories found</span>
+                </div>
+              )}
+            </div>
+
+            {/* View All Categories Link */}
           </div>
 
-          {/* Contact Information */}
-          <div className="col-span-1 md:col-span-2">
-            <h3 className="font-bold text-neutral-800 dark:text-neutral-200">
-              Stay up to date
+          {/* Get In Touch - Column 4 */}
+          <div className="animate-slideUp animation-delay-600">
+            <h3 className="text-sm font-semibold text-black mb-3">
+              Get In Touch
             </h3>
-
-            {/* Address */}
-            <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
-              <a
-                href="https://www.google.com/maps/place/Digital+Link+Technology+LLC+-+UNV+National+Distributor+in+Dubai,+UAE/@25.2735063,55.3066148,683m/data=!3m2!1e3!4b1!4m6!3m5!1s0x3e5f432649d77a05:0x329bece680652a9d!8m2!3d25.2735015!4d55.3091897!16s%2Fg%2F11k53tb1x1?entry=ttu&g_ep=EgoyMDI1MTAxNC4wIKXMDSoASAFQAw%3D%3D"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center hover:text-blue-600"
-              >
-                <LocationIcon />
-                <span className="ml-1">
-                  Baghlaf Building Showroom No.5 Satellite Market Naif Deira - Dubai
-                  United Arab Emirates
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2 group">
+                <span className="text-blue-500 font-bold text-xs transition-transform duration-200 group-hover:scale-110">
+                  ✉
                 </span>
-              </a>
-            </p>
+                <Link
+                  href="mailto:sales@ubiquiti-uae.com "
+                  className="text-gray-600 hover:text-blue-400 transition-all duration-200 text-xs hover:translate-x-1"
+                >
+                  sales@ubiquiti-uae.com 
+                </Link>
+              </div>
+              <div className="flex items-center space-x-2 group">
+                <span className="text-blue-500 font-bold text-xs transition-transform duration-200 group-hover:scale-110">
+                  📞
+                </span>
+                <Link
+                  href="tel:+971050 966 4956"
+                  className="text-gray-600 hover:text-blue-400 transition-all duration-200 text-xs hover:translate-x-1"
+                >
+                  +971050 966 4956
+                </Link>
+              </div>
+              <div className="flex items-center space-x-2 group">
+                <span className="text-blue-500 font-bold text-xs transition-transform duration-200 group-hover:scale-110">
+                  🏢
+                </span>
+                <span className="text-gray-600 text-xs">
+                  Office: 9AM - 6PM (GMT+4)
+                </span>
+              </div>
+            </div>
 
-            {/* Phone Numbers */}
-            <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
-              <a
-                href="https://wa.me/+96050 966 4956"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center hover:text-blue-600"
-              >
-                <WhatsAppIcon />
-                <span className="ml-2">+96050 966 4956</span>
-              </a>
-              <a
-                href="tel:+960509664956"
-                className="inline-flex items-center hover:text-blue-600 ml-4 no-underline"
-              >
-                <PhoneIcon />
-                <span className="ml-2">+96050 966 4956</span>
-              </a>
+            {/* Emergency Support */}
+          </div>
 
+          {/* Our Location - Column 5 */}
+          <div className="animate-slideUp animation-delay-800">
+            <h3 className="text-sm font-semibold text-black mb-3">
+              Our Location
+            </h3>
+            <p className="text-gray-600 text-xs mb-3 leading-relaxed">
+              Visit us at our Dubai office for all your surveillance and
+              security needs.
             </p>
-
-            {/* Email */}
-            <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
-              <a
-                href="mailto:sales@uquibity-uae.com"
-                className="inline-flex items-center hover:text-blue-600"
-              >
-                <EmailIcon />
-                <span className="ml-2">sales@uquibity-uae.com</span>
-              </a>
-            </p>
+            <div className="h-24 bg-gray-700 rounded-lg overflow-hidden shadow-lg mb-3">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d185.85699190367959!2d55.30896546588453!3d25.27341693672885!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f5d48ffab5a65%3A0x8c2898929d4589f7!2sLovosis%20Technology%20L.L.C!5e1!3m2!1sen!2sin!4v1764833527855!5m2!1sen!2sin"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Dubai Office Location"
+              />
+            </div>
+            <div className="flex items-center space-x-2 text-gray-600  text-xs">
+              <span>📍</span>
+              <span>Lovosis Technology L.L.C</span>
+            </div>
           </div>
         </div>
 
-        <hr className="mt-6 border-t border-neutral-400 dark:border-neutral-700" />
-
-        {/* Footer Bottom */}
-        <div className="mt-2 grid gap-y-2 text-center sm:flex sm:items-center sm:justify-between sm:gap-y-0 sm:text-left">
-          <div className="flex w-full flex-col items-center sm:flex-row sm:justify-between">
-            <p className="text-sm text-neutral-600 dark:text-neutral-400">
-              © {currentYear} Uquibity UAE. All rights reserved
-              <a
-                className="rounded-lg font-medium underline underline-offset-2 outline-none ring-zinc-500 transition duration-300 hover:text-neutral-700 hover:decoration-dashed focus:outline-none focus-visible:ring dark:ring-zinc-200 dark:hover:text-neutral-300"
-                href="https://uquibity-uae.com"
-                target="_blank"
-                rel="noopener noreferrer"
-              >.
-              </a>
-            </p>
-          </div>
-        </div>
+        {/* Social Media Icons */}
       </div>
+
+      {/* Bottom section - Copyright and Poweblue By centeblue vertically */}
+      <div className="relative bg-gray-300 animate-fadeIn overflow-hidden">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex flex-col items-center justify-center text-center space-y-1">
+            {/* Your content */}
+            <p className="text-gray-600 text-xs">
+              © 2025 Ubiquiti UAE. All rights reserved.
+            </p>
+          </div>
+        </div>
+
+        {/* Partial top border with gradient or limited width */}
+        <div className="absolute top-0 left-1/9 right-1/9 h-px bg-gray-400"></div>
+      </div>
+
+      {/* Enhanced Animations */}
+      <style jsx>{`
+        .animate-slideUp {
+          animation: slideUp 0.6s ease-out forwards;
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        .animate-fadeIn {
+          animation: fadeIn 1.2s ease-out;
+        }
+        .animation-delay-200 {
+          animation-delay: 0.2s;
+        }
+        .animation-delay-400 {
+          animation-delay: 0.4s;
+        }
+        .animation-delay-600 {
+          animation-delay: 0.6s;
+        }
+        .animation-delay-800 {
+          animation-delay: 0.8s;
+        }
+        .animation-delay-1000 {
+          animation-delay: 1s;
+        }
+        @keyframes slideUp {
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        /* Line clamp utility for category names */
+        .line-clamp-1 {
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+      `}</style>
     </footer>
   );
-};
-
-// Icon Components (keep the same as before)
-const LocationIcon = () => (
-  <svg
-    className="h-6 w-6 flex-shrink-0 text-neutral-600 dark:text-neutral-400"
-    viewBox="0 0 24 24"
-    fill="none"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    stroke="currentColor"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path>
-    <path
-      d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
-    ></path>
-  </svg>
-);
-
-const WhatsAppIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-5 w-5 flex-shrink-0 text-neutral-600 dark:text-neutral-400"
-    viewBox="0 0 256 256"
-  >
-    <path
-      fill="currentColor"
-      d="m187.58 144.84l-32-16a8 8 0 0 0-8 .5l-14.69 9.8a40.55 40.55 0 0 1-16-16l9.8-14.69a8 8 0 0 0 .5-8l-16-32A8 8 0 0 0 104 64a40 40 0 0 0-40 40a88.1 88.1 0 0 0 88 88a40 40 0 0 0 40-40a8 8 0 0 0-4.42-7.16M152 176a72.08 72.08 0 0 1-72-72a24 24 0 0 1 19.29-23.54l11.48 23L101 118a8 8 0 0 0-.73 7.51a56.47 56.47 0 0 0 30.15 30.15A8 8 0 0 0 138 155l14.61-9.74l23 11.48A24 24 0 0 1 152 176M128 24a104 104 0 0 0-91.82 152.88l-11.35 34.05a16 16 0 0 0 20.24 20.24l34.05-11.35A104 104 0 1 0 128 24m0 192a87.87 87.87 0 0 1-44.06-11.81a8 8 0 0 0-6.54-.67L40 216l12.47-37.4a8 8 0 0 0-.66-6.54A88 88 0 1 1 128 216"
-    ></path>
-  </svg>
-);
-
-const PhoneIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-5 w-5 flex-shrink-0 text-neutral-600 dark:text-neutral-400"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-  >
-    <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24c1.12.37 2.33.57 3.57.57c.55 0 1 .45 1 1V20c0 .55-.45 1-1 1c-9.39 0-17-7.61-17-17c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1c0 1.25.2 2.45.57 3.57c.11.35.03.74-.25 1.02l-2.2 2.2z" />
-  </svg>
-);
-
-const EmailIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-5 w-5 flex-shrink-0 text-neutral-600 dark:text-neutral-400"
-    viewBox="0 0 24 24"
-  >
-    <g fill="none" stroke="currentColor" strokeWidth="2">
-      <path strokeLinecap="round" d="M21 12a9 9 0 1 0-6.67 8.693"></path>
-      <circle cx="12" cy="12" r="4"></circle>
-      <path
-        strokeLinecap="round"
-        d="M16 9v4.5a2.5 2.5 0 0 0 2.5 2.5v0a2.5 2.5 0 0 0 2.5-2.5V12"
-      ></path>
-    </g>
-  </svg>
-);
-
-const InstagramIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="mt-2 h-5 w-5 flex-shrink-0 text-neutral-600 dark:text-neutral-400"
-    viewBox="0 0 16 16"
-  >
-    <path
-      fill="currentColor"
-      d="M8 0C5.829 0 5.556.01 4.703.048C3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7C.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297c.04.852.174 1.433.372 1.942c.205.526.478.972.923 1.417c.444.445.89.719 1.416.923c.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.9 3.9 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417c.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046c.78.035 1.204.166 1.486.275c.373.145.64.319.92.599s.453.546.598.92c.11.281.24.705.275 1.485c.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.5 2.5 0 0 1-.599.919c-.28.28-.546.453-.92.598c-.28.11-.704.24-1.485.276c-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.5 2.5 0 0 1-.92-.598a2.5 2.5 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485c-.038-.843-.046-1.096-.046-3.233s.008-2.388.046-3.231c.036-.78.166-1.204.276-1.486c.145-.373.319-.64.599-.92s.546-.453.92-.598c.282-.11.705-.24 1.485-.276c.738-.034 1.024-.044 2.515-.045zm4.988 1.328a.96.96 0 1 0 0 1.92a.96.96 0 0 0 0-1.92m-4.27 1.122a4.109 4.109 0 1 0 0 8.217a4.109 4.109 0 0 0 0-8.217m0 1.441a2.667 2.667 0 1 1 0 5.334a2.667 2.667 0 0 1 0-5.334"
-    ></path>
-  </svg>
-);
-
-export default Footer;
+}
