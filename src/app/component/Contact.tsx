@@ -3,6 +3,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { MapPin, Mail, Phone, Building, Users, Target } from "lucide-react";
 import { Variants } from "framer-motion";
+import Link from "next/link";
 import Image from "next/image";
 
 // Import your images
@@ -342,14 +343,14 @@ export default function Contact() {
                   <p className="text-gray-600 mb-3 text-xs leading-relaxed">
                     For technical support, please visit our Help Center
                   </p>
-                  <a
-                    href="mailto:sales@uquibity-uae.com"
-                    target="_blank"
+                  <Link
+                    href="https://mail.google.com/mail/?view=cm&to=sales@ubiquiti-uae.com"
+                 
                     rel="noopener noreferrer"
                     className="px-4 py-2 bg-white border border-blue-600 text-blue-600 rounded text-xs hover:bg-blue-50 transition-colors duration-200 font-medium"
                   >
                     Help Center
-                  </a>
+                  </Link>
                 </div>
               </div>
 
@@ -374,14 +375,14 @@ export default function Contact() {
                     service.
                   </p>
 
-                  <a
-                    href="mailto:sales@uquibity-uae.com"
-                    target="_blank"
+                  <Link
+                    href="https://mail.google.com/mail/?view=cm&to=sales@ubiquiti-uae.com"
+                    
                     rel="noopener noreferrer"
                     className="px-4 py-2 bg-white border border-blue-600 text-blue-600 rounded text-xs hover:bg-blue-50 transition-colors duration-200 font-medium"
                   >
                     Submit RMA Request
-                  </a>
+                  </Link>
                 </div>
               </div>
             </motion.div>
