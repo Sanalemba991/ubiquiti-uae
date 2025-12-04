@@ -1,27 +1,27 @@
 "use client";
-import React, { useRef, useEffect } from 'react';
-import { motion, useInView, useReducedMotion, Variants } from 'framer-motion';
 
+import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import { Variants } from "framer-motion";
+import { useInView, useReducedMotion } from 'framer-motion';
+import React from 'react';
 
+// Categories data
 const categories = [
     {
         id: 1,
         title: <>10G SFP+ <span className="text-blue-600">Connectivity</span></>,
         subtitle: "Secure Cloud Connectivity",
-        description:
-            "Elevate your data experience with unparalleled speed and efficiency, designed for demanding workflows and next-gen connectivity. The UNAS Pro 8 and 4 delivers multiple 10G interfaces with MC-LAG support",
+        description: "Elevate your data experience with unparalleled speed and efficiency, designed for demanding workflows and next-gen connectivity. The UNAS Pro 8 and 4 delivers multiple 10G interfaces with MC-LAG support",
         video: "/video/integration/integration.mp4",
-
         alignLeft: true
-    }
-    ,
+    },
     {
         id: 2,
         title: <>Power <span className="text-blue-600">Redundancy</span></>,
         subtitle: "Network Infrastructure",
         description: "Keep your data safe and accessible. UNAS Pro pairs with UniFi Power Backup for uninterrupted performance.",
         video: "/video/integration/integration1.mp4",
-
         alignLeft: false
     },
     {
@@ -30,7 +30,6 @@ const categories = [
         subtitle: "Wireless Solutions",
         description: "RAID redundancy, snapshots, and remote backups to another NAS or cloud storage make it easy to implement an enterprise 3-2-1 backup strategy while encryption secures data-at-rest.",
         video: "/video/integration/integration2.mp4",
-
         alignLeft: true
     },
     {
@@ -39,7 +38,6 @@ const categories = [
         subtitle: "Integrated Protection",
         description: "Front-facing USB-C port delivers quick, streamlined external drive support.",
         video: "/video/integration/integration3.mp4",
-
         alignLeft: false
     },
     {
@@ -51,6 +49,8 @@ const categories = [
         alignLeft: true
     }
 ];
+
+// Integration Component
 const Integration = () => {
     const shouldReduceMotion = useReducedMotion();
 
@@ -203,7 +203,7 @@ const Integration = () => {
                         custom={0}
                         initial="hidden"
                         animate={isHeaderInView ? "visible" : "hidden"}
-                        className="text-3xl md:text-4xl font-bold text-gray-900 mb-6" // Reduced from 5xl/6xl to 3xl/4xl
+                        className="text-3xl md:text-4xl font-bold text-gray-900 mb-6"
                     >
                         Integration
                     </motion.h2>
@@ -213,9 +213,9 @@ const Integration = () => {
                         custom={0.2}
                         initial="hidden"
                         animate={isHeaderInView ? "visible" : "hidden"}
-                        className="text-lg md:text-xl text-blue-700 font-medium mb-6" // Reduced from xl/2xl to lg/xl
+                        className="text-lg md:text-xl text-blue-700 font-medium mb-6"
                     >
-                      Connected Ecosystem
+                        Connected Ecosystem
                     </motion.p>
 
                     <motion.div
@@ -226,9 +226,8 @@ const Integration = () => {
                         className="max-w-4xl mx-auto"
                     >
                         <p className="text-base text-gray-700 leading-relaxed mb-4">
-                       Effortless integration solutions that unify data exchange and automate workflows, enabling smooth connectivity across all business platforms and applications.
+                            Effortless integration solutions that unify data exchange and automate workflows, enabling smooth connectivity across all business platforms and applications.
                         </p>
-
                     </motion.div>
                 </motion.div>
 
@@ -287,7 +286,7 @@ const Integration = () => {
                                         variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
                                         initial="hidden"
                                         animate={isInView ? "visible" : "hidden"}
-                                        className="text-2xl md:text-4xl font-bold mb-3 text-white drop-shadow-lg" // Reduced from 4xl/6xl to 2xl/4xl
+                                        className="text-2xl md:text-4xl font-bold mb-3 text-white drop-shadow-lg"
                                     >
                                         {category.title}
                                     </motion.h2>
@@ -297,7 +296,7 @@ const Integration = () => {
                                         variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
                                         initial="hidden"
                                         animate={isInView ? "visible" : "hidden"}
-                                        className="text-base md:text-lg mb-3 text-gray-200" // Reduced from lg/xl to base/lg
+                                        className="text-base md:text-lg mb-3 text-gray-200"
                                     >
                                         {category.subtitle}
                                     </motion.p>
@@ -311,8 +310,6 @@ const Integration = () => {
                                     >
                                         {category.description}
                                     </motion.p>
-
-
                                 </motion.div>
                             </motion.div>
                         );
@@ -323,4 +320,130 @@ const Integration = () => {
     );
 };
 
-export default Integration;
+// Main IntegrationClient Component
+const IntegrationClient = () => {
+    const [isMobile, setIsMobile] = useState(false);
+    const [isClient, setIsClient] = useState(false);
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    useEffect(() => {
+        setIsClient(true);
+        const checkIsMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        checkIsMobile();
+        window.addEventListener("resize", checkIsMobile);
+
+        return () => {
+            window.removeEventListener("resize", checkIsMobile);
+        };
+    }, []);
+
+    // Auto-play video when component mounts
+    useEffect(() => {
+        if (videoRef.current && isClient) {
+            videoRef.current.play().catch((error) => {
+                console.log("Video autoplay failed:", error);
+            });
+        }
+    }, [isClient]);
+
+    // Animation variants for staggered entrance
+    const containerVariants: Variants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                delayChildren: 0.3,
+                staggerChildren: 0.2,
+            },
+        },
+    };
+
+    const itemVariants: Variants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1,
+            transition: {
+                duration: 0.5,
+                ease: "easeOut",
+            },
+        },
+    };
+
+    // Don't render video until client-side to avoid hydration mismatch
+    if (!isClient) {
+        return (
+            <section className="relative w-full h-screen flex items-center justify-start overflow-hidden">
+                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-gray-900 to-gray-800" />
+                <div className="relative z-10 text-white px-4 md:px-8 text-left max-w-2xl mt-32 md:mt-40">
+                    <h1 className="text-4xl md:text-6xl font-bold mb-4">
+                        Integrat<span className="text-blue-500">ion</span>
+                    </h1>
+                    <p className="text-lg md:text-xl mb-6">
+                        Ecosystem Connectivity
+                    </p>
+                    <p className="text-lg md:text-xl mb-6">
+                        Seamless integration solutions for unified data flow and automated workflows across business applications.
+                    </p>
+                </div>
+            </section>
+        );
+    }
+
+    return (
+        <>
+            {/* Hero Section with Video Background */}
+            <section className="relative w-full h-screen flex items-center justify-start overflow-hidden">
+                {/* Background Video with fade-in animation */}
+                <motion.div
+                    className="absolute inset-0 w-full h-full"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.8 }}
+                >
+                    <video
+                        ref={videoRef}
+                        src="/video/integration/integrar.mp4"
+                        muted
+                        loop
+                        playsInline
+                        className="w-full h-full object-cover"
+                        preload="metadata"
+                    />
+
+                    {/* Dark overlay for better text readability */}
+                    <div className="absolute inset-0 bg-black/40"></div>
+                </motion.div>
+
+                {/* Content Section */}
+                <motion.div
+                    className="relative z-10 text-white px-4 md:px-8 text-left max-w-2xl mt-32 md:mt-40"
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                >
+                    <motion.h1
+                        className="text-4xl md:text-6xl font-bold mb-4"
+                        variants={itemVariants}
+                    >
+                        Integrat<span className="text-blue-500">ion</span>
+                    </motion.h1>
+                    <motion.p className="text-lg md:text-xl mb-6" variants={itemVariants}>
+                        Ecosystem Connectivity
+                    </motion.p>
+                    <motion.p className="text-lg md:text-xl mb-6" variants={itemVariants}>
+                        Seamless integration solutions for unified data flow and automated workflows across business applications.
+                    </motion.p>
+                </motion.div>
+            </section>
+
+            {/* Integration Features Section */}
+            <Integration />
+        </>
+    );
+};
+
+export default IntegrationClient;

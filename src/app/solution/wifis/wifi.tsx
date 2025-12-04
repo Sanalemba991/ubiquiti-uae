@@ -1,29 +1,27 @@
 "use client";
-import React, { useRef, useEffect } from 'react';
-import { motion, useInView, useReducedMotion, Variants } from 'framer-motion';
 
+import { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { Variants } from 'framer-motion';
+import { useInView, useReducedMotion } from 'framer-motion';
+import React from 'react';
 
+// Categories data
 const categories = [
     {
         id: 1,
-        title: <>Dedicated Spectral Analyzer 
- 
-<span className="text-blue-600"> Radio</span></>,
+        title: <>Dedicated Spectral Analyzer <span className="text-blue-600"> Radio</span></>,
         subtitle: "Secure Cloud Connectivity",
-        description:
-            "Our AP's feature a dedicated spectral analyzer radio continuously scans your environment, proactively identifying interference to optimize Wi-Fi performance and reliability.",
+        description: "Our AP's feature a dedicated spectral analyzer radio continuously scans your environment, proactively identifying interference to optimize Wi-Fi performance and reliability.",
         video: "/video/wifi/wifi.mp4",
-
         alignLeft: true
-    }
-    ,
+    },
     {
         id: 2,
         title: <>PRISM™ RF <span className="text-blue-600">Filtering </span></>,
         subtitle: "Network Infrastructure",
         description: "PRISM™ active RF filtering blocks adjacent channel 5 GHz interference to boost SNR. By isolating WiFi channels from nearby noise, it preserves client throughput, range, and stability in crowded RF environments.",
         video: "/video/wifi/wifi1.mp4",
-
         alignLeft: false
     },
     {
@@ -32,7 +30,6 @@ const categories = [
         subtitle: "Wireless Solutions",
         description: "WiFi 7's channel puncturing feature allows a higher-width channel to operate non-continuously and notch out noisy interferers for enhanced client performance.",
         video: "/video/wifi/wifi2.mp4",
-
         alignLeft: true
     },
     {
@@ -41,7 +38,6 @@ const categories = [
         subtitle: "Integrated Protection",
         description: "Instantly update VLAN assignments across thousands of access points, enabling seamless segmentation and enhanced network security—directly through UniFi Site Manager.",
         video: "/video/wifi/wifi3.mp4",
-
         alignLeft: false
     },
     {
@@ -53,6 +49,8 @@ const categories = [
         alignLeft: true
     }
 ];
+
+// Wifi Component
 const Wifi = () => {
     const shouldReduceMotion = useReducedMotion();
 
@@ -205,9 +203,9 @@ const Wifi = () => {
                         custom={0}
                         initial="hidden"
                         animate={isHeaderInView ? "visible" : "hidden"}
-                        className="text-3xl md:text-4xl font-bold text-gray-900 mb-6" // Reduced from 5xl/6xl to 3xl/4xl
+                        className="text-3xl md:text-4xl font-bold text-gray-900 mb-6"
                     >
-                     Wireless Networking Solutions
+                        Wireless Networking Solutions
                     </motion.h2>
 
                     <motion.p
@@ -215,7 +213,7 @@ const Wifi = () => {
                         custom={0.2}
                         initial="hidden"
                         animate={isHeaderInView ? "visible" : "hidden"}
-                        className="text-lg md:text-xl text-blue-700 font-medium mb-6" // Reduced from xl/2xl to lg/xl
+                        className="text-lg md:text-xl text-blue-700 font-medium mb-6"
                     >
                         Reliable, high-performance WiFi for modern enterprises
                     </motion.p>
@@ -228,9 +226,8 @@ const Wifi = () => {
                         className="max-w-4xl mx-auto"
                     >
                         <p className="text-base text-gray-700 leading-relaxed mb-4">
-                     Our enterprise WiFi systems deliver seamless connectivity, advanced roaming capabilities, and optimized performance for high-density environments, ensuring uninterrupted access for all users and devices.
+                            Our enterprise WiFi systems deliver seamless connectivity, advanced roaming capabilities, and optimized performance for high-density environments, ensuring uninterrupted access for all users and devices.
                         </p>
-
                     </motion.div>
                 </motion.div>
 
@@ -289,7 +286,7 @@ const Wifi = () => {
                                         variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
                                         initial="hidden"
                                         animate={isInView ? "visible" : "hidden"}
-                                        className="text-2xl md:text-4xl font-bold mb-3 text-white drop-shadow-lg" // Reduced from 4xl/6xl to 2xl/4xl
+                                        className="text-2xl md:text-4xl font-bold mb-3 text-white drop-shadow-lg"
                                     >
                                         {category.title}
                                     </motion.h2>
@@ -299,7 +296,7 @@ const Wifi = () => {
                                         variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
                                         initial="hidden"
                                         animate={isInView ? "visible" : "hidden"}
-                                        className="text-base md:text-lg mb-3 text-gray-200" // Reduced from lg/xl to base/lg
+                                        className="text-base md:text-lg mb-3 text-gray-200"
                                     >
                                         {category.subtitle}
                                     </motion.p>
@@ -313,8 +310,6 @@ const Wifi = () => {
                                     >
                                         {category.description}
                                     </motion.p>
-
-
                                 </motion.div>
                             </motion.div>
                         );
@@ -325,4 +320,136 @@ const Wifi = () => {
     );
 };
 
-export default Wifi;
+// Main WifiClient Component
+const WifiClient = () => {
+    const [isMobile, setIsMobile] = useState(false);
+    const [isClient, setIsClient] = useState(false);
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    useEffect(() => {
+        setIsClient(true);
+        const checkIsMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        checkIsMobile();
+        window.addEventListener('resize', checkIsMobile);
+
+        return () => {
+            window.removeEventListener('resize', checkIsMobile);
+        };
+    }, []);
+
+    // Auto-play video when component mounts
+    useEffect(() => {
+        if (videoRef.current && isClient) {
+            videoRef.current.play().catch(error => {
+                console.log('Video autoplay failed:', error);
+            });
+        }
+    }, [isClient]);
+
+    // Animation variants for staggered entrance
+    const containerVariants: Variants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                delayChildren: 0.3,
+                staggerChildren: 0.2
+            }
+        }
+    };
+
+    const itemVariants: Variants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1,
+            transition: {
+                duration: 0.5,
+                ease: "easeOut"
+            }
+        }
+    };
+
+    // Don't render video until client-side to avoid hydration mismatch
+    if (!isClient) {
+        return (
+            <section className="relative w-full h-screen flex items-center justify-start overflow-hidden">
+                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-gray-900 to-gray-800" />
+                <div className="relative z-10 text-white px-4 md:px-8 text-left max-w-2xl mt-32 md:mt-40">
+                    <h1 className="text-4xl md:text-6xl font-bold mb-4">
+                        Wi<span className='text-blue-500'>Fi</span> 
+                    </h1>
+                    <p className="text-lg md:text-xl mb-6">
+                        Wireless Solutions
+                    </p>
+                    <p className="text-lg md:text-xl mb-6">
+                        Enterprise WiFi systems with seamless connectivity, advanced roaming, and optimization for high-density environments.
+                    </p>
+                </div>
+            </section>
+        );
+    }
+
+    return (
+        <>
+            {/* Hero Section with Video Background */}
+            <section className="relative w-full h-screen flex items-center justify-start overflow-hidden">
+                {/* Background Video with fade-in animation */}
+                <motion.div
+                    className="absolute inset-0 w-full h-full"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.8 }}
+                >
+                    <video
+                        ref={videoRef}
+                        src="/video/wifi/wif.mp4"
+                        muted
+                        loop
+                        playsInline
+                        className="w-full h-full object-cover"
+                        preload="metadata"
+                    />
+
+                    {/* Dark overlay for better text readability */}
+                    <div className="absolute inset-0 bg-black/40"></div>
+                </motion.div>
+
+                {/* Content Section */}
+                <motion.div
+                    className="relative z-10 text-white px-4 md:px-8 text-left max-w-2xl mt-32 md:mt-40"
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                >
+                    <motion.h1
+                        className="text-4xl md:text-6xl font-bold mb-4"
+                        variants={itemVariants}
+                    >
+                        Wi<span className='text-blue-500'>Fi</span> 
+                    </motion.h1>
+                    <motion.p
+                        className="text-lg md:text-xl mb-6"
+                        variants={itemVariants}
+                    >
+                        Wireless Solutions
+                    </motion.p>
+                    <motion.p
+                        className="text-lg md:text-xl mb-6"
+                        variants={itemVariants}
+                    >
+                        Enterprise WiFi systems with seamless connectivity, advanced roaming, and optimization for high-density environments.
+                    </motion.p>
+                </motion.div>
+            </section>
+
+            {/* WiFi Features Section */}
+            <Wifi />
+        </>
+    );
+};
+
+export default WifiClient;

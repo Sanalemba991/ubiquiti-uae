@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
 import CategoryPageClient from './CategoryPageClient';
+import { generateCategoryMetadata } from '@/utils/seo';
 
 interface SubCategory {
   _id: string;
@@ -25,6 +27,10 @@ interface NavbarCategory {
   slug: string;
   description: string;
 }
+
+type Props = {
+  params: Promise<{ navbarSlug: string; categorySlug: string }>;
+};
 
 // Add this for production builds
 export const dynamicParams = true;
@@ -99,12 +105,38 @@ export async function generateStaticParams() {
   }
 }
 
-export default async function CategoryPage({
-  params,
-}: {
-  params: { navbarSlug: string; categorySlug: string };
-}) {
-  const { navbarSlug, categorySlug } = params;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { navbarSlug, categorySlug } = await params;
+  const categoriesResult = await getCategories(navbarSlug);
+
+  if (!categoriesResult?.success) {
+    return {
+      title: 'Category Not Found | Ubiquiti UAE',
+      description: 'The category you are looking for does not exist.',
+    };
+  }
+
+  const categories: Category[] = categoriesResult.data || [];
+  const currentCategory = categories.find(cat => cat.slug === categorySlug);
+
+  if (!currentCategory) {
+    return {
+      title: 'Category Not Found | Ubiquiti UAE',
+      description: 'The category you are looking for does not exist.',
+    };
+  }
+
+  return generateCategoryMetadata(
+    navbarSlug,
+    categorySlug,
+    currentCategory.name,
+    currentCategory.description,
+    currentCategory.image
+  );
+}
+
+export default async function CategoryPage({ params }: Props) {
+  const { navbarSlug, categorySlug } = await params;
 
   const [categoriesResult, subCategoriesResult] = await Promise.all([
     getCategories(navbarSlug),

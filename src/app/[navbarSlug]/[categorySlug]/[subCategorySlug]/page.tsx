@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
 import SubCategoryClient from './SubCategoryClient';
+import { generateSubCategoryMetadata } from '@/utils/seo';
 
 interface SubCategory {
   _id: string;
@@ -27,6 +29,10 @@ interface Product {
   description: string;
   image1: string;
 }
+
+type Props = {
+  params: Promise<{ navbarSlug: string; categorySlug: string; subCategorySlug: string }>;
+};
 
 // Add this for production builds
 export const dynamicParams = true;
@@ -103,12 +109,44 @@ export async function generateStaticParams() {
   }
 }
 
-export default async function SubCategoryPage({
-  params,
-}: {
-  params: { navbarSlug: string; categorySlug: string; subCategorySlug: string };
-}) {
-  const { navbarSlug, categorySlug, subCategorySlug } = params;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { navbarSlug, categorySlug, subCategorySlug } = await params;
+  const subCategoriesResult = await getSubCategories(categorySlug);
+
+  if (!subCategoriesResult?.success) {
+    return {
+      title: 'SubCategory Not Found | Ubiquiti UAE',
+      description: 'The subcategory you are looking for does not exist.',
+    };
+  }
+
+  const allSubCategories: SubCategory[] = subCategoriesResult.data || [];
+  const currentSubCategory = allSubCategories.find(
+    (sub: SubCategory) => sub.slug === subCategorySlug
+  );
+
+  if (!currentSubCategory) {
+    return {
+      title: 'SubCategory Not Found | Ubiquiti UAE',
+      description: 'The subcategory you are looking for does not exist.',
+    };
+  }
+
+  const categoryName = currentSubCategory.category?.name || 'Products';
+
+  return generateSubCategoryMetadata(
+    navbarSlug,
+    categorySlug,
+    subCategorySlug,
+    categoryName,
+    currentSubCategory.name,
+    currentSubCategory.description,
+    currentSubCategory.image
+  );
+}
+
+export default async function SubCategoryPage({ params }: Props) {
+  const { navbarSlug, categorySlug, subCategorySlug } = await params;
 
   const [subCategoriesResult, products] = await Promise.all([
     getSubCategories(categorySlug),

@@ -1,11 +1,7 @@
-import React from 'react'
-import Solution from "./Solution"
+import { Metadata } from "next";
+import Solution from "./Solution";
 
-function page() {
-  return (
 
-<Solution/>
-  )
+export default function Page() {
+  return <Solution />;
 }
-
-export default page

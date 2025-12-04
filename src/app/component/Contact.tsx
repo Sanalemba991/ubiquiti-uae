@@ -6,7 +6,7 @@ import { Variants } from 'framer-motion';
 import Image from 'next/image';
 
 // Import your images
-import Sam from "../../../public/contact/add (1).png";
+import Sam from "../../../public/contact/add(1).png";
 import Ram from "../../../public/contact/add (2).png";
 import { useInView } from 'react-intersection-observer';
 

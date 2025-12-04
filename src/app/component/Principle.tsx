@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import Prin from "../../../public/Priniciple.jpg"
+import Prin from "../../../public/Principle.jpg"
 
 const Principle = () => {
   const [isVisible, setIsVisible] = useState<{ [key: string]: boolean }>({});
@@ -117,7 +117,7 @@ const Principle = () => {
               animate={isVisible.image ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
               transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
             >
-              <div className="w-full max-w-md">
+              <div className="">
                 <img
                   src={Prin.src}
                   alt="Network Infrastructure Solutions"

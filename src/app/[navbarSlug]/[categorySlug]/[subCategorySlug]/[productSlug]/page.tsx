@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
 import ProductClient from './ProductClient';
+import { generateProductMetadata } from '@/utils/seo';
 
 interface Product {
   _id: string;
@@ -37,6 +39,15 @@ interface Product {
     };
   };
 }
+
+type Props = {
+  params: Promise<{
+    navbarSlug: string;
+    categorySlug: string;
+    subCategorySlug?: string;
+    productSlug: string;
+  }>;
+};
 
 // Add this for production builds
 export const dynamicParams = true;
@@ -125,17 +136,31 @@ export async function generateStaticParams() {
   }
 }
 
-export default async function ProductPage({
-  params,
-}: {
-  params: { 
-    navbarSlug: string;
-    categorySlug: string;
-    subCategorySlug?: string;
-    productSlug: string;
-  };
-}) {
-  const { navbarSlug, categorySlug, productSlug } = params;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { navbarSlug, categorySlug, subCategorySlug, productSlug } = await params;
+  const product = await getProduct(productSlug);
+
+  if (!product) {
+    return {
+      title: 'Product Not Found | Ubiquiti UAE',
+      description: 'The product you are looking for does not exist.',
+    };
+  }
+
+  return generateProductMetadata(
+    navbarSlug,
+    categorySlug,
+    subCategorySlug,
+    productSlug,
+    product.name,
+    product.description,
+    product.image1,
+    product.keyFeatures
+  );
+}
+
+export default async function ProductPage({ params }: Props) {
+  const { navbarSlug, categorySlug, productSlug } = await params;
 
   const [product, relatedProducts] = await Promise.all([
     getProduct(productSlug),
@@ -158,29 +183,4 @@ export default async function ProductPage({
       categorySlug={categorySlug}
     />
   );
-}
-
-// Optional: Generate metadata for SEO
-export async function generateMetadata({
-  params,
-}: {
-  params: { productSlug: string };
-}) {
-  const product = await getProduct(params.productSlug);
-
-  if (!product) {
-    return {
-      title: 'Product Not Found',
-    };
-  }
-
-  return {
-    title: product.name,
-    description: product.description,
-    openGraph: {
-      title: product.name,
-      description: product.description,
-      images: [product.image1],
-    },
-  };
 }

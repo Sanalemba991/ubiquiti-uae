@@ -2,7 +2,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { ChevronDown, Menu, X, MapPin, Mail, Phone, ChevronRight } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
-
+import Logo from "../../../public/logoua.png"
+import Image from 'next/image';
 interface SubCategory {
   _id: string;
   name: string;
@@ -244,7 +245,7 @@ export default function UniFiNavbar() {
                   shouldShowWhiteBg ? 'text-gray-900' : 'text-white'
                 }`}
               >
-                Ubiquiti
+              <Image src={Logo} alt="Ubiquiti UAE" width={120} height={40} />
               </button>
               
               <div className="flex items-center space-x-1">
@@ -389,7 +390,7 @@ export default function UniFiNavbar() {
                 shouldShowWhiteBg ? 'text-gray-900' : 'text-white'
               }`}
             >
-              Ubiquiti
+               <Image src={Logo} alt="Ubiquiti UAE" width={120} height={40} />
             </button>
 
             <button

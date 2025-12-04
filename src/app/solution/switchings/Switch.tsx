@@ -1,27 +1,27 @@
 "use client";
-import React, { useRef, useEffect } from 'react';
-import { motion, useInView, useReducedMotion, Variants } from 'framer-motion';
 
+import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import { Variants } from "framer-motion";
+import { useInView, useReducedMotion } from 'framer-motion';
+import React from 'react';
 
+// Categories data
 const categories = [
     {
         id: 1,
         title: <>MC-<span className="text-blue-600">LAG</span></>,
         subtitle: "Secure Cloud Connectivity",
-        description:
-            "Multi-Chassis Link Aggregation (MC-LAG) pairs two switches for seamless redundancy and load balancing. Downstream devices link to both, spreading traffic and failing over instantly in the event of switch or fiber failure.",
+        description: "Multi-Chassis Link Aggregation (MC-LAG) pairs two switches for seamless redundancy and load balancing. Downstream devices link to both, spreading traffic and failing over instantly in the event of switch or fiber failure.",
         video: "/video/switch/mclag.mp4",
-
         alignLeft: true
-    }
-    ,
+    },
     {
         id: 2,
         title: <>Switch <span className="text-blue-600">Stacking</span></>,
         subtitle: "Network Infrastructure",
         description: "Expand your access layer with UniFi Enterprise Campus switches. Dedicated 100G QSFP28 stacking ports simplify management, boost reliability, and deliver high-speed links for large-scale deployments.",
         video: "/video/switch/switch-.mp4",
-
         alignLeft: false
     },
     {
@@ -30,16 +30,14 @@ const categories = [
         subtitle: "Wireless Solutions",
         description: "UniFi Etherlighting streamlines network management by using color-coded LEDs for switch ports. Identify VLANs or link speeds at a glance, making troubleshooting and network administration more efficient.",
         video: "/video/switch/switch1.mp4",
-
         alignLeft: true
     },
     {
         id: 4,
         title: <>Port <span className="text-blue-600"> Manager </span></>,
         subtitle: "Integrated Protection",
-        description: "UniFi’s Port Manager provides an intuitive way to configure VLANs, PoE settings, and link aggregation—all from a centralized interface. Make quick changes without digging through complex settings.",
+        description: "UniFi's Port Manager provides an intuitive way to configure VLANs, PoE settings, and link aggregation—all from a centralized interface. Make quick changes without digging through complex settings.",
         video: "/video/switch/port.mp4",
-
         alignLeft: false
     },
     {
@@ -51,6 +49,8 @@ const categories = [
         alignLeft: true
     }
 ];
+
+// Switch Component
 const Switch = () => {
     const shouldReduceMotion = useReducedMotion();
 
@@ -203,7 +203,7 @@ const Switch = () => {
                         custom={0}
                         initial="hidden"
                         animate={isHeaderInView ? "visible" : "hidden"}
-                        className="text-3xl md:text-4xl font-bold text-gray-900 mb-6" // Reduced from 5xl/6xl to 3xl/4xl
+                        className="text-3xl md:text-4xl font-bold text-gray-900 mb-6"
                     >
                         Network Switching Infrastructure
                     </motion.h2>
@@ -213,7 +213,7 @@ const Switch = () => {
                         custom={0.2}
                         initial="hidden"
                         animate={isHeaderInView ? "visible" : "hidden"}
-                        className="text-lg md:text-xl text-blue-700 font-medium mb-6" // Reduced from xl/2xl to lg/xl
+                        className="text-lg md:text-xl text-blue-700 font-medium mb-6"
                     >
                         Professional-Grade Infrastructure for Modern Businesses
                     </motion.p>
@@ -226,9 +226,8 @@ const Switch = () => {
                         className="max-w-4xl mx-auto"
                     >
                         <p className="text-base text-gray-700 leading-relaxed mb-4">
-                        Flexible and high-performance switching solutions designed to optimize traffic flow and ensure reliable, scalable connectivity for today’s enterprise networks.
+                            Flexible and high-performance switching solutions designed to optimize traffic flow and ensure reliable, scalable connectivity for today's enterprise networks.
                         </p>
-
                     </motion.div>
                 </motion.div>
 
@@ -287,7 +286,7 @@ const Switch = () => {
                                         variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
                                         initial="hidden"
                                         animate={isInView ? "visible" : "hidden"}
-                                        className="text-2xl md:text-4xl font-bold mb-3 text-white drop-shadow-lg" // Reduced from 4xl/6xl to 2xl/4xl
+                                        className="text-2xl md:text-4xl font-bold mb-3 text-white drop-shadow-lg"
                                     >
                                         {category.title}
                                     </motion.h2>
@@ -297,7 +296,7 @@ const Switch = () => {
                                         variants={shouldReduceMotion ? reducedMotionVariants : textVariants}
                                         initial="hidden"
                                         animate={isInView ? "visible" : "hidden"}
-                                        className="text-base md:text-lg mb-3 text-gray-200" // Reduced from lg/xl to base/lg
+                                        className="text-base md:text-lg mb-3 text-gray-200"
                                     >
                                         {category.subtitle}
                                     </motion.p>
@@ -311,8 +310,6 @@ const Switch = () => {
                                     >
                                         {category.description}
                                     </motion.p>
-
-
                                 </motion.div>
                             </motion.div>
                         );
@@ -323,4 +320,130 @@ const Switch = () => {
     );
 };
 
-export default Switch;
+// Main SwitchingClient Component
+const SwitchingClient = () => {
+    const [isMobile, setIsMobile] = useState(false);
+    const [isClient, setIsClient] = useState(false);
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    useEffect(() => {
+        setIsClient(true);
+        const checkIsMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        checkIsMobile();
+        window.addEventListener("resize", checkIsMobile);
+
+        return () => {
+            window.removeEventListener("resize", checkIsMobile);
+        };
+    }, []);
+
+    // Auto-play video when component mounts
+    useEffect(() => {
+        if (videoRef.current && isClient) {
+            videoRef.current.play().catch((error) => {
+                console.log("Video autoplay failed:", error);
+            });
+        }
+    }, [isClient]);
+
+    // Animation variants for staggered entrance
+    const containerVariants: Variants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                delayChildren: 0.3,
+                staggerChildren: 0.2,
+            },
+        },
+    };
+
+    const itemVariants: Variants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1,
+            transition: {
+                duration: 0.5,
+                ease: "easeOut",
+            },
+        },
+    };
+
+    // Don't render video until client-side to avoid hydration mismatch
+    if (!isClient) {
+        return (
+            <section className="relative w-full h-screen flex items-center justify-start overflow-hidden">
+                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-gray-900 to-gray-800" />
+                <div className="relative z-10 text-white px-4 md:px-8 text-left max-w-2xl mt-32 md:mt-40">
+                    <h1 className="text-4xl md:text-6xl font-bold mb-4">
+                        Switch<span className="text-blue-500">ing</span>
+                    </h1>
+                    <p className="text-lg md:text-xl mb-6">
+                        Network Infrastructure
+                    </p>
+                    <p className="text-lg md:text-xl mb-6">
+                        Scalable switching solutions with intelligent traffic management and robust connectivity for modern enterprise networks.
+                    </p>
+                </div>
+            </section>
+        );
+    }
+
+    return (
+        <>
+            {/* Hero Section with Video Background */}
+            <section className="relative w-full h-screen flex items-center justify-start overflow-hidden">
+                {/* Background Video with fade-in animation */}
+                <motion.div
+                    className="absolute inset-0 w-full h-full"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.8 }}
+                >
+                    <video
+                        ref={videoRef}
+                        src="/video/switch/switch.mp4"
+                        muted
+                        loop
+                        playsInline
+                        className="w-full h-full object-cover"
+                        preload="metadata"
+                    />
+
+                    {/* Dark overlay for better text readability */}
+                    <div className="absolute inset-0 bg-black/40"></div>
+                </motion.div>
+
+                {/* Content Section */}
+                <motion.div
+                    className="relative z-10 text-white px-4 md:px-8 text-left max-w-2xl mt-32 md:mt-40"
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                >
+                    <motion.h1
+                        className="text-4xl md:text-6xl font-bold mb-4"
+                        variants={itemVariants}
+                    >
+                        Switch<span className="text-blue-500">ing</span>
+                    </motion.h1>
+                    <motion.p className="text-lg md:text-xl mb-6" variants={itemVariants}>
+                        Network Infrastructure
+                    </motion.p>
+                    <motion.p className="text-lg md:text-xl mb-6" variants={itemVariants}>
+                        Scalable switching solutions with intelligent traffic management and robust connectivity for modern enterprise networks.
+                    </motion.p>
+                </motion.div>
+            </section>
+
+            {/* Switching Features Section */}
+            <Switch />
+        </>
+    );
+};
+
+export default SwitchingClient;
