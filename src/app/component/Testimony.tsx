@@ -8,7 +8,7 @@ const Testimonial = () => {
     {
       id: 1,
       rating: 5,
-      text: "Ubiquity UAE provided us with enterprise-grade networking solutions. Their deployment was seamless and support exceptional!",
+      text: "Ubiquiti UAE provided us with enterprise-grade networking solutions. Their deployment was seamless and support exceptional!",
       name: "Ahmed Al-Mansouri",
       position: "IT Director",
       company: "Emirates Tech Solutions",
@@ -19,7 +19,7 @@ const Testimonial = () => {
     {
       id: 2,
       rating: 5,
-      text: "Thanks to Ubiquity UAE, our office network performance has increased dramatically. Highly recommend their UniFi solutions!",
+      text: "Thanks to Ubiquiti UAE, our office network performance has increased dramatically. Highly recommend their UniFi solutions!",
       name: "Sarah Thompson",
       position: "Network Administrator",
       company: "Dubai Business Hub",
@@ -30,7 +30,7 @@ const Testimonial = () => {
     {
       id: 3,
       rating: 4.5,
-      text: "Ubiquity UAE has transformed our connectivity infrastructure with reliable, high-performance networking equipment.",
+      text: "Ubiquiti UAE has transformed our connectivity infrastructure with reliable, high-performance networking equipment.",
       name: "Mohammed Hassan",
       position: "Project Manager",
       company: "Smart City Developments",
@@ -52,7 +52,7 @@ const Testimonial = () => {
     {
       id: 5,
       rating: 4.5,
-      text: "Ubiquity UAE exceeds expectations. Their networking products and technical support are absolutely top-notch!",
+      text: "Ubiquiti UAE exceeds expectations. Their networking products and technical support are absolutely top-notch!",
       name: "Fatima Al-Zaabi",
       position: "Systems Manager",
       company: "Abu Dhabi Enterprises",
@@ -112,7 +112,7 @@ const Testimonial = () => {
             What Our Clients <span className="text-blue-600">Say</span>
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            At Ubiquity UAE, we pride ourselves on delivering
+            At Ubiquiti UAE, we pride ourselves on delivering
             exceptional networking solutions and outstanding support.
           </p>
         </motion.div>

@@ -234,7 +234,7 @@ export default function Contact() {
             className="relative w-full h-[350px] rounded-lg overflow-hidden shadow-md"
           >
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1486.8524251489728!2d55.307987002385616!3d25.273703424847543!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f432649d77a05%3A0x329bece680652a9d!2sDigital%20Link%20Technology%20LLC%20-%20UNV%20National%20Distributor%20in%20Dubai%2C%20UAE!5e1!3m2!1sen!2sin!4v1758793163694!5m2!1sen!2sin"
+              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d185.85699190367959!2d55.30896546588453!3d25.27341693672885!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f5d48ffab5a65%3A0x8c2898929d4589f7!2sLovosis%20Technology%20L.L.C!5e1!3m2!1sen!2sin!4v1764833527855!5m2!1sen!2sin"
               width="100%"
               height="100%"
               style={{ border: 0 }}

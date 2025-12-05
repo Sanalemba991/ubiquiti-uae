@@ -71,7 +71,7 @@ const Principle = () => {
                 <p className="text-lg text-slate-700 leading-relaxed mb-6">
                   At{" "}
                   <span className="font-bold text-gray-800">
-                    Ubiquity UAE
+                     Ubiquiti UAE
                   </span>
                   , we deliver cutting-edge{" "}
                   <span className="font-semibold text-slate-800">
