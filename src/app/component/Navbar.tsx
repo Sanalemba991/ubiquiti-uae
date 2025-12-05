@@ -2,8 +2,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { ChevronDown, Menu, X, MapPin, Mail, Phone, ChevronRight } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
-import Logo from "../../../public/logoua.png"
 import Image from 'next/image';
+
 interface SubCategory {
   _id: string;
   name: string;
@@ -183,10 +183,10 @@ export default function UniFiNavbar() {
         window.open('https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d185.85699190367959!2d55.30896546588453!3d25.27341693672885!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f5d48ffab5a65%3A0x8c2898929d4589f7!2sLovosis%20Technology%20L.L.C!5e1!3m2!1sen!2sin!4v1764833527855!5m2!1sen!2sin', '_blank');
         break;
       case 'email':
-        window.location.href = 'mailto:sales@ubiquiti-uae.com ';
+        window.location.href = 'mailto:sales@ubiquiti-uae.com';
         break;
       case 'call':
-        window.location.href = 'tel:+971050 966 4956';
+        window.location.href = 'tel:+9710509664956';
         break;
       default:
         break;
@@ -221,8 +221,8 @@ export default function UniFiNavbar() {
 
   const actionItems = [
     { icon: MapPin, label: 'Location', type: 'location', description: 'Find us' },
-    { icon: Mail, label: 'Email', type: 'email', description: 'sales@ubiquiti-uae.com ' },
-    { icon: Phone, label: 'Call', type: 'call', description: '+971050 966 4956' },
+    { icon: Mail, label: 'Email', type: 'email', description: 'sales@ubiquiti-uae.com' },
+    { icon: Phone, label: 'Call', type: 'call', description: '+971 050 966 4956' },
   ];
 
   return (
@@ -234,25 +234,24 @@ export default function UniFiNavbar() {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="max-w-full mx-auto px-4 2xl:px-8">
           {/* Desktop Navbar */}
           <div className="hidden lg:flex items-center justify-between h-14">
             {/* Left Section - Logo and Nav Items */}
-            <div className="flex items-center space-x-10">
+            <div className="flex items-center gap-4 2xl:gap-6 flex-1 min-w-0">
               <button
                 onClick={() => handleNavigation('/')}
-                className={`text-xl font-bold transition-colors cursor-pointer ${
+                className={`text-xl font-bold transition-colors cursor-pointer flex-shrink-0 ${
                   shouldShowWhiteBg ? 'text-gray-900' : 'text-white'
                 }`}
               >
-              <Image src={Logo} alt="Ubiquiti UAE" width={120} height={40} />
+                <Image src="/logoua.png" alt="Ubiquiti UAE" width={120} height={40} />
               </button>
               
-              <div className="flex items-center space-x-1">
+              <div className="flex items-center gap-0.5 2xl:gap-1 flex-wrap">
                 <button
                   onClick={() => handleNavigation('/')}
-                  className={`text-xs font-medium transition-colors cursor-pointer rounded-lg px-3 py-2 mx-0.5 
-                    @[1024px]:text-[10px]
+                  className={`text-xs lg:text-sm font-medium transition-colors cursor-pointer rounded-lg px-2 lg:px-3 2xl:px-4 py-2 whitespace-nowrap
                     ${
                       shouldShowWhiteBg
                         ? isActivePath('/')
@@ -275,8 +274,7 @@ export default function UniFiNavbar() {
                   >
                     <button
                       onClick={() => handleNavigation(buildCategoryHref(cat))}
-                      className={`text-xs font-medium transition-colors cursor-pointer rounded-lg px-3 py-2 mx-0.5 flex items-center space-x-1 
-                        @[1024px]:text-[10px]
+                      className={`text-xs lg:text-sm font-medium transition-colors cursor-pointer rounded-lg px-2 lg:px-3 2xl:px-4 py-2 flex items-center gap-1 whitespace-nowrap
                         ${
                           shouldShowWhiteBg
                             ? (isCategoryActive(cat.slug) || openDropdown === cat._id)
@@ -296,15 +294,15 @@ export default function UniFiNavbar() {
                         onMouseEnter={() => handleMouseEnter(cat._id)}
                         onMouseLeave={handleMouseLeave}
                       >
-                        <div className="max-w-7xl mx-auto px-6 py-2">
-                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
+                        <div className="max-w-full mx-auto px-6 2xl:px-8 py-2">
+                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4 sm:gap-6 2xl:gap-8">
                             {cat.subCategories.map((subCat) => (
                               <button
                                 key={subCat._id}
                                 onClick={() => handleNavigation(buildSubCategoryHref(cat, subCat))}
-                                className="flex flex-col items-center text-center p-3 sm:p-4 bg-white rounded-lg hover:shadow-md transition-all duration-150 cursor-pointer group/subcategory"
+                                className="flex flex-col items-center text-center p-3 sm:p-4 2xl:p-5 bg-white rounded-lg hover:shadow-md transition-all duration-150 cursor-pointer group/subcategory"
                               >
-                                <div className="bg-transparent overflow-hidden flex items-center justify-center h-16 sm:h-20 md:h-24 lg:h-28 w-full">
+                                <div className="bg-transparent overflow-hidden flex items-center justify-center h-16 sm:h-20 md:h-24 lg:h-28 xl:h-28 2xl:h-32 w-full">
                                   {subCat.image ? (
                                     <img
                                       src={subCat.image}
@@ -338,8 +336,7 @@ export default function UniFiNavbar() {
                   <button
                     key={link.slug}
                     onClick={() => handleNavigation(link.href)}
-                    className={`text-xs font-medium transition-colors cursor-pointer rounded-lg px-3 py-2 mx-0.5 
-                      @[1024px]:text-[10px]
+                    className={`text-xs lg:text-sm font-medium transition-colors cursor-pointer rounded-lg px-2 lg:px-3 2xl:px-4 py-2 whitespace-nowrap
                       ${
                         shouldShowWhiteBg
                           ? isActivePath(link.href)
@@ -357,7 +354,7 @@ export default function UniFiNavbar() {
             </div>
             
             {/* Right Section - Action Icons */}
-            <div className={`flex items-center space-x-5 transition-all duration-200 ${
+            <div className={`flex items-center gap-3 2xl:gap-4 transition-all duration-200 flex-shrink-0 ${
               isAnyDropdownOpen || isMobileMenuOpen
                 ? 'opacity-0 invisible scale-95' 
                 : 'opacity-100 visible scale-100'
@@ -390,7 +387,7 @@ export default function UniFiNavbar() {
                 shouldShowWhiteBg ? 'text-gray-900' : 'text-white'
               }`}
             >
-               <Image src={Logo} alt="Ubiquiti UAE" width={120} height={40} />
+              <Image src="/logoua.png" alt="Ubiquiti UAE" width={120} height={40} />
             </button>
 
             <button
