@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Performance Optimizations */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hardware acceleration for animations */
+.animate-pulse,
+.animate-spotlight,
+[class*="transition"],
+[class*="hover:"] {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+@keyframes spotlight {
+  0% {
+    opacity: 0;
+    transform: translate(-72%, -62%) scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%,-40%) scale(1);
+  }
+}
+
+.animate-spotlight {
+  animation: spotlight 2s ease .75s 1 forwards;
+}
+
+/* Swiper Custom Styles */
+.swiper-button-next,
+.swiper-button-prev {
+  color: #a855f7 !important;
+  background: rgba(15, 23, 42, 0.8) !important;
+  backdrop-filter: blur(8px) !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(168, 85, 247, 0.3) !important;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  background: rgba(168, 85, 247, 0.2) !important;
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+  font-size: 16px !important;
+  font-weight: bold !important;
+}
+
+.swiper-pagination-bullet {
+  background: #64748b !important;
+  opacity: 0.5 !important;
+}
+
+.swiper-pagination-bullet-active {
+  background: linear-gradient(to right, #a855f7, #6366f1) !important;
+  opacity: 1 !important;
+}
+
+/* Light Mode Overrides for Dashboard */
+.light-mode {
+  /* Card backgrounds */
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --card-border: rgba(229, 231, 235, 0.8);
+  --card-hover: rgba(243, 244, 246, 1);
+  
+  /* Text colors */
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+}
+
+.light-mode [class*="bg-slate-900"],
+.light-mode [class*="bg-slate-950"] {
+  background: white !important;
+  border-color: #e5e7eb !important;
+}
+
+.light-mode [class*="text-white"] {
+  color: #111827 !important;
+}
+
+.light-mode [class*="text-slate-400"],
+.light-mode [class*="text-slate-500"] {
+  color: #6b7280 !important;
+}
+
+.light-mode [class*="border-slate-800"],
+.light-mode [class*="border-slate-700"] {
+  border-color: #e5e7eb !important;
+}
+
+/* Light mode card hover effects */
+.light-mode [class*="hover:bg-slate-800"]:hover,
+.light-mode [class*="hover:bg-slate-900"]:hover {
+  background: #f3f4f6 !important;
+}
+
+/* Light mode backdrop blur cards */
+.light-mode [class*="backdrop-blur"] {
+  background: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) !important;
+}
+
+/* Hide Scrollbars */
+/* Sidebar scrollbar */
